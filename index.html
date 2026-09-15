@@ -190,7 +190,16 @@ h3{font-weight:700;line-height:1.3}
 @media(max-width:900px){.store-build-banner,.store-build-grid{grid-template-columns:1fr}.store-build-meter b{text-align:left}.store-checklist{grid-template-columns:1fr}.store-automation{display:block}.store-flow{justify-content:flex-start;margin-top:15px}}
 @media(max-width:560px){.store-build-details{grid-template-columns:1fr}.store-check{grid-template-columns:34px 1fr}.store-check .status{grid-column:2;justify-self:start}}
 </style>
-</head>
+<style id="forge-domain-selection">
+.domain-result-card{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-top:12px;padding:15px 16px;border:1px solid rgba(105,221,160,.25);border-radius:14px;background:linear-gradient(120deg,#10271e,#091611)}
+.domain-result-card.selected{border-color:#69dda0;box-shadow:inset 0 0 0 1px rgba(105,221,160,.15)}
+.domain-result-title{font-weight:850;font-size:14px}.domain-result-price{margin-top:5px;color:#b9f3d0;font-weight:800;font-size:13px}
+.domain-result-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.domain-selected-tile{border-color:rgba(105,221,160,.4)!important}
+.domain-launch-selector{margin-bottom:16px;border-color:rgba(105,221,160,.22)}.domain-choice-list{display:grid;gap:9px;margin-top:13px}
+.domain-choice{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border:1px solid rgba(169,238,204,.12);border-radius:12px;background:#091611}
+.domain-choice.selected{border-color:#69dda0;background:#10271e}.domain-choice .domain-result-price{margin-top:3px}
+@media(max-width:650px){.domain-result-card,.domain-choice{display:block}.domain-result-actions{justify-content:flex-start;margin-top:12px}}
+</style></head>
 <body>
 <div id="app"></div><div id="toast" class="toast"></div><div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
 
@@ -199,8 +208,8 @@ const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
 const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
-function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{}}))}
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{}}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
 const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
@@ -635,7 +644,8 @@ function brandStudioPage(){
       moduleCard("positioning","01","Positioning","Define the customer, promise and market position.","<div class='brand-copy'>"+escHtml(direction.position)+"</div>","<button class='btn' onclick='generateBrandModule(\"positioning\")'>"+(saved.positioning?"Refine positioning":"Generate positioning")+" →</button>")+
       moduleCard("naming","02","Company & brand name","Forge keeps generating fresh directions until you find one that feels like your company. You can also use the name you already dreamed of.","<div class='brand-suggestion-count'>Fresh set · "+(saved.nameRefreshCount||0)+" refreshes</div><div class='brand-name-list'>"+candidates.map((n,i)=>"<button class='brand-name-option "+(chosenName===n?"selected":"")+"' onclick='selectBrandName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenName===n?"Selected":"Use this name →")+"</small></button>").join("")+"</div><div class='brand-manual'><div class='label'>YOUR OWN COMPANY / BRAND NAME</div><div class='small' style='margin:5px 0 9px'>Already have a name in mind? Enter it and Forge will use it throughout the brand system.</div><div class='brand-manual-grid'><input class='input' id='manualBrandName' placeholder='e.g. Arvo Living' value='"+esc(chosenName&&!candidates.includes(chosenName)?chosenName:"")+"'><button class='btn' onclick='useManualBrandName()'>Use my name →</button></div></div><div class='brand-refresh-note'>Refresh does not repeat the same three names. Each refresh creates a new naming direction from the product, category and business profile.</div>","<button class='btn primary' onclick='generateBrandModule(\"naming\")'>Refresh names ↻</button>")+
       moduleCard("productNaming","03","Product name","Replace the supplier listing title with a short, memorable customer-facing name.","<div class='brand-suggestion-count'>Fresh product-name set</div><div class='brand-name-list'>"+productNames.map((n,i)=>"<button class='brand-name-option "+(chosenProductName===n?"selected":"")+"' onclick='selectProductName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenProductName===n?"Selected":"Use this product name →")+"</small></button>").join("")+"</div>","<button class='btn primary' onclick='generateBrandModule(\"productNaming\")'>Refresh product names ↻</button>")+
-      moduleCard("digital","04","Digital identity","Create one consistent Facebook Page, Instagram handle and website domain direction.","<div class='brand-kit'><div class='brand-kit-item'><div class='kit-label'>Facebook</div><div class='kit-value'>@"+esc(social.facebook)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Instagram</div><div class='kit-value'>@"+esc(social.instagram)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Suggested domain</div><div class='kit-value'>"+esc(social.domain)+"</div><div style='margin-top:8px'><button class='btn' onclick='checkDomainAvailabilityFromUI()'>Check availability ↗</button></div></div><div class='brand-kit-item'><div class='kit-label'>Status</div><div class='kit-value'>"+(saved.digital?"Prepared":"Suggested")+" · "+domainCheckLabel(social.domain)+"</div></div></div>"+domainLaunchNotice(social.domain)+"<div class='brand-manual'><div class='label'>YOUR OWN DOMAIN</div><div class='small' style='margin:5px 0 9px'>Already have a domain or a different dream domain? Enter it here. Forge will check the real registrar and only move an available domain into Store Launch.</div><div class='brand-manual-grid'><input class='input' id='manualBrandDomain' placeholder='e.g. arvoliving.com' value='"+esc(social.domain||"")+"'><button class='btn' onclick='useManualDomain()'>Use my domain →</button><button class='btn' onclick='checkManualDomainAvailability()'>Check availability ↗</button></div><div class='small' style='margin-top:8px'>Availability and registration pricing come from the connected registrar when Namecheap credentials are configured. If exact registrar pricing is unavailable, Forge will say so instead of inventing a price.</div></div>","<button class='btn primary' onclick='generateBrandModule(\"digital\")'>Refresh digital direction ↻</button>")+moduleCard("story","05","Product story","Give product pages, sales and ads one consistent narrative.","<div class='brand-copy'><b>"+escHtml(story.hook)+"</b><p>"+escHtml(story.body)+"</p><p><b>Content rhythm:</b> "+escHtml(story.content)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"story\")'>"+(saved.story?"Refine story":"Generate story")+" →</button>")+
+      moduleCard("digital","04","Digital identity","Create one consistent Facebook Page, Instagram handle and website domain direction.","<div class='brand-kit'><div class='brand-kit-item'><div class='kit-label'>Facebook</div><div class='kit-value'>@"+esc(social.facebook)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Instagram</div><div class='kit-value'>@"+esc(social.instagram)+"</div></div><div class='brand-kit-item "+(state.brandStudio?.selectedDomain?"domain-selected-tile":"")+"'><div class='kit-label'>Website domain</div><div class='kit-value'>"+esc(social.domain)+"</div><div class='small' style='margin-top:6px'>"+(state.brandStudio?.selectedDomain?"Selected for Store Launch":"Suggested — not selected yet")+"</div><div style='margin-top:8px'><button class='btn' onclick='checkDomainAvailabilityFromUI()'>Check live availability ↗</button></div></div><div class='brand-kit-item'><div class='kit-label'>Registrar status</div><div class='kit-value'>"+(saved.digital?"Prepared":"Suggested")+" · "+domainCheckLabel(social.domain)+"</div><div class='small' style='margin-top:6px'>"+esc(domainLivePriceLabel(domainResult(social.domain)))+"</div></div></div>"+domainLaunchNotice(social.domain)+
+    "<div class='brand-manual'><div class='label'>CHOOSE THE DOMAIN FOR YOUR STORE</div><div class='small' style='margin:5px 0 9px'>Forge keeps availability separate from selection. First verify the domain, then click <b>Use this domain</b>. Only the selected domain appears on the Store Launch invoice.</div><div class='brand-manual-grid'><input class='input' id='manualBrandDomain' placeholder='e.g. arvoliving.com' value='"+esc(social.domain||"")+"'><button class='btn' onclick='checkManualDomainAvailability()'>Check live availability ↗</button><button class='btn' onclick='useManualDomain()'>Use as domain candidate →</button></div><div class='small' style='margin-top:8px'>Live availability and registration pricing are read from the connected registrar. Forge never invents a price. A domain that is only “likely available” cannot be selected.</div></div>","<button class='btn primary' onclick='generateBrandModule("digital")'>Refresh digital direction ↻</button>")+moduleCard("story,"05","Product story","Give product pages, sales and ads one consistent narrative.","<div class='brand-copy'><b>"+escHtml(story.hook)+"</b><p>"+escHtml(story.body)+"</p><p><b>Content rhythm:</b> "+escHtml(story.content)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"story\")'>"+(saved.story?"Refine story":"Generate story")+" →</button>")+
       moduleCard("packaging","06","Packaging","Make the physical experience feel like your brand, not a supplier parcel.","<div class='brand-copy'><p><b>Front:</b> "+escHtml(packaging.front)+"</p><p><b>Inside:</b> "+escHtml(packaging.inside)+"</p><p><b>Rule:</b> "+escHtml(packaging.rule)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"packaging\")'>"+(saved.packaging?"Refine packaging":"Generate packaging")+" →</button>")+
       moduleCard("launch","07","Launch system","Give marketing a repeatable message instead of random creative ideas.","<div class='brand-copy'><b>"+escHtml(launch.message)+"</b><div class='brand-angle-list'>"+launch.angles.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p><b>Channels:</b> "+escHtml(launch.channels)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"launch\")'>"+(saved.launch?"Refine launch system":"Generate launch system")+" →</button>")+
     "</div>"+
@@ -753,16 +763,20 @@ function domainLivePriceLabel(result){
   if(result.status!=="available")return "Not available for this launch";
   if(Number(result.priceUsd)>0){
     const years=Number(result.priceYears||1);
-    return "$"+Number(result.priceUsd).toFixed(2)+" / "+years+" year"+(years===1?"":"s")+" · live";
+    const currency=result.priceCurrency||"USD";
+    return currency+" "+Number(result.priceUsd).toFixed(2)+" for "+years+" year"+(years===1?"":"s")+" · LIVE";
   }
-  return result.priceUnavailableReason?"Live price unavailable":"Price pending registrar response";
+  return result.priceUnavailableReason?"Registrar price unavailable right now":"Waiting for live registrar price";
 }
 function domainLaunchNotice(domain){
   const r=domainResult(domain);
   if(!r)return "";
-  if(r.status==="available")return "<div class='notice domain-handoff-success'><b>✓ "+esc(domain)+" is available.</b><span>Forge moved this domain into Store Launch. Review the live registration price there.</span><button class='btn primary' onclick='go(\"store\")'>Continue to Store Launch →</button></div>";
-  if(r.status==="taken")return "<div class='notice danger'><b>"+esc(domain)+" is already registered.</b><span>This domain will not be used for your store. Choose another domain and check it before moving to Store Launch.</span></div>";
-  if(r.status==="likely_available")return "<div class='notice'><b>"+esc(domain)+" looks available.</b><span>Forge has not received an exact registrar result, so it will not treat this domain as purchase-ready yet.</span></div>";
+  const selected=String(state.brandStudio?.selectedDomain||"").toLowerCase()===String(domain||"").toLowerCase();
+  if(r.status==="available"){
+    return "<div class='domain-result-card "+(selected?"selected":"")+"'><div><div class='domain-result-title'>✓ "+esc(domain)+" is available</div><div class='domain-result-price'>"+esc(domainLivePriceLabel(r))+"</div><div class='small'>Verified by the connected registrar. Forge will use this exact domain for Store Launch only after you select it.</div></div><div class='domain-result-actions'>"+(selected?"<span class='status'>Selected for Store Launch</span>":"<button class='btn primary' onclick='selectAvailableDomain(""+esc(domain)+"")'>Use this domain →</button>")+"<button class='btn' onclick='go("store")'>Open Store Launch</button></div></div>";
+  }
+  if(r.status==="taken")return "<div class='notice danger'><b>"+esc(domain)+" is already registered.</b><span>This domain cannot be used for this launch. Choose another domain and check it before selecting.</span></div>";
+  if(r.status==="likely_available")return "<div class='notice'><b>"+esc(domain)+" looks available.</b><span>Forge has not received an exact registrar result, so it cannot be selected or priced as purchase-ready.</span></div>";
   return "";
 }
 async function checkDomainAvailability(domain){
@@ -782,6 +796,20 @@ async function checkDomainAvailability(domain){
   }catch(e){toast("Domain check failed: "+(e.message||"try again"));console.error(e);}
 }
 function checkDomainAvailabilityFromUI(){ checkDomainAvailability((state.brandStudio?.social?.domain)||""); }
+function selectAvailableDomain(domain){
+  const clean=String(domain||"").trim().toLowerCase().replace(/^https?:\/\//,"").replace(/\/$/,"");
+  const result=domainResult(clean);
+  if(!result || result.status!=="available")return toast("Check this domain with the live registrar before selecting it.");
+  const b=state.brandStudio||{};
+  b.selectedDomain=clean;
+  b.social=b.social||{};
+  b.social.domain=clean;
+  b.domainSelectedAt=new Date().toISOString();
+  state.brandStudio=b;
+  persistProfile();
+  render();
+  toast(clean+" selected for Store Launch.");
+}
 function checkManualDomainAvailability(){
   const input=document.getElementById("manualBrandDomain");
   checkDomainAvailability(input?.value||"");
@@ -818,19 +846,24 @@ function storeLaunchState(){
     const seed=String(state.selectedProduct?.id||state.selectedProduct?.name||"forge").split("").reduce((a,ch)=>a+ch.charCodeAt(0),0);
     s.etaMinutes=18+(seed%28);
   }
+  state.storeLaunch=s;
   return s;
+}
+function availableDomainChoices(){
+  const checks=state.brandStudio?.domainChecks||{};
+  return Object.entries(checks).filter(([domain,r])=>r?.status==="available").map(([domain,r])=>({domain,result:r}));
 }
 function storeLaunchBill(){
   const brand=state.brandStudio||{};
-  const candidate=brand.social?.domain||"";
-  const result=domainResult(candidate);
-  const launchable=result?.status==="available";
-  const domain=launchable?candidate:"";
+  const selected=String(brand.selectedDomain||"").trim().toLowerCase();
+  const result=selected?domainResult(selected):null;
+  const launchable=!!(selected && result?.status==="available");
+  const domain=launchable?selected:"";
   return {
     setup:5000,
     domain,
     domainResult:launchable?result:null,
-    domainEstimate:launchable?domainLivePriceLabel(result):"Choose and verify an available domain in Brand Studio",
+    domainEstimate:launchable?domainLivePriceLabel(result):"Select an available domain to add it to this launch",
     platform:"Paid separately / depends on selected platform",
     apps:"Only if required · charged at actual cost",
     hasCustomDomain:!!domain
@@ -918,12 +951,17 @@ function store(){
         ? "<button class='btn primary' onclick=\"toast('Store preview is being prepared')\">Preview completed store ↗</button>"
         : "<button class='btn primary' onclick='payStoreLaunch()'>Pay ৳5,000 & start build →</button>";
   const domainReady=!!bill.hasCustomDomain;
-  const domainAttention=readyForInvoice&&!domainReady&&s.status!=="building"&&s.status!=="ready"?"<div class='notice danger' style='margin-bottom:15px'><b>Domain selection still needs attention.</b><span>The suggested domain is not confirmed as available, so Forge will not put it on the invoice or pretend it is yours.</span><button class='btn' onclick='go(\"brand\")'>Check / change domain →</button></div>":"";
+  const domainChoices=availableDomainChoices();
+  const domainChoicePanel=!domainReady && domainChoices.length
+    ? "<div class='card domain-launch-selector'><div class='eyebrow'>AVAILABLE DOMAINS READY TO CHOOSE</div><h2>Select the domain for this store</h2><p class='small'>These names were verified as available. Choose one and Forge will carry the exact domain and live registrar price into the launch invoice.</p><div class='domain-choice-list'>"+domainChoices.map(x=>"<div class='domain-choice "+(brand.selectedDomain===x.domain?"selected":"")+"'><div><b>"+esc(x.domain)+"</b><div class='domain-result-price'>"+esc(domainLivePriceLabel(x.result))+"</div></div><button class='btn primary' onclick='selectAvailableDomain(""+esc(x.domain)+"");go("store")'>"+(brand.selectedDomain===x.domain?"Selected":"Use this domain →")+"</button></div>").join("")+"</div></div>"
+    : "";
+  const domainAttention=!domainReady&&readyForInvoice&&s.status!=="building"&&s.status!=="ready"?"<div class='notice "+(domainChoices.length?"":"danger")+"' style='margin-bottom:15px'><b>"+(domainChoices.length?"Domain selection is ready.":"Domain selection still needs attention.")+"</b><span>"+(domainChoices.length?"Choose an available domain below. The live price will appear in the invoice immediately.":"Check a domain in Brand Studio first; unavailable or unverified names are never put on the invoice.")+"</span><button class='btn' onclick="go('brand')">Check / change domain →</button></div>":"";
   return "<div class='hero store-launch-hero'><div><div class='eyebrow'>STORE LAUNCH · AUTOMATED BUILD</div><div class='h1'>Pay once. Forge builds the store around your decisions.</div><div class='sub'>You already chose the product, company name, customer-facing product name and digital identity. Store Launch turns those approved decisions into a working storefront instead of asking you to build everything yourself.</div></div><div class='actions'>"+primaryButton+"</div></div>"+
   "<div class='store-build-banner card'><div><div class='eyebrow'>BUILD STATUS</div><h2>"+statusTitle+"</h2><p class='small'>"+statusText+"</p></div><div class='store-build-meter'><b>"+(s.status==="building"?progress+"%":s.status==="ready"?"100%":"NOT STARTED")+"</b>"+(s.status==="building"||s.status==="ready"?"<div class='progress'><i style='width:"+progress+"%'></i></div>":"<div class='progress'><i style='width:0%'></i></div>")+"</div></div>"+
+  domainAttention+domainChoicePanel+
   "<div class='store-build-grid'>"+
     "<div class='card store-order-card'><div class='eyebrow'>YOUR BUILD</div><h2>"+esc(brandName)+"</h2><div class='store-selected-product'>"+(p?.image?"<img src='"+esc(p.image)+"' alt='"+esc(productName)+"'>":"")+"<div><b>"+esc(productName)+"</b><div class='small'>Confirmed supplier product · one selected hero product</div></div></div><div class='store-build-details'><div><span>Website</span><b>"+(domain?esc(domain):"Not selected · choose an available domain")+"</b></div><div><span>Brand</span><b>"+esc(brandName)+"</b></div><div><span>Product</span><b>"+esc(productName)+"</b></div><div><span>Estimated completion</span><b>"+(s.status==="building"||s.status==="ready"?eta+" min est.":"Shown after payment")+"</b></div></div></div>"+
-    "<div class='card store-invoice-card'><div class='eyebrow'>LAUNCH INVOICE</div><h2>What you pay</h2><div class='invoice-row'><span>Forge store setup · one time</span><b>৳5,000</b></div><div class='invoice-row'><span>Domain"+(bill.hasCustomDomain?" · "+esc(domain):"")+"</span><b>"+(bill.hasCustomDomain?esc(domainLivePriceLabel(bill.domainResult)):"Not selected · verify an available domain first")+"</b></div>"+(bill.hasCustomDomain&&bill.domainResult?.priceUsd?"<div class='small domain-price-source'>Live registrar price from Namecheap · "+esc(bill.domainResult.priceType==="premium"?"premium registration":"standard registration")+"</div>":"")+"<div class='invoice-row'><span>Platform / hosting</span><b>Depends on platform</b></div><div class='invoice-row'><span>Optional apps / services</span><b>Only if required</b></div><div class='invoice-total'><span>Forge setup payable now</span><b>৳5,000</b></div><p class='small'>The ৳5,000 is the one-time Forge build fee. Domain registration, Shopify/platform subscription and third-party services are separate variable costs and should never be hidden inside the build fee.</p>"+(s.invoiceRef?"<div class='small'>Invoice "+esc(s.invoiceRef)+"</div>":"")+"</div>"+
+    "<div class='card store-invoice-card'><div class='eyebrow'>LAUNCH INVOICE</div><h2>What you pay</h2><div class='invoice-row'><span>Forge store setup · one time</span><b>৳5,000</b></div><div class='invoice-row'><span>Domain"+(bill.hasCustomDomain?" · "+esc(domain):"")+"</span><b>"+(bill.hasCustomDomain?esc(domainLivePriceLabel(bill.domainResult)):"Select an available domain first")+"</b></div>"+(bill.hasCustomDomain&&bill.domainResult?.priceUsd?"<div class='small domain-price-source'>Live registrar price from Namecheap · "+esc(bill.domainResult.priceType==="premium"?"premium registration":"standard registration")+"</div>":"")+"<div class='invoice-row'><span>Platform / hosting</span><b>Depends on platform</b></div><div class='invoice-row'><span>Optional apps / services</span><b>Only if required</b></div><div class='invoice-total'><span>Forge setup payable now</span><b>৳5,000</b></div><p class='small'>The ৳5,000 is the one-time Forge build fee. Domain registration, Shopify/platform subscription and third-party services are separate variable costs and should never be hidden inside the build fee.</p>"+(s.invoiceRef?"<div class='small'>Invoice "+esc(s.invoiceRef)+"</div>":"")+"</div>"+
   "</div>"+
   "<div class='section'><div><h2>What Forge does after payment</h2><p>No repetitive setup work for the customer. AI prepares the store from the approved business decisions.</p></div></div>"+
   "<div class='store-checklist'>"+checklist.map((x,i)=>"<div class='store-check card'><div class='store-check-number'>"+String(i+1).padStart(2,"0")+"</div><div><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div><span class='status "+(s.status==="ready"?"":"amber")+"'>"+(s.status==="ready"?"READY":"QUEUED")+"</span></div>").join("")+"</div>"+

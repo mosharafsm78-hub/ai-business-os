@@ -757,6 +757,13 @@ function selectBrandName(i){
 }
 const SUPABASE_URL="https://pmyfswozvkdpqgnsiibf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW";
+const FX_RATE_URL=SUPABASE_URL+"/functions/v1/fx-rate";
+const SHOPIFY_BASIC_MONTHLY_USD=39;
+const SHOPIFY_BASIC_YEARLY_USD=29;
+let forgeFxRate=123.0585;
+let forgeFxSource="Google Finance";
+let forgeFxFetchedAt=null;
+let forgeFxLoading=false;
 function domainResult(domain){
   return (state.brandStudio?.domainChecks||{})[String(domain||"").toLowerCase()]||null;
 }
@@ -775,8 +782,10 @@ function domainLivePriceLabel(result){
   if(result.status!=="available")return "Not available for this launch";
   if(Number(result.priceAmount ?? result.priceUsd)>0){
     const years=Number(result.priceYears||1);
+    const usd=Number(result.priceAmount ?? result.priceUsd);
     const currency=result.priceCurrency||"USD";
-    return currency+" "+Number(result.priceAmount ?? result.priceUsd).toFixed(2)+" for "+years+" year"+(years===1?"":"s")+" · LIVE";
+    const bdt=Math.round(usd*forgeFxRate);
+    return currency+" "+usd.toFixed(2)+" · "+BDT(bdt)+" for "+years+" year"+(years===1?"":"s")+" · LIVE · FX 1 USD = "+forgeFxRate.toFixed(2)+" BDT";
   }
   return result.priceUnavailableReason?"Registrar price unavailable right now":"Waiting for live registrar price";
 }
@@ -793,7 +802,25 @@ function domainLaunchNotice(domain){
   if(r.status==="likely_available")return "<div class='notice danger'><b>"+esc(domain)+" is not yet registrar-verified.</b><span>Forge requires an exact Cloudflare Registrar result before a domain can be selected or priced.</span></div>";
   return "";
 }
-async function checkDomainAvailability(domain){
+async async function refreshForgeFxRate(){
+  if(forgeFxLoading)return;
+  forgeFxLoading=true;
+  try{
+    const res=await fetch(FX_RATE_URL,{headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+SUPABASE_PUBLISHABLE_KEY}});
+    const data=await res.json();
+    if(!res.ok||!data.ok||!Number(data.rate))throw new Error(data.error||"FX rate unavailable");
+    forgeFxRate=Number(data.rate);
+    forgeFxSource=data.source||"Google Finance";
+    forgeFxFetchedAt=data.fetchedAt||new Date().toISOString();
+    render();
+  }catch(e){
+    console.warn("Forge FX refresh failed; keeping last known rate.",e);
+  }finally{
+    forgeFxLoading=false;
+  }
+}
+
+function checkDomainAvailability(domain){
   const clean=String(domain||"").trim().toLowerCase().replace(/^https?:\/\//,"").replace(/\/$/,"");
   if(!clean || !clean.includes("."))return toast("Enter a valid domain, such as yourbrand.com.");
   toast("Checking "+clean+"…");
@@ -876,13 +903,32 @@ function storeLaunchBill(){
   const result=selected?domainResult(selected):null;
   const launchable=!!(selected && result?.status==="available");
   const domain=launchable?selected:"";
+  const domainUsd=launchable?Number(result.priceAmount ?? result.priceUsd ?? 0):0;
+  const domainYears=launchable?Number(result.priceYears||1):0;
+  const hostingUsd=SHOPIFY_BASIC_MONTHLY_USD;
+  const hostingBdt=Math.round(hostingUsd*forgeFxRate);
+  const domainBdt=Math.round(domainUsd*forgeFxRate);
+  const setup=5000;
+  const launchTotal=setup+domainBdt+hostingBdt;
   return {
-    setup:5000,
+    setup,
     domain,
     domainResult:launchable?result:null,
+    domainUsd,
+    domainBdt,
+    domainYears,
     domainEstimate:launchable?domainLivePriceLabel(result):"Select an available domain to add it to this launch",
-    platform:"Paid separately / depends on selected platform",
-    apps:"Only if required · charged at actual cost",
+    hostingProvider:"Shopify",
+    hostingPlan:"Basic",
+    hostingValidity:"1 month",
+    hostingUsd,
+    hostingBdt,
+    hostingAnnualUsd:SHOPIFY_BASIC_YEARLY_USD*12,
+    hostingAnnualBdt:Math.round(SHOPIFY_BASIC_YEARLY_USD*12*forgeFxRate),
+    launchTotal,
+    fxRate:forgeFxRate,
+    fxSource:forgeFxSource,
+    fxFetchedAt:forgeFxFetchedAt,
     hasCustomDomain:!!domain
   };
 }
@@ -978,7 +1024,7 @@ function store(){
   domainAttention+domainChoicePanel+
   "<div class='store-build-grid'>"+
     "<div class='card store-order-card'><div class='eyebrow'>YOUR BUILD</div><h2>"+esc(brandName)+"</h2><div class='store-selected-product'>"+(p?.image?"<img src='"+esc(p.image)+"' alt='"+esc(productName)+"'>":"")+"<div><b>"+esc(productName)+"</b><div class='small'>Confirmed supplier product · one selected hero product</div></div></div><div class='store-build-details'><div><span>Website</span><b>"+(domain?esc(domain):"Not selected · choose an available domain")+"</b></div><div><span>Brand</span><b>"+esc(brandName)+"</b></div><div><span>Product</span><b>"+esc(productName)+"</b></div><div><span>Estimated completion</span><b>"+(s.status==="building"||s.status==="ready"?eta+" min est.":"Shown after payment")+"</b></div></div></div>"+
-    "<div class='card store-invoice-card'><div class='eyebrow'>LAUNCH INVOICE</div><h2>What you pay</h2><div class='invoice-row'><span>Forge store setup · one time</span><b>৳5,000</b></div><div class='invoice-row'><span>Domain"+(bill.hasCustomDomain?" · "+esc(domain):"")+"</span><b>"+(bill.hasCustomDomain?esc(domainLivePriceLabel(bill.domainResult)):"Select an available domain first")+"</b></div>"+(bill.hasCustomDomain&&(Number(bill.domainResult?.priceAmount ?? bill.domainResult?.priceUsd)>0)?"<div class='small domain-price-source'>Live registrar price from Cloudflare Registrar · "+esc(bill.domainResult.priceType==="premium"?"premium registration":"standard registration")+"</div>":"")+"<div class='invoice-row'><span>Platform / hosting</span><b>Depends on platform</b></div><div class='invoice-row'><span>Optional apps / services</span><b>Only if required</b></div><div class='invoice-total'><span>Forge setup payable now</span><b>৳5,000</b></div><p class='small'>The ৳5,000 is the one-time Forge build fee. Domain registration, Shopify/platform subscription and third-party services are separate variable costs and should never be hidden inside the build fee.</p>"+(s.invoiceRef?"<div class='small'>Invoice "+esc(s.invoiceRef)+"</div>":"")+"</div>"+
+    "<div class='card store-invoice-card'><div class='eyebrow'>LAUNCH INVOICE · LIVE COSTS</div><h2>Complete launch cost</h2><div class='invoice-row'><span>Forge store setup · one time</span><b>"+BDT(bill.setup)+"</b></div><div class='invoice-row'><span>Domain"+(bill.hasCustomDomain?" · "+esc(domain)+" · "+bill.domainYears+" year":"")+"</span><b>"+(bill.hasCustomDomain?BDT(bill.domainBdt):"Select an available domain first")+"</b></div>"+(bill.hasCustomDomain&&(Number(bill.domainResult?.priceAmount ?? bill.domainResult?.priceUsd)>0)?"<div class='small domain-price-source'>Cloudflare Registrar · "+esc(bill.domainResult.priceType==="premium"?"premium registration":"standard registration")+" · "+esc(domainLivePriceLabel(bill.domainResult))+"</div>":"")+"<div class='invoice-row'><span>"+esc(bill.hostingProvider)+" "+esc(bill.hostingPlan)+" hosting · "+esc(bill.hostingValidity)+"</span><b>"+BDT(bill.hostingBdt)+"</b></div><div class='small domain-price-source'>Hosting list price: USD "+bill.hostingUsd.toFixed(2)+"/month · annual billing equivalent USD "+bill.hostingAnnualUsd.toFixed(2)+"/year · "+BDT(bill.hostingAnnualBdt)+"</div><div class='invoice-row'><span>Optional apps / services</span><b>৳0 · not included</b></div><div class='invoice-total'><span>Estimated first-month launch total</span><b>"+BDT(bill.launchTotal)+"</b></div><div class='small' style='margin-top:8px'>Includes Forge setup + 1-year domain registration + 1 month Shopify Basic hosting. Optional apps, payment-provider fees, transaction fees, taxes and future renewals are excluded until actually required.</div><div class='notice' style='margin-top:12px'><b>Live FX</b><div class='small'>"+esc(bill.fxSource)+" · 1 USD = "+bill.fxRate.toFixed(4)+" BDT · updated "+(bill.fxFetchedAt?new Date(bill.fxFetchedAt).toLocaleString("en-BD",{dateStyle:"medium",timeStyle:"short"}):"just now")+". All USD amounts above are converted automatically.</div></div>"+(s.invoiceRef?"<div class='small' style='margin-top:8px'>Invoice "+esc(s.invoiceRef)+"</div>":"")+"</div>"+
   "</div>"+
   "<div class='section'><div><h2>What Forge does after payment</h2><p>No repetitive setup work for the customer. AI prepares the store from the approved business decisions.</p></div></div>"+
   "<div class='store-checklist'>"+checklist.map((x,i)=>"<div class='store-check card'><div class='store-check-number'>"+String(i+1).padStart(2,"0")+"</div><div><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div><span class='status "+(s.status==="ready"?"":"amber")+"'>"+(s.status==="ready"?"READY":"QUEUED")+"</span></div>").join("")+"</div>"+
@@ -1165,12 +1211,11 @@ function onboardingLanding(){return "<div class='onboarding'><div class='onboard
 
 /* FORGE_CJ_LIVE_SOURCING */
 const CJ_PROXY="https://pmyfswozvkdpqgnsiibf.supabase.co/functions/v1/cj-products";
-const CJ_USD_BDT=123; // planning FX only; current sourcing cost remains the live USD value.
 let cjState=[];
 let cjLastFetched=null;
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\":"&quot;","'":"&#039;"}[m]))}
-function bdtEstimate(usd){return Math.round(Number(usd||0)*CJ_USD_BDT)}
+function bdtEstimate(usd){return Math.round(Number(usd||0)*forgeFxRate)}
 function moneyUsd(v){return "$"+Number(v||0).toFixed(2)}
 function formatQty(v){return Number(v||0).toLocaleString("en-US")}
 
@@ -1333,6 +1378,7 @@ function render(){
   }
 }
 render();
+setTimeout(refreshForgeFxRate,50);
 </script>
 </body>
 </html>

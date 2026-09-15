@@ -67,6 +67,21 @@ h3{font-weight:700;line-height:1.3}
 .order-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.order-metrics .card{min-height:118px}.order-metrics .action-metric{border-color:rgba(255,196,96,.26)}
 .order-section-head{margin-bottom:10px}.order-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.order-tabs button{appearance:none;border:1px solid rgba(169,238,204,.13);background:rgba(7,24,18,.5);color:#a9c0b4;padding:10px 13px;border-radius:10px;font:600 12px "DM Sans",sans-serif;cursor:pointer}.order-tabs button:hover{border-color:rgba(169,238,204,.28);color:#eaf7f0}.order-tabs button.active{background:#b7f4d3;color:#06140e;border-color:#b7f4d3}.order-tabs b{margin-left:5px}
 .order-table-card{padding:8px 18px}.order-table th{white-space:nowrap}.order-table td{vertical-align:middle}.order-product{display:flex;align-items:center;gap:11px;min-width:300px}.order-product img{width:54px;height:54px;border-radius:11px;object-fit:contain;background:#10231b;border:1px solid rgba(169,238,204,.08)}.order-stage-note{margin-top:4px}.payment-dot{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#f0c77b}.payment-dot:before{content:"";width:7px;height:7px;border-radius:50%;background:#f0c77b}.payment-dot.is-paid{color:#8ce8b8}.payment-dot.is-paid:before{background:#8ce8b8}.order-policy{margin-top:14px}
+.order-qty-cell{min-width:180px}
+.order-qty-cell .qty-stepper{display:flex;align-items:center;gap:5px}
+.order-qty-cell .qty-stepper button{width:30px;height:30px;padding:0;border:1px solid rgba(169,238,204,.15);background:#0b1914;color:#dcebe4;border-radius:8px;font-weight:800}
+.order-qty-cell .qty-stepper button:hover{border-color:#58b98d;background:#10261d}
+.order-qty-cell .qty-stepper input{width:72px;height:30px;text-align:center;background:#07110e;color:#f4f8f5;border:1px solid rgba(169,238,204,.2);border-radius:8px;font-weight:800;outline:0}
+.order-qty-cell .qty-stepper input:focus{border-color:#69dda0}
+.order-qty-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.order-qty-meta span{font-size:9px;padding:4px 6px;border-radius:999px;border:1px solid rgba(169,238,204,.1);color:#829d90}
+.order-qty-meta .planned{color:#b9f3d0;border-color:rgba(105,221,160,.25);background:#10261d}
+.order-actions{display:flex;align-items:center;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.delete-order-btn{color:#ffaaaa!important;border-color:rgba(255,152,152,.22)!important;background:#1b1111!important}
+.delete-order-btn:hover{border-color:rgba(255,152,152,.5)!important;background:#281616!important}
+.qty-planning-note{margin-top:12px;padding:12px 14px;border:1px solid rgba(169,238,204,.12);border-radius:12px;background:#0b1914}
+.qty-planning-note strong{color:#eaf7f0}
+@media(max-width:900px){.order-qty-cell{min-width:150px}.order-qty-cell .qty-stepper input{width:62px}}
 .order-modal-grid{display:grid;grid-template-columns:220px 1fr;gap:22px}.order-modal-grid .cj-detail-img{width:220px;height:220px}.order-detail-data{margin-top:16px}.order-timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}.order-timeline>div{padding:12px;border:1px solid rgba(169,238,204,.1);border-radius:12px;background:rgba(7,24,18,.45)}.order-timeline>div.done{border-color:rgba(169,238,204,.28)}.order-timeline>div.current{border-color:rgba(255,196,96,.35)}.order-timeline b{display:block;font-size:11px;color:#89a69a}.order-timeline span{display:block;font-weight:700;margin-top:3px}.order-timeline small{display:block;color:#86a094;margin-top:3px}
 @media(max-width:1100px){.order-command{display:block}.order-flow{margin-top:16px;overflow:auto;padding-bottom:4px}.order-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.order-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.order-modal-grid{grid-template-columns:1fr}.order-modal-grid .cj-detail-img{width:100%;height:220px}.order-timeline{grid-template-columns:repeat(2,1fr)}}
@@ -329,11 +344,12 @@ function orders(){
     const paymentLabel=p.paymentStatus==="paid"?"Paid":p.paymentStatus==="submitted"?"Submitted":"Unpaid";
     return "<tr>"+
       "<td><b>"+esc(p.orderRef||"FORGE-ORDER")+"</b><div class='small'>"+new Date(p.selectedAt||Date.now()).toLocaleDateString("en-BD")+"</div></td>"+
-      "<td><div class='order-product'><img src='"+esc(p.image)+"' alt='"+esc(p.name)+"'><div><b>"+esc(p.name)+"</b><div class='small'>SKU "+esc(p.sku||"—")+"</div><div class='small'>Quantity <b>"+t.qty+"</b> · "+esc(p.variant||"Standard variant")+"</div></div></div></td>"+
+      "<td><div class='order-product'><img src='"+esc(p.image)+"' alt='"+esc(p.name)+"'><div><b>"+esc(p.name)+"</b><div class='small'>SKU "+esc(p.sku||"—")+"</div><div class='small'>"+esc(p.variant||"Standard variant")+"</div></div></div></td>"+
+      "<td><div class='order-qty-cell'><div class='qty-stepper'><button "+(p.paymentStatus==="unpaid"?"":"disabled")+" onclick='adjustOrderQuantity("+realIndex+",-1)' aria-label='Decrease quantity'>−</button><input "+(p.paymentStatus==="unpaid"?"":"disabled")+" type='number' min='"+qp.minimum+"' max='"+(qp.stock>0?qp.stock:"")+"' step='1' value='"+t.qty+"' onchange='setOrderQuantity("+realIndex+",this.value,false)' aria-label='Order quantity'><button "+(p.paymentStatus==="unpaid"?"":"disabled")+" onclick='adjustOrderQuantity("+realIndex+",1)' aria-label='Increase quantity'>+</button></div><div class='order-qty-meta'><span>Min "+qp.minimum+"</span><span>Suggested "+qp.suggested+"</span><span class='planned'>Plan "+qp.planned+"</span></div></div></td>"+
       "<td><b>"+BDT(t.payable)+"</b><div class='small'>"+t.qty+" units · landed estimate</div></td>"+
       "<td><span class='status "+stage.tone+"'>"+stage.label+"</span><div class='small order-stage-note'>"+stage.desc+"</div></td>"+
       "<td><span class='payment-dot "+(paymentLabel==="Paid"?"is-paid":"")+"'>"+paymentLabel+"</span></td>"+
-      "<td><button class='btn' onclick='reviewQueued("+realIndex+")'>Open order →</button></td>"+
+      "<td><div class='order-actions'><button class='btn' onclick='reviewQueued("+realIndex+")'>Open order →</button>"+(p.paymentStatus==="unpaid"?"<button class='btn delete-order-btn' onclick='deleteQueuedOrder("+realIndex+")' title='Delete order' aria-label='Delete order'>✕</button>":"")+"</div></td>"+
     "</tr>";
   }).join(""):"<tr><td colspan='6'><div class='cj-empty' style='padding:45px'><b>No orders in this stage.</b><br><span class='small'>Choose a product in Product Lab or change the filter above.</span></div></td></tr>";
 
@@ -350,7 +366,8 @@ function orders(){
   "</div>"+
   "<div class='section order-section-head'><div><div class='eyebrow'>YOUR ORDERS</div><h2>Order workspace</h2><p>Only confirmed products appear here. Supplier catalogue browsing remains inside Product Lab.</p></div></div>"+
   "<div class='order-tabs'>"+tabs.map(t=>"<button class='"+(ordersFilter===t[0]?"active":"")+"' onclick='setOrdersFilter(\""+t[0]+"\")'>"+t[1]+" <b>"+t[2]+"</b></button>").join("")+"</div>"+
-  "<div class='card order-table-card'><div style='overflow:auto'><table class='table order-table'><thead><tr><th>Order</th><th>Product</th><th>Customer payable</th><th>Stage</th><th>Payment</th><th></th></tr></thead><tbody>"+rows+"</tbody></table></div></div>"+
+  "<div class='card order-table-card'><div style='overflow:auto'><table class='table order-table'><thead><tr><th>Order</th><th>Product</th><th>Quantity</th><th>Customer payable</th><th>Stage</th><th>Payment</th><th></th></tr></thead><tbody>"+rows+"</tbody></table></div></div>"+
+  "<div class='qty-planning-note'><strong>How quantity works:</strong> Forge uses your capital, income/risk profile, product economics, supplier minimums and live stock to calculate <b>Minimum</b>, <b>Suggested</b> and <b>Planned</b> quantities. The <b>Planned</b> quantity is the starting point—not a forced purchase. You can edit it directly in the order table before payment.</div>"+
   "<div class='notice order-policy'><b>Procurement rule:</b> payment must be received and verified before Forge releases a supplier purchase. Final variant, quantity, supplier stock, freight and landed cost are rechecked immediately before procurement.</div>";
 }
 function setOrdersFilter(filter){
@@ -405,8 +422,12 @@ function markDelivered(i){
   toast("Order marked delivered.");
   reviewQueued(i);
 }
-function setOrderQuantity(i,value){
+function setOrderQuantity(i,value,openDetail=true){
   const p=(state.sourcingQueue||[])[i];if(!p)return;
+  if(p.paymentStatus&&p.paymentStatus!=="unpaid"){
+    toast("Quantity is locked after payment is submitted. Open the order to see the next step.");
+    return;
+  }
   const qp=quantityPlan(p);
   let q=Math.floor(Number(value||0));
   if(!Number.isFinite(q))q=qp.planned;
@@ -414,7 +435,30 @@ function setOrderQuantity(i,value){
   if(qp.stock>0 && q>qp.stock){toast("Only "+formatQty(qp.stock)+" units are currently shown in supplier stock.");q=qp.stock;}
   if(q<1)q=1;
   updateQueuedOrder(i,{orderQty:q,minimumOrderQty:qp.minimum,suggestedOrderQty:qp.suggested,plannedOrderQty:qp.planned});
-  reviewQueued(i);
+  toast("Quantity set to "+formatQty(q)+" units.");
+  if(openDetail)reviewQueued(i);
+}
+function adjustOrderQuantity(i,delta){
+  const p=(state.sourcingQueue||[])[i];if(!p)return;
+  if(p.paymentStatus&&p.paymentStatus!=="unpaid")return toast("Quantity is locked after payment is submitted.");
+  const qp=quantityPlan(p);
+  const current=Number(p.orderQty||qp.planned);
+  setOrderQuantity(i,current+Number(delta||0),false);
+}
+function deleteQueuedOrder(i){
+  const q=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];const p=q[i];if(!p)return;
+  if(p.paymentStatus&&p.paymentStatus!=="unpaid")return toast("Paid or payment-submitted orders cannot be deleted. Open the order for the next operational step.");
+  if(!window.confirm("Delete this product order? This removes the confirmed order from your workspace. You can choose the product again from Product Lab later."))return;
+  const ref=p.orderRef;
+  q.splice(i,1);
+  state.sourcingQueue=q;
+  if(state.selectedProduct?.orderRef===ref)state.selectedProduct=null;
+  state.planStatus=null;
+  state.planRequestedAt=null;
+  try{persistProfile()}catch{}
+  closeModal();
+  render();
+  toast("Order deleted. The product is no longer committed.");
 }
 function reviewQueued(i){
   const p=(state.sourcingQueue||[])[i]; if(!p)return;
@@ -447,7 +491,7 @@ function reviewQueued(i){
           "<div class='qty-box highlight'><div class='label'>FORGE PLANNED</div><div class='qty-value'>"+qp.planned+" units</div><div class='qty-help'>Starting quantity used by the business plan.</div></div>"+
           "<div class='qty-box'><div class='label'>SUPPLIER STOCK</div><div class='qty-value'>"+formatQty(qp.stock)+"</div><div class='qty-help'>Rechecked before procurement.</div></div>"+
         "</div>"+
-        "<div class='qty-editor'><label for='orderQtyInput'>Your quantity</label><input id='orderQtyInput' class='qty-input' type='number' min='"+qp.minimum+"' max='"+(qp.stock>0?qp.stock:"")+"' step='1' value='"+t.qty+"' onchange='setOrderQuantity("+i+",this.value)' onkeydown=\"if(event.key==='Enter')setOrderQuantity("+i+",this.value)\"><span class='qty-cap'>Choose "+qp.minimum+" or more units. Final stock is checked again before purchase.</span></div>"+
+        "<div class='qty-editor'><label for='orderQtyInput'>Your quantity</label><input id='orderQtyInput' class='qty-input' type='number' min='"+qp.minimum+"' max='"+(qp.stock>0?qp.stock:"")+"' step='1' value='"+t.qty+"' "+(p.paymentStatus==="unpaid"?"":"disabled")+" onchange='setOrderQuantity("+i+",this.value,true)' onkeydown=\"if(event.key==='Enter')setOrderQuantity("+i+",this.value,true)\"><span class='qty-cap'>Minimum "+qp.minimum+" · Suggested "+qp.suggested+" · Planned "+qp.planned+". You can choose any quantity from the minimum up to available stock before payment.</span></div>"+
         stockWarning+
         "<div class='qty-note'>Forge does not force you to buy the suggested quantity. You can increase or decrease the batch above the minimum when stock and capital allow. The chosen quantity becomes the quantity used for payment, procurement and the product-specific business plan.</div>"+
         "<div class='cj-data order-detail-data'><div>Variant<b>"+esc(p.variant||"Standard variant")+"</b></div><div>Quantity<b>"+t.qty+" units</b></div><div>Supplier cost / unit<b>"+moneyUsd(p.priceUsd)+" · ≈ "+BDT(bdtEstimate(p.priceUsd))+"</b></div><div>Estimated landed / unit<b>"+BDT(t.landed)+"</b></div><div>Estimated selling / unit<b>"+BDT(t.selling)+"</b></div><div>Estimated contribution / unit<b>"+BDT(t.contribution)+"</b></div></div>"+
@@ -455,7 +499,7 @@ function reviewQueued(i){
     "</div>"+
     "<div class='order-timeline'><div class='"+(p.paymentStatus==="paid"?"done":"current")+"'><b>01</b><span>Payment</span><small>"+(p.paymentStatus==="paid"?"Verified":"Awaiting payment")+"</small></div><div class='"+(p.orderStatus==="processing"||p.orderStatus==="ordered"?"done":"")+"'><b>02</b><span>Procurement</span><small>"+(p.orderStatus==="ordered"?"Supplier order placed":p.orderStatus==="processing"?"Preparing supplier order":"Waiting for payment")+"</small></div><div class='"+(p.deliveryStatus==="in_transit"||p.deliveryStatus==="delivered"?"done":"")+"'><b>03</b><span>Shipping</span><small>"+(p.deliveryStatus==="delivered"?"Delivered":p.deliveryStatus==="in_transit"?"In transit":"Not started")+"</small></div><div class='"+(p.deliveryStatus==="delivered"?"done":"")+"'><b>04</b><span>Delivery</span><small>"+(p.deliveryStatus==="delivered"?"Completed":"Pending")+"</small></div></div>"+
     "<div class='notice' style='margin-top:18px'><b>How this order works</b><div class='small'>Choose the quantity → make payment → payment is verified → Forge releases procurement → the supplier order is placed → shipment is tracked → delivery is recorded. No supplier catalogue is exposed in this workspace.</div></div>"+
-    "<div class='actions' style='margin-top:18px;justify-content:flex-end'>"+paymentButton+next+"<button class='btn' onclick='closeModal()'>Close</button></div>";
+    "<div class='actions' style='margin-top:18px;justify-content:flex-end'>"+(p.paymentStatus==="unpaid"?"<button class='btn delete-order-btn' onclick='deleteQueuedOrder("+i+")'>Delete this order</button>":"")+paymentButton+next+"<button class='btn' onclick='closeModal()'>Close</button></div>";
   document.getElementById("modal").classList.add("open");
 }
 function brand(){

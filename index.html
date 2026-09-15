@@ -200,40 +200,43 @@ async function cjSearch(page=1){
 
 function renderCjResults(j){
   const box=document.getElementById("cjresults");
+  if(!box)return;
   if(!cjState.length){
-    box.innerHTML="<div class='cj-empty'><b>No verified supplier products found for this search.</b><br><span class='small'>Try a broader keyword such as “loafer”, “handbag”, “watch”, or “sneaker”.</span></div>";
+    box.innerHTML="<div class='cj-empty' style='grid-column:1/-1'><b>Forge could not find enough verified products right now.</b><br><span class='small'>We won't show invented images or prices. Refresh to check the live product network again.</span></div>";
     return;
   }
+  const prof=state.profile||{};
+  const budget=Math.max(0,Number(prof.budget||0));
+  const risk=String(prof.riskCapacity||prof.risk||"Medium").toLowerCase();
   box.innerHTML=cjState.map((p,i)=>{
-    const chips=[
-      p.category,
-      p.freeShipping?"Free shipping":null,
-      p.verifiedInventory>0?"Verified stock":null,
-      p.customization?"Customizable":null
-    ].filter(Boolean);
+    const cost=bdtEstimate(p.priceUsd);
+    const target=Math.max(cost+250,Math.round(cost*(risk.includes("high")?2.6:risk.includes("low")?2.1:2.35)/10)*10);
+    const gross=target-cost;
+    const margin=target?Math.round(gross/target*100):0;
+    const fit=budget>0 ? (cost*80<=budget*0.65?"Fits your starting budget":"Higher-ticket option") : "Profile fit";
     return "<article class='cj-card'>"+
-      "<div class='cj-image-wrap'><span class='cj-live-badge'>LIVE PRICE</span><img src='"+esc(p.image)+"' loading='lazy' alt='"+esc(p.name)+"'></div>"+
+      "<div class='cj-image-wrap'><span class='cj-live-badge'>RECOMMENDED</span><img src='"+esc(p.image)+"' loading='lazy' alt='"+esc(p.name)+"'></div>"+
       "<div class='cj-card-body'>"+
       "<h3>"+esc(p.name)+"</h3>"+
-      "<div class='cj-meta'>"+chips.map(x=>"<span class='cj-chip'>"+esc(x)+"</span>").join("")+"</div>"+
-      "<div class='cj-price-row'><div><div class='cj-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-bdt'>≈ "+BDT(bdtEstimate(p.priceUsd))+" planning estimate</div></div><span class='small'>current sourcing cost</span></div>"+
+      "<div class='cj-meta'><span class='cj-chip'>"+esc(fit)+"</span><span class='cj-chip'>"+esc(p.category||"Selected for you")+"</span></div>"+
+      "<div class='cj-price-row'><div><div class='cj-price'>"+BDT(cost)+"</div><div class='cj-bdt'>Current product price</div></div><span class='small'>updated live</span></div>"+
       "<div class='cj-data'>"+
-      "<div>Inventory<b>"+formatQty(p.inventory)+"</b></div>"+
-      "<div>Delivery<b>"+esc(p.deliveryDays||"Check at order")+"</b></div>"+
-      "<div>SKU / SPU<b>"+esc(p.sku||"—")+"</b></div>"+
-      "<div>Source<b>"+esc(p.supplier||"connected supplier network")+"</b></div>"+
+      "<div>Forge selling price<b>"+BDT(target)+"</b></div>"+
+      "<div>Estimated margin<b>"+margin+"%</b></div>"+
+      "<div>Available<b>"+formatQty(p.inventory)+"</b></div>"+
+      "<div>Delivery<b>"+esc(p.deliveryDays||"Checked at order")+"</b></div>"+
       "</div>"+
-      "<div class='cj-footer'><button class='btn primary' style='width:100%' onclick='reviewCj("+i+")'>Review product →</button></div>"+
+      "<div class='cj-footer'><button class='btn primary' style='width:100%' onclick='reviewCj("+i+")'>Choose this product →</button></div>"+
       "</div></article>";
   }).join("");
   const meta=document.getElementById("cjmeta");
-  if(meta) meta.innerHTML="<span class='cj-count'>"+formatQty(j.total||cjState.length)+" matching supplier records</span><span class='cj-fresh'>Live check · "+new Date(cjLastFetched).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})+"</span>";
+  if(meta) meta.textContent=(j.total||cjState.length)+" products selected for your profile";
 }
 
 function reviewCj(i){
   const p=cjState[i]; if(!p)return;
   document.getElementById("modalbox").innerHTML=
-    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>LIVE PRICE PRODUCT</div><h2 style='margin:5px 0'>Review before securing</h2></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
+    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>LIVE PRICE PRODUCT</div><h2 style='margin:5px 0'>Review your selected product</h2></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
     "<div class='cj-detail-grid' style='margin-top:18px'>"+
     "<img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'>"+
     "<div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>≈ "+BDT(bdtEstimate(p.priceUsd))+" planning estimate · current sourcing cost only</div>"+
@@ -258,16 +261,21 @@ function addCjToQueue(i){
 
 function sourcingKeywords(){
   const p=state.selectedProduct||opportunities()[0];
-  const map={
-    "Premium carry goods":["leather handbag","work bag organizer","travel organizer"],
-    "Urban footwear":["casual loafer","urban sneaker","men shoes"],
-    "Home fragrance":["scented candle","home diffuser","gift fragrance"],
-    "Modern watches":["men watch","minimal watch","fashion watch"],
-    "Everyday beauty":["personal care beauty","skincare daily care","beauty gift"],
-    "Fitness essentials":["fitness accessories","gym accessories","workout gear"],
-    "Private-label brand launch":["private label fashion product","premium lifestyle product","branded accessories"]
-  };
-  return (map[p?.name]||[String(p?.name||""),state.profile.skills||"fashion accessories"]).filter(Boolean).slice(0,3);
+  const prof=state.profile||{};
+  const risk=String(prof.riskCapacity||prof.risk||"Medium").toLowerCase();
+  const category=String(p?.name||"").toLowerCase();
+  const base={
+    "premium carry goods":["leather handbag","work bag organizer","crossbody bag"],
+    "urban footwear":["casual loafer","urban sneaker","everyday shoes"],
+    "home fragrance":["scented candle","home diffuser","gift fragrance"],
+    "modern watches":["men watch","minimal watch","fashion watch"],
+    "everyday beauty":["personal care beauty","skincare daily care","beauty gift"],
+    "fitness essentials":["fitness accessories","gym accessories","workout gear"],
+    "private-label brand launch":["private label fashion product","branded accessories","lifestyle product"]
+  }[p?.name]||[category,prof.skills||"fashion accessories","best selling products"];
+  if(risk.includes("high")) return [...base,"private label"].slice(0,3);
+  if(risk.includes("low")) return [...base,"low MOQ"].slice(0,3);
+  return base.slice(0,3);
 }
 
 async function cjFetchKeyword(q){
@@ -300,23 +308,25 @@ async function cjAutoSource(){
 
 function cjPanel(){
   const p=state.selectedProduct||opportunities()[0];
+  const prof=state.profile||{};
+  const risk=prof.riskCapacity||prof.risk||"Balanced";
   return "<section class='cj-live'>"+
-    "<div class='cj-head'><div><div class='eyebrow'>PERSONALIZED PRODUCT SOURCING</div><h2>Products selected for your business</h2><p class='small'>You do not need to search. Forge reads your locked profile, business model and risk capacity, then checks the connected supplier network and presents a curated shortlist.</p></div><div class='cj-live-note'><span class='pill online'>● LIVE PRICE CHECK</span><div class='small' style='margin-top:8px'>Current sourcing prices are refreshed from the connected supplier feed. Forge converts them into your planning currency.</div></div></div>"+
-    "<div class='notice' style='margin-top:15px'><b>Why these products?</b><div class='small'>Selected for <b>"+esc(p?.name||"your recommended business")+"</b> using your capital, risk profile, market, time and business objective.</div></div>"+
-    "<div class='cj-toolbar'><span id='cjmeta' class='cj-count'>Selecting live products…</span><span class='cj-count'>No invented prices</span></div>"+
-    "<div id='cjresults' class='cj-results'><div class='cj-empty' style='grid-column:1/-1'>Preparing your personalized product shortlist…</div></div>"+
+    "<div class='cj-head'><div><div class='eyebrow'>YOUR PRODUCT SHORTLIST</div><h2>Products Forge picked for you</h2><p class='small'>These products are selected from your locked entrepreneur profile — capital, risk capacity, time, market and business goal. You don't need to search for products.</p></div><div class='cj-live-note'><span class='pill online'>● PRICES UPDATED LIVE</span><div class='small' style='margin-top:8px'>Current product prices are checked when Forge builds your shortlist.</div></div></div>"+
+    "<div class='notice' style='margin-top:15px'><b>Personalized for your profile</b><div class='small'>Business direction: <b>"+esc(p?.name||"your recommended business")+"</b> · Risk capacity: <b>"+esc(risk)+"</b> · Forge is choosing a manageable first set rather than showing a marketplace.</div></div>"+
+    "<div class='cj-toolbar'><span id='cjmeta' class='cj-count'>Preparing your recommendations…</span><span class='cj-count'>Real product images · current prices</span></div>"+
+    "<div id='cjresults' class='cj-results'><div class='cj-empty' style='grid-column:1/-1'>Forge is selecting products that fit your profile…</div></div>"+
   "</section>";
 }
 
 function reviewCj(i){
   const p=cjState[i]; if(!p)return;
   document.getElementById("modalbox").innerHTML=
-    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>CURRENT SOURCING OPTION</div><h2 style='margin:5px 0'>Review before securing</h2></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
+    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>PRODUCT RECOMMENDATION</div><h2 style='margin:5px 0'>Review before securing</h2></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
     "<div class='cj-detail-grid' style='margin-top:18px'>"+
     "<img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'>"+
-    "<div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+BDT(bdtEstimate(p.priceUsd))+"</div><div class='cj-detail-bdt'>Current sourcing cost · "+moneyUsd(p.priceUsd)+"</div>"+
+    "<div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+BDT(bdtEstimate(p.priceUsd))+"</div><div class='cj-detail-bdt'>Current product price · "+moneyUsd(p.priceUsd)+"</div>"+
     "<div class='cj-data'><div>Category<b>"+esc(p.category)+"</b></div><div>Available stock<b>"+formatQty(p.inventory)+"</b></div><div>SKU<b>"+esc(p.sku||"—")+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Checked at order")+"</b></div></div></div></div>"+
-    "<div class='cj-order-note'>This does <b>not</b> place an order. It reserves this product as a sourcing candidate inside Forge. Final variant, shipping, quantity and payable amount are rechecked immediately before any supplier order.</div>"+
+    "<div class='cj-order-note'>This does <b>not</b> place an order yet. Forge saves your selected product first. Variant, stock, delivery and final payable amount are rechecked before procurement.</div>"+
     "<div class='actions' style='margin-top:16px'><button class='btn primary' onclick='addCjToQueue("+i+")'>Secure this business product →</button><button class='btn' onclick='closeModal()'>Back</button></div>";
   document.getElementById("modal").classList.add("open");
 }

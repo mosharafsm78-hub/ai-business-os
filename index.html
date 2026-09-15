@@ -1337,16 +1337,55 @@ function planSnapshot(){
   const qp=quantityPlan(selected), firstBatch=Math.max(qp.minimum,Number(selected.orderQty||selected.plannedOrderQty||qp.planned));
   return {selected,e,p,brand,productName,firstBatch};
 }
-function downloadBusinessPlan(){
+function loadPdfLibraries(){
+  if(window.jspdf?.jsPDF && window.html2canvas)return Promise.resolve();
+  if(window.__forgePdfLibraries)return window.__forgePdfLibraries;
+  window.__forgePdfLibraries=Promise.all([
+    new Promise((resolve,reject)=>{if(window.jspdf?.jsPDF)return resolve();const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";s.onload=resolve;s.onerror=()=>reject(new Error("Could not load PDF engine."));document.head.appendChild(s)}),
+    new Promise((resolve,reject)=>{if(window.html2canvas)return resolve();const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";s.onload=resolve;s.onerror=()=>reject(new Error("Could not load PDF renderer."));document.head.appendChild(s)})
+  ]);
+  return window.__forgePdfLibraries;
+}
+async function downloadBusinessPlan(){
   const d=planSnapshot();if(!d)return toast("Confirm a product first.");
-  const content=document.querySelector(".plan-document")?.innerHTML||"";
-  const brand=esc(d.brand), product=esc(d.productName), market=esc(d.p.market||"—");
-  const html="<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>"+brand+" — Business Plan</title><style>"+
-  "body{font-family:Arial,Helvetica,sans-serif;color:#17221f;max-width:1050px;margin:0 auto;padding:40px;line-height:1.55;background:#fff}"+
-  "h1{font-size:42px;line-height:1.05;margin:0 0 8px}h2{font-size:22px;margin:0 0 10px}.small{font-size:13px;color:#52625b}.eyebrow{font-size:10px;letter-spacing:.14em;color:#267b5b;font-weight:900}.plan-section{display:grid;grid-template-columns:58px 1fr;gap:18px;padding:28px 0;border-bottom:1px solid #dce5e0;break-inside:avoid}.plan-number{font-size:22px;font-weight:900;color:#267b5b}.plan-highlight{padding:17px;border:1px solid #cddbd4;border-radius:12px;background:#f5f9f7}.plan-highlight b{font-size:10px;letter-spacing:.1em;color:#267b5b}.plan-highlight p{margin:5px 0 15px}.plan-two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}.plan-two-col>div,.plan-roadmap>div,.plan-risk>div{padding:14px;border:1px solid #dce5e0;border-radius:10px;background:#f8fbfa}.plan-finance,.plan-roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-risk{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.plan-finance>div{padding:13px;border:1px solid #dce5e0;border-radius:10px}.plan-finance span{display:block;font-size:9px;color:#687771;text-transform:uppercase}.plan-finance b{font-size:17px}.plan-quote{font-size:18px;font-weight:650;border-left:3px solid #267b5b;padding:14px;background:#f4f8f6}.plan-bullet{margin-top:7px}.plan-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.plan-metrics>div{padding:12px;border:1px solid #dce5e0;border-radius:9px;background:#f8fbfa}.plan-metrics span{display:block;font-size:8px;color:#687771;text-transform:uppercase}.plan-metrics b{font-size:16px}.plan-metrics small{display:block;font-size:9px;color:#687771;margin-top:3px}.plan-decision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-decision{padding:14px;border:1px solid #dce5e0;border-radius:10px;background:#f8fbfa}.plan-decision span{font-size:9px;color:#267b5b;font-weight:900}.plan-cover-product{float:right;width:180px}.plan-cover-product img{max-width:100%;max-height:180px;object-fit:contain}.plan-cover-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:9px;color:#687771;margin:12px 0}.plan-status-ready{font-weight:900;color:#267b5b}.plan-checklist{display:grid;gap:4px;font-size:11px;color:#52625b}.plan-command{padding:16px;border:1px solid #cddbd4;background:#f5f9f7;margin:15px 0}.plan-command-quote{font-size:17px;padding:12px;border-left:3px solid #267b5b}.plan-final{padding:18px;border:1px solid #cddbd4;background:#f5f9f7}@media print{body{padding:0}.plan-section{break-inside:avoid}}"+
-  "</style></head><body><div class='eyebrow'>FORGE · PERSONALIZED BUSINESS PLAN</div><h1>"+brand+"</h1><p><b>Built around:</b> "+product+"</p><p class='small'>Market: "+market+" · Generated from the current Forge business profile and confirmed supplier product.</p>"+content+"</body></html>";
-  const blob=new Blob([html],{type:"text/html;charset=utf-8"}),a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);a.download=(d.brand||"business-plan").toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-business-plan.html";a.click();URL.revokeObjectURL(a.href);toast("Personalized business plan document downloaded.");
+  const source=document.querySelector(".plan-document");if(!source)return toast("Business plan is not ready yet.");
+  const button=document.querySelector("[onclick*='downloadBusinessPlan']");
+  const oldText=button?.textContent;
+  try{
+    if(button){button.disabled=true;button.textContent="Preparing PDF…"}
+    await loadPdfLibraries();
+    const pdf=new window.jspdf.jsPDF({orientation:"portrait",unit:"mm",format:"a4",compress:true});
+    const root=document.createElement("div");
+    root.style.cssText="position:absolute;left:-100000px;top:0;width:794px;background:#fff;color:#17221f;font-family:Inter,Arial,Helvetica,sans-serif;padding:48px 52px;line-height:1.5";
+    root.innerHTML=
+      "<div style='font-size:10px;letter-spacing:.18em;font-weight:900;color:#267b5b;text-transform:uppercase'>FORGE · PERSONALIZED BUSINESS PLAN</div>"+
+      "<div style='font-size:46px;line-height:1.05;font-weight:900;letter-spacing:-.04em;margin:10px 0 8px'>"+esc(d.brand)+"</div>"+
+      "<div style='font-size:18px;font-weight:700;margin-bottom:5px'>Built around: "+esc(d.productName)+"</div>"+
+      "<div style='font-size:11px;color:#52625b;margin-bottom:25px'>Market: "+esc(d.p.market||"—")+" · Personalized operating plan generated from your current Forge profile and confirmed product.</div>"+
+      source.innerHTML+
+      "<div style='margin-top:28px;padding:16px 18px;border:1px solid #cddbd4;border-radius:12px;background:#f5f9f7;font-size:10px;color:#52625b'><b style='color:#267b5b'>FORGE PLANNING NOTE</b><br>This document is a planning model, not a guarantee. Refresh supplier price, stock, freight, platform fees, CAC, returns and demand assumptions before major cash commitments.</div>";
+    document.body.appendChild(root);
+    root.querySelectorAll("button").forEach(el=>el.remove());
+    root.querySelectorAll("img").forEach(img=>{img.crossOrigin="anonymous"});
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    await pdf.html(root,{
+      x:0,y:0,width:210,windowWidth:794,
+      margin:[12,12,14,12],
+      autoPaging:"text",
+      html2canvas:{scale:1.8,useCORS:true,backgroundColor:"#ffffff",logging:false,scrollX:0,scrollY:0},
+      callback:function(doc){
+        const filename=(d.brand||"business-plan").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-business-plan.pdf";
+        doc.save(filename);
+      }
+    });
+    root.remove();
+    toast("Beautiful PDF business plan downloaded.");
+  }catch(err){
+    console.error("Forge PDF error",err);
+    toast("PDF could not be generated. Please try again.");
+  }finally{
+    if(button){button.disabled=false;button.textContent=oldText||"Download PDF"}
+  }
 }
 function printBusinessPlan(){
   const d=planSnapshot();if(!d)return toast("Confirm a product first.");

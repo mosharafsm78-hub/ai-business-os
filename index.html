@@ -194,8 +194,8 @@ const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
 const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
-function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{}}))}
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{}}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
 const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
@@ -878,15 +878,15 @@ function plan(){
   if(!selected)return "<div class='hero'><div><div class='eyebrow'>BUSINESS PLAN</div><div class='h1'>Confirm a product before we build the plan.</div><div class='sub'>Product Lab is where Forge turns your business profile into a real sourcing decision. Select a live supplier product and we will build the plan around that exact SKU.</div></div><button class='btn primary' onclick=\"go('products')\">Open Product Lab →</button></div>";
   const e=selected.economics||liveEconomics(selected);
   const requestedAt=state.planRequestedAt?new Date(state.planRequestedAt).getTime():Date.now();
-  const age=Math.max(0,Math.round((Date.now()-requestedAt)/60000));
-  const eta=Math.max(10,Math.min(50,Number(state.planEtaMinutes||30)));
+  const age=Math.max(0,Math.round((Date.now()-requestedAt)/1000));
+  const eta=Math.max(6,Math.min(20,Number(state.planEtaSeconds||8)));
   const ready=state.planStatus==="ready"||age>=eta;
   if(!ready){
     const remaining=Math.max(1,eta-age);
     const progress=Math.min(94,Math.max(12,Math.round((age/eta)*88)));
     return [
       "<div class='hero'><div><div class='eyebrow'>BUSINESS PLAN · "+esc(selected.name)+"</div><div class='h1'>Your product is confirmed. Now we build the numbers around it.</div><div class='sub'>Forge is preparing a product-specific commercial plan using the confirmed supplier record, current unit economics, your available capital, target market, acquisition assumptions and launch constraints. This is not a generic template.</div></div><button class='btn primary' onclick=\"go('orders')\">View confirmed product →</button></div>",
-      "<div class='card'><div class='eyebrow'>PLAN PREPARATION</div><h2 style='margin:8px 0 6px'>Commercial analysis in progress</h2><p class='small'>Requested "+age+" minute(s) ago · estimated completion in about "+remaining+" minute(s).</p><div class='progress' style='margin-top:18px'><i style='width:"+progress+"%'></i></div><div class='grid' style='margin-top:18px'>",
+      "<div class='card'><div class='eyebrow'>PLAN PREPARATION</div><h2 style='margin:8px 0 6px'>Commercial analysis in progress</h2><p class='small'>Requested "+age+" second(s) ago · estimated completion in about "+remaining+" second(s).</p><div class='progress' style='margin-top:18px'><i style='width:"+progress+"%'></i></div><div class='grid' style='margin-top:18px'>",
       "<div class='card span4'><div class='label'>CONFIRMED PRODUCT</div><b>"+esc(selected.name)+"</b><div class='small'>Exact supplier record retained.</div></div>",
       "<div class='card span4'><div class='label'>LIVE SUPPLIER PRICE</div><b>"+moneyUsd(selected.priceUsd)+" · ≈ "+BDT(e.supplier)+"</b><div class='small'>Current connected-supplier price.</div></div>",
       "<div class='card span4'><div class='label'>EARLY SELLING MODEL</div><b>"+BDT(e.selling)+"</b><div class='small'>Planning estimate, not a guaranteed market price.</div></div>",
@@ -1079,7 +1079,7 @@ function addCjToQueue(i){
   state.selectedProduct=item;
   state.planStatus="preparing";
   state.planRequestedAt=new Date().toISOString();
-  state.planEtaMinutes=10+Math.abs(String(p.id||p.name||"").split("").reduce((a,ch)=>a+ch.charCodeAt(0),0))%41;
+  state.planEtaSeconds=6+Math.abs(String(p.id||p.name||"").split("").reduce((a,ch)=>a+ch.charCodeAt(0),0))%15;
   state.business=state.business||{name:(state.profile?.occupation||"My Business"),budget:Number(state.profile?.budget||0)};
   try{persistProfile()}catch(e){}
   closeModal();

@@ -40,6 +40,8 @@
 .cj-detail-grid{display:grid;grid-template-columns:180px 1fr;gap:18px}.cj-detail-img{width:180px;height:180px;border-radius:16px;object-fit:contain;background:#10231b}.cj-detail-price{font-size:30px;font-weight:950;margin:5px 0}.cj-detail-bdt{color:#9eb6aa}.cj-order-note{padding:12px;border:1px solid #29483b;border-radius:12px;background:#0b1a14;margin-top:14px;font-size:12px;color:#9eb6aa}
 @media(max-width:950px){.cj-results{grid-template-columns:1fr 1fr}.cj-head{align-items:flex-start;flex-direction:column}.cj-live-note{text-align:left}}
 @media(max-width:560px){.cj-search{grid-template-columns:1fr}.cj-results{grid-template-columns:1fr}.cj-detail-grid{grid-template-columns:1fr}.cj-detail-img{width:100%;height:230px}.cj-live{padding:15px}}
+
+.cj-live{margin-top:24px}.cj-head{display:flex;justify-content:space-between;gap:24px;align-items:flex-start}.cj-live-note{text-align:right;min-width:220px}.cj-toolbar{display:flex;justify-content:space-between;gap:12px;margin:18px 0 12px}.cj-count{font-size:13px;color:#9bb9ab}.cj-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.cj-card{overflow:hidden;border:1px solid rgba(156,235,198,.16);border-radius:18px;background:#071912;box-shadow:0 10px 30px rgba(0,0,0,.16)}.cj-image-wrap{height:250px;background:#f6f6f3;position:relative;display:flex;align-items:center;justify-content:center}.cj-image-wrap img{width:100%;height:100%;object-fit:contain}.cj-live-badge{position:absolute;z-index:2;left:12px;top:12px;padding:6px 9px;border-radius:999px;background:#b4f3d0;color:#062116;font-size:10px;font-weight:800;letter-spacing:.08em}.cj-card-body{padding:16px}.cj-card-body h3{min-height:46px;margin:7px 0 10px;font-size:17px;line-height:1.25}.cj-meta{display:flex;gap:7px;flex-wrap:wrap}.cj-chip{font-size:10px;padding:5px 8px;border-radius:999px;border:1px solid rgba(156,235,198,.18);color:#9bb9ab}.cj-price-row{display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(156,235,198,.12);margin-top:13px;padding-top:13px}.cj-price{font-size:22px;font-weight:800}.cj-bdt{font-size:11px;color:#8fa99d;margin-top:3px}.cj-data{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.cj-data>div{padding:9px;border-radius:10px;background:rgba(255,255,255,.025);font-size:11px;color:#8fa99d}.cj-data b{display:block;color:#eaf7f0;font-size:13px;margin-top:3px}.cj-data .small{font-size:9px}.cj-footer{margin-top:14px}@media(max-width:1000px){.cj-results{grid-template-columns:1fr 1fr}.cj-head{display:block}.cj-live-note{text-align:left;margin-top:12px}}@media(max-width:680px){.cj-results{grid-template-columns:1fr}.cj-image-wrap{height:220px}}
 </style>
 </head>
 <body>
@@ -49,8 +51,8 @@
 const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:null,sourcingQueue:saved?.sourcingQueue||[],chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
-function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business}))}
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:saved?.selectedProduct||null,planStatus:saved?.planStatus||null,planRequestedAt:saved?.planRequestedAt||null,sourcingQueue:saved?.sourcingQueue||[],chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,sourcingQueue:state.sourcingQueue}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
 const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Sourcing & Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
@@ -127,7 +129,32 @@ function productCatalog(){return {
 };}
 function marketBenchmark(d,p){const ranges={"Premium carry goods":"৳1,800–৳3,300","Urban footwear":"৳1,800–৳4,000","Home fragrance":"৳390–৳1,100","Modern watches":"৳1,500–৳4,000","Everyday beauty":"৳600–৳1,800","Fitness essentials":"৳900–৳2,500","Private-label brand launch":"৳1,800–৳4,500"};return ranges[p.name]||"৳800–৳3,000"}
 function fixedEconomics(p){let gross=p.price-p.landed,fees=p.price*p.fee/100,contrib=gross-p.cac-fees-p.pack-p.returns;return {gross,grossPct:gross/p.price*100,contrib,contribPct:contrib/p.price*100};}
-function products(){let p=state.selectedProduct||opportunities()[0],d=productCatalog()[p.name]||productCatalog()["Premium carry goods"],e=fixedEconomics(d);return "<div class='hero'><div><div class='eyebrow'>Product lab · locked economics</div><div class='h1'>The numbers are fixed.</div><div class='sub'>Forge sets the planning price and economics from its Bangladesh-market model. The entrepreneur can review them, but cannot edit them.</div></div><div class='actions'><button class='btn' onclick='goPlan()'>Business plan →</button><button class='btn primary' onclick='goOrders()'>Real sourcing →</button></div></div><div class='grid'><div class='card span7'><span class='tag'>RECOMMENDED HERO PRODUCT</span><div style='font-size:58px;margin:14px 0'>"+d.icon+"</div><h2 style='margin:0'>"+p.name+"</h2><p class='sub' style='font-size:14px'>"+d.description+"</p><div class='locked-grid' style='margin-top:18px'><div class='locked-item'><div class='label'>Estimated Bangladesh market price</div><div class='v'>"+marketBenchmark(d,p)+"</div><span class='lock-note'>◎ Online benchmark · estimate</span></div><div class='locked-item'><div class='label'>Forge recommended selling price</div><div class='v'>"+BDT(d.price)+"</div><span class='lock-note'>🔒 Fixed planning value</span></div><div class='locked-item'><div class='label'>Landed cost</div><div class='v'>"+BDT(d.landed)+"</div><span class='lock-note'>🔒 Planning estimate</span></div><div class='locked-item'><div class='label'>Target CAC</div><div class='v'>"+BDT(d.cac)+"</div><span class='lock-note'>🔒 Conservative target</span></div><div class='locked-item'><div class='label'>Variable / payment fee</div><div class='v'>"+d.fee+"%</div><span class='lock-note'>🔒 Model assumption</span></div><div class='locked-item'><div class='label'>Packaging / handling</div><div class='v'>"+BDT(d.pack)+"</div><span class='lock-note'>🔒 Per delivered order</span></div><div class='locked-item'><div class='label'>Return / failure reserve</div><div class='v'>"+BDT(d.returns)+"</div><span class='lock-note'>🔒 Risk reserve</span></div></div><div class='source-note'>Market range is an online Bangladesh benchmark, not a guaranteed selling price. Forge's fixed planning price is chosen for the selected customer/risk profile. Real sourcing will refresh supplier and competitor evidence before any purchase.</div></div><div class='card span5'><div class='label'>Live unit economics · fixed</div><div class='stat'>"+Math.round(e.grossPct)+"% gross margin</div><div class='kpi'><span>Gross profit / unit</span><b>"+BDT(e.gross)+"</b></div><div class='kpi'><span>Contribution / delivered unit</span><b>"+BDT(e.contrib)+"</b></div><div class='kpi'><span>Contribution margin</span><b>"+Math.round(e.contribPct)+"%</b></div><div class='kpi'><span>Suggested first batch</span><b>"+recommendedBatch(d)+" units</b></div><button class='btn primary' style='width:100%;margin-top:14px' onclick='goPlan()'>Read the full business plan →</button></div></div><div class='section'><div><h2>Product description</h2><p>Who it is for and how it should be positioned.</p></div></div><div class='card'><p style='font-size:16px;line-height:1.8;margin:0'>"+d.description+"</p><div class='grid' style='margin-top:18px'><div class='card span4'><div class='label'>Ideal customer</div><p class='small'>"+d.customer+"</p></div><div class='card span4'><div class='label'>Positioning</div><p class='small'>"+d.position+"</p></div><div class='card span4'><div class='label'>Primary channels</div><p class='small'>"+d.channels+"</p></div></div></div></div>"}
+function liveEconomics(p){
+  const supplier=bdtEstimate(p?.priceUsd);
+  const risk=String(state.profile?.riskCapacity||state.profile?.risk||"Medium").toLowerCase();
+  const logistics=Math.max(90,Math.round(supplier*.12/10)*10);
+  const landed=supplier+logistics;
+  const multiplier=risk.includes("high")?2.65:risk.includes("low")?2.15:2.4;
+  const selling=Math.max(499,Math.round(landed*multiplier/10)*10);
+  const cac=Math.max(100,Math.round(selling*(risk.includes("high")?.15:risk.includes("low")?.09:.12)/10)*10);
+  const fee=Math.round(selling*.015);
+  const pack=Math.max(50,Math.round(selling*.025/10)*10);
+  const returns=Math.max(50,Math.round(selling*.035/10)*10);
+  const contribution=selling-landed-cac-fee-pack-returns;
+  return {supplier,logistics,landed,selling,cac,fee,pack,returns,contribution,margin:selling?Math.round(contribution/selling*100):0};
+}
+function productLabHeader(){
+  const p=state.selectedProduct;
+  return "<div class='hero'><div><div class='eyebrow'>Product Lab · live catalogue intelligence</div><div class='h1'>Forge finds the products. You choose the one.</div><div class='sub'>Forge privately checks the connected supplier catalogue using your locked entrepreneur profile, then shows a small shortlist of real products. Supplier branding stays behind the system.</div></div><div class='actions'><button class='btn' onclick=\"go('ideas')\">Change business direction</button>"+(p?"<button class='btn primary' onclick=\"go('orders')\">Sourcing & Orders →</button>":"")+"</div></div>";
+}
+function products(){
+  return productLabHeader()+
+  "<div class='notice'><div class='row' style='justify-content:space-between;gap:16px'><div><b>Personalized product shortlist</b><div class='small'>No manual marketplace browsing. Forge selects products from the connected supplier network according to your capital, risk capacity, time, market and business direction.</div></div><span class='pill online'>● LIVE SUPPLIER DATA</span></div></div>"+
+  cjPanel();
+}
+function goPlan(){go("plan")}
+function goOrders(){go("orders")}
+
 function goPlan(){go("plan")}
 function goOrders(){go("orders")}
 
@@ -136,17 +163,15 @@ function landedCost(){let p=state.selectedProduct||opportunities()[0];let d=prod
 function recommendedBatch(d){let p=state.profile,base=d.batch;if(p.risk==="Conservative"||p.riskCapacity==="Low")return Math.max(12,Math.round(base*.6));if(p.risk==="Aggressive"&&p.budget>=500000)return Math.round(base*1.75);if(p.budget>=1000000&&p.riskCapacity==="High")return Math.round(base*1.4);return base}
 function personalizedPlan(d){let p=state.profile,mode=planMode(p);if(mode==="Scale-ready")return ["Validate supplier samples and negotiate commercial terms across 2–3 qualified suppliers.","Launch with "+recommendedBatch(d)+" units plus a controlled content and paid-acquisition system.","Build a hero SKU, supporting bundle and clear repeat/reorder logic.","Scale winning creatives and channels only while CAC and contribution stay inside the locked model.","Expand supplier depth, wholesale/retail channels and SKU range only after validated sell-through."];if(mode==="Capital-protective")return ["Sample from multiple suppliers; do not place a large first PO.","Start with "+recommendedBatch(d)+" units or a pre-order/limited-drop validation.","Use low-cost content and customer interviews before heavy paid acquisition.","Reorder only after strong sell-through, positive contribution and acceptable returns.","Keep the majority of unused capital protected until the business proves repeatability."];return ["Validate the offer with samples and 15–30 target-customer conversations.","Start with "+recommendedBatch(d)+" units and keep a protected cash reserve.","Run controlled content and paid tests; cut weak creatives and SKUs quickly.","Reorder only when sell-through and contribution meet the Forge scale trigger.","Use the first 30–60 days to turn the winning product into a repeatable acquisition system."]}
 function orders(){
-  let b=state.business||{budget:250000},reserve=Math.round(b.budget*.22),stock=Math.round(b.budget*.55);
+  const b=state.business||{budget:Number(state.profile?.budget||0)};
   const queue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
-  const selected=state.selectedProduct;
-  const queueHtml=queue.length
-    ? queue.map((p,i)=>"<tr><td>#SRC-"+String(i+1).padStart(4,"0")+"</td><td><div class='row' style='gap:9px'><img src='"+esc(p.image)+"' style='width:42px;height:42px;border-radius:8px;object-fit:contain;background:#10231b'><div><b>"+esc(p.name)+"</b><div class='small'>"+esc(p.sku||"—")+"</div></div></div></td><td>"+moneyUsd(p.priceUsd)+"<div class='small'>≈ "+BDT(bdtEstimate(p.priceUsd))+"</div></td><td>"+formatQty(p.inventory)+"</td><td><span class='status amber'>Ready for review</span></td><td><button class='btn' onclick='reviewQueued("+i+")'>Review</button></td></tr>").join("")
-    : "<tr><td colspan='6'><div class='cj-empty'>Your sourcing queue is empty. Find a live supplier product first.</div></td></tr>";
-  return "<div class='hero'><div><div class='eyebrow'>Sourcing & orders</div><div class='h1'>Turn supplier picks into controlled purchase orders.</div><div class='sub'>Products selected from the live product network come here first. We do not place a supplier order until product, variant, quantity, freight, payment and customer commitment are confirmed.</div></div><button class='btn primary' onclick='go(&quot;products&quot;)'>Find supplier products →</button></div>"+
-  "<div class='grid'><div class='card span3'><div class='label'>Available capital</div><div class='stat'>"+BDT(b.budget)+"</div></div><div class='card span3'><div class='label'>Inventory envelope</div><div class='stat'>"+BDT(stock)+"</div></div><div class='card span3'><div class='label'>Testing reserve</div><div class='stat'>"+BDT(reserve)+"</div></div><div class='card span3'><div class='label'>Sourcing queue</div><div class='stat'>"+queue.length+"</div></div></div>"+
-  (selected?"<div class='section'><div><h2>Latest selected product</h2><p>Supplier data is locked to the returned catalogue record.</p></div></div><div class='card'><div class='row' style='justify-content:space-between;gap:14px'><div class='row' style='gap:12px'><img src='"+esc(selected.image)+"' style='width:72px;height:72px;border-radius:12px;object-fit:contain;background:#10231b'><div><b>"+esc(selected.name)+"</b><div class='small'>"+esc(selected.sku||"—")+" · "+esc(selected.category||"")+"</div></div></div><div style='text-align:right'><b>"+moneyUsd(selected.priceUsd)+"</b><div class='small'>≈ "+BDT(bdtEstimate(selected.priceUsd))+"</div></div></div></div>":"")+
-  "<div class='section'><div><h2>Supplier sourcing queue</h2><p>Every item stays here until its final order economics are confirmed.</p></div></div><div class='card'><table class='table'><thead><tr><th>Ref</th><th>Product</th><th>Supplier price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead><tbody>"+queueHtml+"</tbody></table></div>"+
-  "<div class='section'><h2>Before any supplier order</h2></div><div class='grid'>"+["Confirm exact variant / SKU and quantity.","Check current current sourcing cost and inventory again.","Calculate freight, duties, payment fees and final landed cost.","Confirm customer payment / commitment before supplier payment.","Create the CJ purchase order only after approval."].map((x,i)=>"<div class='card span4'><b>"+(i+1)+" · "+x+"</b><p class='small'>This control prevents a promising catalogue listing from becoming an uncontrolled cash commitment.</p></div>").join("")+"</div>";
+  const selected=state.selectedProduct, e=selected?.economics;
+  const queueHtml=queue.length?queue.map((p,i)=>"<tr><td>#SRC-"+String(i+1).padStart(4,"0")+"</td><td><div class='row' style='gap:9px'><img src='"+esc(p.image)+"' style='width:52px;height:52px;border-radius:8px;object-fit:contain;background:#10231b'><div><b>"+esc(p.name)+"</b><div class='small'>"+esc(p.sku||"—")+"</div></div></div></td><td>"+moneyUsd(p.priceUsd)+"<div class='small'>≈ "+BDT(bdtEstimate(p.priceUsd))+"</div></td><td>"+formatQty(p.inventory)+"</td><td><span class='status amber'>Confirmed · procurement pending</span></td><td><button class='btn' onclick='reviewQueued("+i+")'>Review</button></td></tr>").join(""):"<tr><td colspan='6'><div class='cj-empty'>No product confirmed yet. Product Lab will place the chosen product here.</div></td></tr>";
+  return "<div class='hero'><div><div class='eyebrow'>Sourcing & Orders · confirmed products</div><div class='h1'>Your chosen product is now in procurement.</div><div class='sub'>This is the operational handoff from Product Lab. The exact supplier record is retained here; no supplier order is created until the final variant, quantity, shipping and payment are approved.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Compare products</button>"+(selected?"<button class='btn primary' onclick=\"go('plan')\">View product business plan →</button>":"")+"</div></div>"+
+  "<div class='grid'><div class='card span3'><div class='label'>Available capital</div><div class='stat'>"+BDT(b.budget)+"</div></div><div class='card span3'><div class='label'>Confirmed products</div><div class='stat'>"+queue.length+"</div></div><div class='card span3'><div class='label'>Current supplier price</div><div class='stat'>"+(selected?BDT(bdtEstimate(selected.priceUsd)):"—")+"</div></div><div class='card span3'><div class='label'>Procurement status</div><div class='stat' style='font-size:20px'>"+(selected?"READY":"EMPTY")+"</div></div>"+
+  (selected?"<div class='section'><div><h2>Confirmed hero product</h2><p>This exact supplier product is the one Forge will use for the business plan and procurement workflow.</p></div></div><div class='card'><div class='row' style='justify-content:space-between;gap:18px'><div class='row' style='gap:14px'><img src='"+esc(selected.image)+"' style='width:96px;height:96px;border-radius:14px;object-fit:contain;background:#10231b'><div><div class='eyebrow'>CONFIRMED PRODUCT</div><h2 style='margin:5px 0'>"+esc(selected.name)+"</h2><div class='small'>SKU "+esc(selected.sku||"—")+" · "+esc(selected.category||"")+"</div></div></div><div style='text-align:right'><div class='label'>Live supplier price</div><b style='font-size:26px'>"+moneyUsd(selected.priceUsd)+"</b><div class='small'>≈ "+BDT(bdtEstimate(selected.priceUsd))+"</div></div></div><div class='locked-grid' style='margin-top:18px'><div class='locked-item'><div class='label'>Estimated landed</div><div class='v'>"+BDT(e?.landed)+"</div></div><div class='locked-item'><div class='label'>Estimated selling</div><div class='v'>"+BDT(e?.selling)+"</div></div><div class='locked-item'><div class='label'>Marketing / CAC</div><div class='v'>"+BDT(e?.cac)+"</div></div><div class='locked-item'><div class='label'>Estimated contribution</div><div class='v'>"+BDT(e?.contribution)+"</div></div></div></div>":"")+
+  "<div class='section'><div><h2>Confirmed sourcing queue</h2><p>Products selected in Product Lab appear here automatically.</p></div></div><div class='card'><table class='table'><thead><tr><th>Reference</th><th>Product</th><th>Live supplier price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead><tbody>"+queueHtml+"</tbody></table></div>"+
+  "<div class='section'><h2>Procurement controls</h2></div><div class='grid'>"+["Recheck the exact variant / SKU and current supplier price.","Recheck live inventory and delivery route before payment.","Calculate final freight, duties, payment fees and final landed cost.","Confirm quantity and customer commitment before supplier payment.","Only then create the supplier purchase order."].map((x,i)=>"<div class='card span4'><b>"+(i+1)+" · "+x+"</b><p class='small'>This keeps the customer's confirmed product separate from the final cash commitment.</p></div>").join("")+"</div>";
 }
 function reviewQueued(i){
   const p=(state.sourcingQueue||[])[i]; if(!p)return;
@@ -158,7 +183,24 @@ function brand(){let b=state.business||{name:"Northstar Ventures",category:"Open
 function store(){return "<div class='hero'><div><div class='eyebrow'>Store launch</div><div class='h1'>From product economics to checkout.</div><div class='sub'>Pricing, catalog, policies, analytics and support must agree before launch.</div></div><button class='btn primary' onclick=\"toast('Store preview opened')\">Preview store ↗</button></div><div class='card'><div class='row' style='justify-content:space-between'><b>"+(state.business?state.business.name.toLowerCase().replace(/ /g,""):"yourbusiness")+".store</b><span class='status'>72% ready</span></div><div class='progress' style='margin:18px 0'><i style='width:72%'></i></div></div><div class='section'><h2>Launch checklist</h2></div><div class='grid'>"+["Hero product approved","Pricing + margin checked","Product photography","Descriptions + SEO","Payment methods","Delivery / COD rules","Return & exchange policy","Analytics + pixels","WhatsApp / chat","Order notifications","Trust blocks","Launch campaign"].map((x,i)=>"<div class='card span3'><div class='row' style='justify-content:space-between'><b>"+x+"</b><span class='status "+(i>7?"amber":"")+"'>"+(i<8?"Done":"Next")+"</span></div><p class='small'>AI checklist with human approval for money, policy and customer-trust decisions.</p></div>").join("")+"</div>"}
 function marketing(){let budget=Math.round((state.business?.budget||250000)*.15);return "<div class='hero'><div><div class='eyebrow'>AI growth loop</div><div class='h1'>Spend based on contribution, not vanity.</div><div class='sub'>Scale only when acquisition cost and returns still leave healthy contribution.</div></div><button class='btn primary' onclick=\"toast('Growth analysis refreshed')\">Run growth analysis →</button></div><div class='grid'><div class='card span3'><div class='label'>Monthly ad envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Target CAC</div><div class='stat'>৳320</div></div><div class='card span3'><div class='label'>Target ROAS</div><div class='stat'>3.2×</div></div><div class='card span3'><div class='label'>Creative tests</div><div class='stat'>12</div></div></div><div class='section'><h2>Campaign desk</h2></div><div class='card'><table class='table'><tr><th>Campaign</th><th>Channel</th><th>Budget</th><th>ROAS</th><th>Action</th></tr><tr><td>Hero product launch</td><td>Meta</td><td>৳12,000</td><td>3.8×</td><td><span class='status'>Scale 15%</span></td></tr><tr><td>UGC test</td><td>Meta</td><td>৳7,000</td><td>2.4×</td><td><span class='status amber'>Iterate</span></td></tr></table></div><div class='section'><h2>Creative factory</h2></div><div class='grid'>"+["3-second hook","Problem/solution reel","UGC script","Founder story","Offer creative","Retargeting creative"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Generate five variants and test one variable at a time.</p><button class='btn' onclick=\"toast('"+x+" brief generated')\">Generate →</button></div>").join("")+"</div>"}
 function support(){return "<div class='hero'><div><div class='eyebrow'>AI customer support</div><div class='h1'>Fast answers. Safe escalation.</div><div class='sub'>Routine questions can be automated; sensitive cases remain visible to a human.</div></div></div><div class='grid'><div class='card span4'><div class='label'>Conversations today</div><div class='stat'>84</div></div><div class='card span4'><div class='label'>Median response</div><div class='stat'>11 sec</div></div><div class='card span4'><div class='label'>Human escalations</div><div class='stat'>3</div></div></div><div class='section'><h2>Support queue</h2></div><div class='card'>"+[["Do you have size 42?","Catalog availability","Resolved"],["When will my parcel arrive?","Order tracking","Resolved"],["Can I exchange this size?","Policy","Resolved"],["Wrong item received.","Evidence required","Needs you"],["I want a refund for change of mind.","Policy","Needs you"]].map(x=>"<div class='kpi'><span><b>"+x[0]+"</b><div class='small'>"+x[1]+"</div></span><span class='status "+(x[2]==="Needs you"?"amber":"")+"'>"+x[2]+"</span></div>").join("")+"</div><div class='notice' style='margin-top:15px'><b>Safety rule:</b> AI must not invent stock, delivery dates, refunds or policy exceptions.</div>"}
-function plan(){let p=state.selectedProduct||opportunities()[0],d=productCatalog()[p.name]||productCatalog()["Premium carry goods"],e=fixedEconomics(d),budget=Number(state.business?.budget||state.profile.budget||250000),batch=recommendedBatch(d),inventory=batch*d.landed,sample=3000,content=8000,ads=Math.min(30000,Math.round(budget*.12)),reserve=Math.max(25000,Math.round(budget*.2)),working=Math.max(0,budget-inventory-sample-content-ads-reserve),be=Math.ceil((sample+content)/(e.contrib||1)),steps=personalizedPlan(d);return "<div class='hero'><div><div class='eyebrow'>Business plan · "+p.name+"</div><div class='h1'>A plan an entrepreneur can actually follow.</div><div class='sub'>This is the operating blueprint: what to sell, who to sell to, how to source it, how to launch it, how to control cash and when to scale.</div></div><button class='btn primary' onclick=\"go('orders')\">Move to sourcing →</button></div><div class='grid'><div class='card span4'><div class='label'>Executive decision</div><h2>Start small, prove demand, then scale.</h2><p class='small'>"+d.position+"</p></div><div class='card span4'><div class='label'>Target customer</div><p class='small'>"+d.customer+"</p></div><div class='card span4'><div class='label'>Offer</div><p class='small'>"+d.description+"</p></div></div><div class='section'><div><h2>1 · Startup capital plan</h2><p>Illustrative allocation for a "+BDT(budget)+" starting budget. Plan mode: <b>"+planMode(state.profile)+"</b>.</p></div></div><div class='grid'><div class='card span3'><div class='label'>First inventory</div><div class='stat'>"+BDT(inventory)+"</div><div class='small'>"+batch+" units × "+BDT(d.landed)+"</div></div><div class='card span3'><div class='label'>Samples + QC</div><div class='stat'>"+BDT(sample)+"</div></div><div class='card span3'><div class='label'>Content / launch</div><div class='stat'>"+BDT(content)+"</div></div><div class='card span3'><div class='label'>Ad testing envelope</div><div class='stat'>"+BDT(ads)+"</div></div></div><div class='notice' style='margin-top:15px'><b>Cash guardrail:</b> Keep at least "+BDT(reserve)+" untouched as working-capital / failure reserve. Remaining flexible cash after the opening plan is "+BDT(working)+".</div><div class='section'><div><h2>2 · Execution procedure</h2><p>Follow these steps in order; do not skip validation.</p></div></div><div class='grid'>"+steps.map((x,i)=>"<div class='card span4'><span class='tag'>STEP "+(i+1)+"</span><h3>"+x+"</h3><p class='small'>Approve this step before committing the next layer of cash.</p></div>").join("")+"</div><div class='section'><div><h2>3 · Unit economics</h2><p>Fixed by Forge for the planning model.</p></div></div><div class='card'><div class='locked-grid'><div class='locked-item'><div class='label'>Selling price</div><div class='v'>"+BDT(d.price)+"</div></div><div class='locked-item'><div class='label'>Landed cost</div><div class='v'>"+BDT(d.landed)+"</div></div><div class='locked-item'><div class='label'>Target CAC</div><div class='v'>"+BDT(d.cac)+"</div></div><div class='locked-item'><div class='label'>Contribution margin</div><div class='v'>"+Math.round(e.contribPct)+"%</div></div></div><p class='source-note'>Contribution includes the fixed CAC, payment/variable fee, packaging/handling and return/failure reserve. It is not the company's final accounting profit because salaries, rent, tax, technology and other overhead sit above this unit model.</p></div><div class='section'><div><h2>4 · Break-even & scale rules</h2></div></div><div class='grid'><div class='card span4'><div class='label'>Launch contribution</div><div class='stat'>"+BDT(e.contrib)+" / unit</div></div><div class='card span4'><div class='label'>Illustrative launch-cost break-even</div><div class='stat'>"+be+" units</div><div class='small'>Against sample + content spend only; overhead is excluded.</div></div><div class='card span4'><div class='label'>Scale trigger</div><div class='stat'>60%+ sell-through</div><div class='small'>Maintain positive contribution and acceptable return rate.</div></div></div><div class='section'><div><h2>5 · Risks & controls</h2></div></div><div class='grid'>"+[["Inventory risk","Never place the full capital into the first PO. Use the first batch to learn."],["Delivery / COD risk","Track failed deliveries separately; Bangladesh courier charges and COD fees affect contribution."],["Ad risk","Scale budgets only when CAC and contribution remain inside the model."],["Quality risk","Approve samples and QC before the commercial purchase order."],["Competition","Compete on positioning, bundle, content and trust—not price alone."],["Cash-flow risk","Protect the reserve and reorder only from validated sell-through."]].map(x=>"<div class='card span4'><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div>").join("")+"</div><div class='notice' style='margin-top:18px'><b>Next action:</b> move to <button class='btn' onclick=\"go('orders')\">Sourcing & Orders</button> when you are ready to replace planning assumptions with real supplier quotes. Real-time sourcing will be a separate step so the fixed business model is not distorted by random current sourcing costs.</div></div>"}
+function plan(){
+  const selected=state.selectedProduct;
+  if(!selected)return "<div class='hero'><div><div class='eyebrow'>Business plan</div><div class='h1'>Choose a product first.</div><div class='sub'>Forge builds the detailed business plan around the exact product you confirm in Product Lab.</div></div><button class='btn primary' onclick=\"go('products')\">Open Product Lab →</button></div>";
+  const e=selected.economics||liveEconomics(selected);
+  const age=state.planRequestedAt?Math.max(0,Math.round((Date.now()-new Date(state.planRequestedAt).getTime())/60000)):0;
+  const ready=state.planStatus==="ready"||age>=60;
+  if(!ready)return "<div class='hero'><div><div class='eyebrow'>Business plan · "+esc(selected.name)+"</div><div class='h1'>Forge is preparing your product-specific plan.</div><div class='sub'>The product is already confirmed. The detailed plan is prepared separately around your locked profile, live supplier economics, sourcing route, marketing model and launch strategy.</div></div><button class='btn primary' onclick=\"go('orders')\">View confirmed product →</button></div><div class='card'><div class='eyebrow'>PLAN STATUS</div><h2 style='margin:8px 0'>Preparation in progress</h2><p class='small'>Requested "+age+" minute(s) ago · target preparation window: about 1 hour.</p><div class='progress' style='margin-top:18px'><i style='width:"+Math.min(95,20+Math.round(age/60*75))+"%'></i></div><div class='grid' style='margin-top:18px'><div class='card span4'><div class='label'>Confirmed product</div><b>"+esc(selected.name)+"</b></div><div class='card span4'><div class='label'>Live supplier price</div><b>"+moneyUsd(selected.priceUsd)+" · ≈ "+BDT(e.supplier)+"</b></div><div class='card span4'><div class='label'>Estimated selling price</div><b>"+BDT(e.selling)+"</b></div></div></div>";
+  state.planStatus="ready";
+  const p=state.profile||{}, budget=Number(p.budget||state.business?.budget||0);
+  const steps=[
+    "Validate the exact supplier variant, sample quality, packaging and delivery economics before the first commercial order.",
+    "Launch with a controlled first batch sized to your locked capital and risk capacity; protect the cash reserve.",
+    "Position "+esc(selected.name)+" around a defined customer problem, proof-led creatives and a clear offer.",
+    "Test acquisition around the modeled CAC of "+BDT(e.cac)+" and monitor contribution, conversion and returns.",
+    "Reorder only after validated sell-through and acceptable returns; then expand the winning SKU, bundle or channel."
+  ];
+  return "<div class='hero'><div><div class='eyebrow'>Business plan · confirmed product</div><div class='h1'>A product-specific operating plan.</div><div class='sub'>Built around the exact supplier product you selected and your locked entrepreneur profile.</div></div><button class='btn primary' onclick=\"go('orders')\">Sourcing & Orders →</button></div><div class='grid'><div class='card span4'><div class='label'>Confirmed hero product</div><h2>"+esc(selected.name)+"</h2><p class='small'>Real supplier record selected in Product Lab.</p></div><div class='card span4'><div class='label'>Live supplier price</div><div class='stat'>"+BDT(e.supplier)+"</div><div class='small'>Current supplier price: "+moneyUsd(selected.priceUsd)+"</div></div><div class='card span4'><div class='label'>Estimated contribution</div><div class='stat'>"+BDT(e.contribution)+"</div><div class='small'>"+e.margin+"% after modeled acquisition and operating reserves.</div></div></div><div class='section'><div><h2>1 · Product economics</h2><p>Supplier price is live; Forge planning figures are estimates and are locked for consistency.</p></div></div><div class='card'><div class='locked-grid'><div class='locked-item'><div class='label'>Live supplier price</div><div class='v'>"+moneyUsd(selected.priceUsd)+"</div></div><div class='locked-item'><div class='label'>Estimated landed cost</div><div class='v'>"+BDT(e.landed)+"</div></div><div class='locked-item'><div class='label'>Estimated selling price</div><div class='v'>"+BDT(e.selling)+"</div></div><div class='locked-item'><div class='label'>Marketing / CAC target</div><div class='v'>"+BDT(e.cac)+"</div></div><div class='locked-item'><div class='label'>Payment / variable fee</div><div class='v'>"+BDT(e.fee)+"</div></div><div class='locked-item'><div class='label'>Packaging / handling</div><div class='v'>"+BDT(e.pack)+"</div></div><div class='locked-item'><div class='label'>Return reserve</div><div class='v'>"+BDT(e.returns)+"</div></div><div class='locked-item'><div class='label'>Estimated contribution</div><div class='v'>"+BDT(e.contribution)+"</div></div></div></div><div class='section'><div><h2>2 · Execution plan</h2><p>Profile-aware actions for a "+BDT(budget)+" starting capital.</p></div></div><div class='grid'>"+steps.map((x,i)=>"<div class='card span4'><span class='tag'>STEP "+(i+1)+"</span><h3>"+x+"</h3><p class='small'>Complete validation before committing the next layer of capital.</p></div>").join("")+"</div><div class='notice' style='margin-top:18px'><b>Procurement:</b> the product is already in Sourcing & Orders. Final variant, stock, freight and payable amount are rechecked before any supplier purchase order.</div>";
+}
 
 function analytics(){let b=state.business||{targetMargin:43};return "<div class='hero'><div><div class='eyebrow'>Decision intelligence</div><div class='h1'>Numbers that lead to decisions.</div><div class='sub'>Track demand, unit economics, cash efficiency, customer experience, inventory risk and marketing efficiency.</div></div><button class='btn' onclick=\"toast('Decision model refreshed')\">Refresh model ↻</button></div><div class='grid'><div class='card span8'><div class='label'>Illustrative revenue trajectory</div><div class='chart'>"+[32,41,38,55,63,71,86].map(h=>"<div class='bar' style='height:"+h+"%'></div>").join("")+"</div><div class='small'>Indexed planning view. Connect actual sales data before financial decisions.</div></div><div class='card span4'><div class='label'>AI business verdict</div><h2>Validate before scaling.</h2><p class='small'>Keep the first batch small enough to learn. Scale only when contribution remains positive after acquisition, delivery fees and expected returns.</p></div></div><div class='section'><h2>Scorecard</h2></div><div class='grid'>"+[["Demand",92,"Strong"],["Unit economics",88,"Healthy"],["Cash efficiency",73,"Watch"],["Customer experience",95,"Strong"],["Inventory risk",68,"Watch"],["Marketing efficiency",84,"Healthy"]].map(x=>"<div class='card span4'><div class='row' style='justify-content:space-between'><b>"+x[0]+"</b><span class='status "+(x[2]==="Watch"?"amber":"")+"'>"+x[2]+"</span></div><div class='stat'>"+x[1]+"</div><div class='score'><i style='width:"+x[1]+"%'></i></div></div>").join("")+"</div><div class='section'><h2>Financial guardrails</h2></div><div class='grid'><div class='card span4'><div class='label'>Protected reserve</div><div class='stat'>22%</div></div><div class='card span4'><div class='label'>Target gross margin</div><div class='stat'>"+b.targetMargin+"%</div></div><div class='card span4'><div class='label'>Break-even rule</div><div class='stat'>Contribution &gt; 0</div></div></div>"}
 function advisor(){return "<div class='hero'><div><div class='eyebrow'>AI co-founder</div><div class='h1'>Ask anything about the business.</div><div class='sub'>Use plain language. Forge answers using your current profile and product economics.</div></div></div><div class='grid'><div class='card span8'><div class='chat' id='chat'>"+state.chat.map(m=>"<div class='bubble "+(m[0]==="me"?"me":"")+"'>"+m[1]+"</div>").join("")+"</div><div class='composer'><input class='input' id='chatInput' placeholder='e.g. I have ৳2 lakh. What can I sell?' onkeydown=\"if(event.key==='Enter')sendChat()\"><button class='btn primary' onclick='sendChat()'>Send</button></div></div><div class='card span4'><div class='label'>Current context</div><div class='kpi'><span>Capital</span><b>"+BDT(state.profile.budget)+"</b></div><div class='kpi'><span>Market</span><b>"+state.profile.market+"</b></div><div class='kpi'><span>Category</span><b>"+state.profile.category+"</b></div><div class='kpi'><span>Risk</span><b>"+state.profile.risk+"</b></div><div class='kpi'><span>Time</span><b>"+state.profile.time+"h/week</b></div></div></div><div class='section'><h2>Quick commands</h2></div><div class='actions'>"+["Find my best products","Build a 30-day launch plan","Calculate my break-even","What is my biggest risk?","How much should I spend on ads?"].map(x=>"<button class='btn' onclick=\"quick('"+x+"')\">"+x+"</button>").join("")+"</div>"}
@@ -202,154 +244,59 @@ function renderCjResults(j){
   const box=document.getElementById("cjresults");
   if(!box)return;
   if(!cjState.length){
-    box.innerHTML="<div class='cj-empty' style='grid-column:1/-1'><b>Forge could not find enough verified products right now.</b><br><span class='small'>We won't show invented images or prices. Refresh to check the live product network again.</span></div>";
+    box.innerHTML="<div class='cj-empty' style='grid-column:1/-1'><b>Forge could not find verified products for this business yet.</b><br><span class='small'>We never fabricate supplier images, names or prices. Refresh the Product Lab to check again.</span></div>";
     return;
   }
-  const prof=state.profile||{};
-  const budget=Math.max(0,Number(prof.budget||0));
-  const risk=String(prof.riskCapacity||prof.risk||"Medium").toLowerCase();
   box.innerHTML=cjState.map((p,i)=>{
-    const cost=bdtEstimate(p.priceUsd);
-    const target=Math.max(cost+250,Math.round(cost*(risk.includes("high")?2.6:risk.includes("low")?2.1:2.35)/10)*10);
-    const gross=target-cost;
-    const margin=target?Math.round(gross/target*100):0;
-    const fit=budget>0 ? (cost*80<=budget*0.65?"Fits your starting budget":"Higher-ticket option") : "Profile fit";
+    const e=liveEconomics(p);
     return "<article class='cj-card'>"+
-      "<div class='cj-image-wrap'><span class='cj-live-badge'>RECOMMENDED</span><img src='"+esc(p.image)+"' loading='lazy' alt='"+esc(p.name)+"'></div>"+
+      "<div class='cj-image-wrap'><span class='cj-live-badge'>LIVE PRODUCT</span><img src='"+esc(p.image)+"' loading='lazy' alt='"+esc(p.name)+"'></div>"+
       "<div class='cj-card-body'>"+
+      "<div class='small' style='letter-spacing:.08em;text-transform:uppercase'>Forge recommendation "+(i+1)+"</div>"+
       "<h3>"+esc(p.name)+"</h3>"+
-      "<div class='cj-meta'><span class='cj-chip'>"+esc(fit)+"</span><span class='cj-chip'>"+esc(p.category||"Selected for you")+"</span></div>"+
-      "<div class='cj-price-row'><div><div class='cj-price'>"+BDT(cost)+"</div><div class='cj-bdt'>Current product price</div></div><span class='small'>updated live</span></div>"+
+      "<div class='cj-meta'><span class='cj-chip'>"+esc(p.category||"Product")+"</span><span class='cj-chip'>"+(Number(p.inventory||0)?"Stock checked":"Stock check at order")+"</span></div>"+
+      "<div class='cj-price-row'><div><div class='cj-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-bdt'>Live supplier price · ≈ "+BDT(e.supplier)+"</div></div><span class='small'>"+new Date(cjLastFetched||Date.now()).toLocaleTimeString("en-BD",{hour:"2-digit",minute:"2-digit"})+"</span></div>"+
       "<div class='cj-data'>"+
-      "<div>Forge selling price<b>"+BDT(target)+"</b></div>"+
-      "<div>Estimated margin<b>"+margin+"%</b></div>"+
-      "<div>Available<b>"+formatQty(p.inventory)+"</b></div>"+
-      "<div>Delivery<b>"+esc(p.deliveryDays||"Checked at order")+"</b></div>"+
+      "<div>Estimated landed cost<b>"+BDT(e.landed)+"</b><span class='small'>incl. logistics reserve</span></div>"+
+      "<div>Estimated selling price<b>"+BDT(e.selling)+"</b><span class='small'>Forge model</span></div>"+
+      "<div>Marketing / CAC<b>"+BDT(e.cac)+"</b><span class='small'>target acquisition</span></div>"+
+      "<div>Estimated contribution<b>"+BDT(e.contribution)+"</b><span class='small'>"+e.margin+"% after modeled costs</span></div>"+
       "</div>"+
+      "<div class='small' style='margin:12px 0'>Supplier stock: <b>"+formatQty(p.inventory)+"</b> · Delivery: <b>"+esc(p.deliveryDays||"checked before order")+"</b></div>"+
       "<div class='cj-footer'><button class='btn primary' style='width:100%' onclick='reviewCj("+i+")'>Choose this product →</button></div>"+
       "</div></article>";
   }).join("");
   const meta=document.getElementById("cjmeta");
-  if(meta) meta.textContent=(j.total||cjState.length)+" products selected for your profile";
+  if(meta) meta.innerHTML="<b>"+cjState.length+" real products</b> matched to your profile · live supplier prices";
 }
 
 function reviewCj(i){
   const p=cjState[i]; if(!p)return;
+  const e=liveEconomics(p);
   document.getElementById("modalbox").innerHTML=
-    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>LIVE PRICE PRODUCT</div><h2 style='margin:5px 0'>Review your selected product</h2></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
-    "<div class='cj-detail-grid' style='margin-top:18px'>"+
-    "<img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'>"+
-    "<div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>≈ "+BDT(bdtEstimate(p.priceUsd))+" planning estimate · current sourcing cost only</div>"+
-    "<div class='cj-data'><div>Category<b>"+esc(p.category)+"</b></div><div>Inventory<b>"+formatQty(p.inventory)+"</b></div><div>SKU / SPU<b>"+esc(p.sku||"—")+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Check at order")+"</b></div></div></div></div>"+
-    "<div class='cj-order-note'>This step does <b>not</b> place an order with CJ. It saves the selected supplier product into Forge's sourcing queue. Final landed cost, variant, shipping method, customer order and payment are confirmed before any supplier order is created.</div>"+
-    "<div class='actions' style='margin-top:16px'><button class='btn primary' onclick='addCjToQueue("+i+")'>Add to sourcing queue →</button><button class='btn' onclick='closeModal()'>Keep browsing</button></div>";
+    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>PRODUCT DECISION</div><h2 style='margin:5px 0'>Confirm this product</h2><div class='small'>Real supplier record · live price checked now</div></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
+    "<div class='cj-detail-grid' style='margin-top:18px'><img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'><div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>Live supplier price · ≈ "+BDT(e.supplier)+"</div><div class='cj-data'><div>Estimated landed<b>"+BDT(e.landed)+"</b></div><div>Estimated selling<b>"+BDT(e.selling)+"</b></div><div>Marketing / CAC<b>"+BDT(e.cac)+"</b></div><div>Contribution<b>"+BDT(e.contribution)+" ("+e.margin+"%)</b></div><div>Stock<b>"+formatQty(p.inventory)+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Checked before order")+"</b></div></div></div></div>"+
+    "<div class='notice' style='margin-top:16px'><b>After confirmation</b><div class='small'>This exact supplier product is saved to <b>Sourcing & Orders</b>, becomes the selected hero product, and starts a product-specific business-plan preparation. Final variant, stock, shipping and payable amount are rechecked before any supplier purchase order.</div></div>"+
+    "<div class='actions' style='margin-top:16px'><button class='btn primary' onclick='addCjToQueue("+i+")'>Confirm & secure product →</button><button class='btn' onclick='closeModal()'>Keep comparing</button></div>";
   document.getElementById("modal").classList.add("open");
 }
 
 function addCjToQueue(i){
   const p=cjState[i]; if(!p)return;
+  const e=liveEconomics(p);
   state.sourcingQueue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
-  const item={...p,selectedAt:new Date().toISOString()};
+  const item={...p,economics:e,selectedAt:new Date().toISOString(),sourceType:"connected_supplier",planStatus:"preparing",planRequestedAt:new Date().toISOString()};
   const existing=state.sourcingQueue.findIndex(x=>x.id===p.id);
-  if(existing>=0) state.sourcingQueue[existing]=item; else state.sourcingQueue.unshift(item);
-  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,sourcingQueue:state.sourcingQueue}))}catch(e){}
+  if(existing>=0)state.sourcingQueue[existing]=item;else state.sourcingQueue.unshift(item);
   state.selectedProduct=item;
+  state.planStatus="preparing";
+  state.planRequestedAt=new Date().toISOString();
+  state.business=state.business||{name:(state.profile?.occupation||"My Business"),budget:Number(state.profile?.budget||0)};
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,sourcingQueue:state.sourcingQueue}))}catch(e){}
   closeModal();
-  toast("Product added to your sourcing queue");
+  toast("Product confirmed — moved to Sourcing & Orders. Business plan preparation started.");
   go("orders");
 }
-
-function sourcingKeywords(){
-  const p=state.selectedProduct||opportunities()[0];
-  const prof=state.profile||{};
-  const risk=String(prof.riskCapacity||prof.risk||"Medium").toLowerCase();
-  const category=String(p?.name||"").toLowerCase();
-  const base={
-    "premium carry goods":["leather handbag","work bag organizer","crossbody bag"],
-    "urban footwear":["casual loafer","urban sneaker","everyday shoes"],
-    "home fragrance":["scented candle","home diffuser","gift fragrance"],
-    "modern watches":["men watch","minimal watch","fashion watch"],
-    "everyday beauty":["personal care beauty","skincare daily care","beauty gift"],
-    "fitness essentials":["fitness accessories","gym accessories","workout gear"],
-    "private-label brand launch":["private label fashion product","branded accessories","lifestyle product"]
-  }[p?.name]||[category,prof.skills||"fashion accessories","best selling products"];
-  if(risk.includes("high")) return [...base,"private label"].slice(0,3);
-  if(risk.includes("low")) return [...base,"low MOQ"].slice(0,3);
-  return base.slice(0,3);
-}
-
-async function cjFetchKeyword(q){
-  const url=CJ_PROXY+"?keyword="+encodeURIComponent(q)+"&page=1&size=12";
-  const r=await fetch(url,{headers:{"apikey":"sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW","Authorization":"Bearer sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW"}});
-  const j=await r.json();
-  if(!r.ok||!j.ok) throw Error(j.error||"Supplier feed unavailable");
-  return j;
-}
-
-async function cjAutoSource(){
-  const box=document.getElementById("cjresults");
-  if(!box)return;
-  box.innerHTML="<div class='cj-empty cj-loading' style='grid-column:1/-1'><b>Forge is selecting products for you…</b><br><span class='small'>Checking live inventory and current prices against your locked business profile.</span></div>";
-  try{
-    const responses=await Promise.all(sourcingKeywords().map(cjFetchKeyword));
-    const map=new Map();
-    responses.forEach(j=>(j.products||[]).forEach(p=>{
-      const price=Number(p.priceUsd);
-      if(!p.id||!p.image||!p.name||!Number.isFinite(price)||price<=0)return;
-      if(!map.has(p.id))map.set(p.id,p);
-    }));
-    cjState=[...map.values()].filter(p=>Number(p.inventory||0)>0||p.inventory==null).slice(0,6);
-    cjLastFetched=new Date().toISOString();
-    renderCjResults({total:cjState.length,fetchedAt:cjLastFetched,personalized:true});
-  }catch(e){
-    box.innerHTML="<div class='cj-empty' style='grid-column:1/-1'><b>Live product data is temporarily unavailable.</b><br><span class='small'>Forge will not invent products or prices. Please try again in a moment.</span></div>";
-  }
-}
-
-function cjPanel(){
-  const p=state.selectedProduct||opportunities()[0];
-  const prof=state.profile||{};
-  const risk=prof.riskCapacity||prof.risk||"Balanced";
-  return "<section class='cj-live'>"+
-    "<div class='cj-head'><div><div class='eyebrow'>YOUR PRODUCT SHORTLIST</div><h2>Products Forge picked for you</h2><p class='small'>These products are selected from your locked entrepreneur profile — capital, risk capacity, time, market and business goal. You don't need to search for products.</p></div><div class='cj-live-note'><span class='pill online'>● PRICES UPDATED LIVE</span><div class='small' style='margin-top:8px'>Current product prices are checked when Forge builds your shortlist.</div></div></div>"+
-    "<div class='notice' style='margin-top:15px'><b>Personalized for your profile</b><div class='small'>Business direction: <b>"+esc(p?.name||"your recommended business")+"</b> · Risk capacity: <b>"+esc(risk)+"</b> · Forge is choosing a manageable first set rather than showing a marketplace.</div></div>"+
-    "<div class='cj-toolbar'><span id='cjmeta' class='cj-count'>Preparing your recommendations…</span><span class='cj-count'>Real product images · current prices</span></div>"+
-    "<div id='cjresults' class='cj-results'><div class='cj-empty' style='grid-column:1/-1'>Forge is selecting products that fit your profile…</div></div>"+
-  "</section>";
-}
-
-function reviewCj(i){
-  const p=cjState[i]; if(!p)return;
-  document.getElementById("modalbox").innerHTML=
-    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>PRODUCT RECOMMENDATION</div><h2 style='margin:5px 0'>Review before securing</h2></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
-    "<div class='cj-detail-grid' style='margin-top:18px'>"+
-    "<img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'>"+
-    "<div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+BDT(bdtEstimate(p.priceUsd))+"</div><div class='cj-detail-bdt'>Current product price · "+moneyUsd(p.priceUsd)+"</div>"+
-    "<div class='cj-data'><div>Category<b>"+esc(p.category)+"</b></div><div>Available stock<b>"+formatQty(p.inventory)+"</b></div><div>SKU<b>"+esc(p.sku||"—")+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Checked at order")+"</b></div></div></div></div>"+
-    "<div class='cj-order-note'>This does <b>not</b> place an order yet. Forge saves your selected product first. Variant, stock, delivery and final payable amount are rechecked before procurement.</div>"+
-    "<div class='actions' style='margin-top:16px'><button class='btn primary' onclick='addCjToQueue("+i+")'>Secure this business product →</button><button class='btn' onclick='closeModal()'>Back</button></div>";
-  document.getElementById("modal").classList.add("open");
-}
-
-function addCjToQueue(i){
-  const p=cjState[i]; if(!p)return;
-  state.sourcingQueue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
-  const item={...p,selectedAt:new Date().toISOString(),sourceType:"connected_supplier"};
-  const existing=state.sourcingQueue.findIndex(x=>x.id===p.id);
-  if(existing>=0) state.sourcingQueue[existing]=item; else state.sourcingQueue.unshift(item);
-  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,sourcingQueue:state.sourcingQueue}))}catch(e){}
-  state.selectedProduct=item;
-  closeModal();
-  toast("Product secured in your sourcing queue");
-  go("orders");
-}
-
-const _forgeProducts=products;
-products=function(){
-  const html=_forgeProducts();
-  setTimeout(cjAutoSource,80);
-  return html+cjPanel();
-};
 
 function render(){let pages={home,advisor,ideas,products,plan,orders,brand,store,marketing,support,analytics};if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();return}document.getElementById("app").innerHTML=shell(pages[state.page]())}
 render();

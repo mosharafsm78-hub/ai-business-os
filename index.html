@@ -112,6 +112,93 @@ h3{font-weight:700;line-height:1.3}
 @media(max-width:1100px){.order-command{display:block}.order-flow{margin-top:16px;overflow:auto;padding-bottom:4px}.order-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.order-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.order-modal-grid{grid-template-columns:1fr}.order-modal-grid .cj-detail-img{width:100%;height:220px}.order-timeline{grid-template-columns:repeat(2,1fr)}}
 .domain-handoff-success{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}.domain-handoff-success span{flex:1;color:var(--muted);font-size:12px}.domain-price-source{margin:-8px 0 12px;color:var(--mint2)}
+
+/* FORGE INTERFACE POLISH V3 — spacious, premium, customer-facing */
+:root{
+  --bg:#07110e;--panel:#0b1813;--panel-hi:#10211a;--line:#1b352a;
+  --mint:#b8f4d0;--mint2:#6ee2a4;--muted:#8da79b;--soft:#c9dbd2;
+}
+body{
+  background:
+    radial-gradient(900px 500px at 76% -10%,rgba(39,104,78,.28),transparent 62%),
+    radial-gradient(700px 520px at 18% 100%,rgba(20,72,53,.20),transparent 65%),
+    var(--bg);
+  color:#f5faf7;
+}
+.top{
+  height:64px;padding:0 24px;background:rgba(6,16,13,.82);
+  border-bottom:1px solid rgba(147,220,185,.11);backdrop-filter:blur(24px);
+}
+.brand{font-size:15px}.mark{width:32px;height:32px;border-radius:9px}
+.topright{gap:8px}.pill{padding:7px 11px;border-radius:999px;background:rgba(15,32,25,.78)}
+.side{
+  width:224px;top:64px;min-height:calc(100vh - 64px);padding:16px 10px;
+  background:rgba(5,14,11,.58);border-right:1px solid rgba(147,220,185,.09);
+}
+.nav{padding:10px 11px;border-radius:10px;font-size:13px}.nav.active{
+  background:linear-gradient(90deg,#10291f,#0c1d17);box-shadow:inset 2px 0 var(--mint2)
+}
+.main{
+  margin-left:224px;width:calc(100% - 224px);max-width:none;
+  padding:28px clamp(24px,3.4vw,56px) 80px;
+}
+.hero{padding:22px 0 28px;margin-bottom:4px}.hero .h1{
+  font-size:clamp(42px,4.2vw,64px);letter-spacing:-.055em;max-width:900px
+}
+.sub{font-size:15px;color:#91aaa0}.card{
+  background:linear-gradient(145deg,rgba(15,31,24,.94),rgba(8,20,15,.94));
+  border:1px solid rgba(150,220,188,.12);border-radius:18px;
+  box-shadow:0 16px 55px rgba(0,0,0,.18);padding:20px
+}
+.card:hover{border-color:rgba(150,220,188,.18)}
+.section{margin:34px 0 14px}.section h2{font-size:22px}
+.btn{border-radius:12px;padding:10px 14px}.primary{
+  box-shadow:0 8px 24px rgba(105,221,160,.12)
+}
+.store-build-banner{
+  grid-template-columns:minmax(0,1fr) 220px;gap:22px;padding:24px;
+  background:linear-gradient(135deg,rgba(18,51,39,.78),rgba(8,22,16,.92));
+  border-color:rgba(150,220,188,.17);border-radius:20px
+}
+.store-build-banner h2{font-size:28px;margin:6px 0 7px}
+.store-build-meter{padding:15px;border:1px solid rgba(150,220,188,.12);border-radius:14px;background:rgba(4,14,10,.35)}
+.store-build-meter b{font-size:22px}
+.store-build-grid{grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:16px}
+.store-build-details{gap:9px}.store-build-details>div{
+  padding:13px;background:rgba(6,18,13,.55);border-color:rgba(150,220,188,.10)
+}
+.store-selected-product{background:rgba(8,22,16,.72);border-color:rgba(150,220,188,.12)}
+.store-checklist{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.store-check{
+  min-height:132px;grid-template-columns:42px 1fr auto;gap:14px;padding:18px;
+  background:linear-gradient(145deg,#0d1c16,#09150f)
+}
+.store-check-number{
+  width:38px;height:38px;border-radius:12px;
+  background:linear-gradient(145deg,#14372a,#0e241b);color:#a7f0c6;
+  border:1px solid rgba(110,226,164,.14)
+}
+.store-check b{font-size:14px}.store-check p{font-size:12px;color:#8fa99e;line-height:1.55}
+.store-check .status{margin-top:1px}
+.store-automation{padding:20px;background:linear-gradient(135deg,#10271e,#091611)}
+.store-platform-note{font-size:12px}
+.domain-launch-selector{margin-top:14px}
+.notice{background:rgba(16,36,28,.68);border-color:rgba(150,220,188,.13)}
+.invoice-row{padding:13px 0!important}
+.invoice-total{padding-top:16px!important;font-size:16px}
+@media(max-width:1100px){
+  .store-build-grid{grid-template-columns:1fr}
+  .store-checklist{grid-template-columns:1fr 1fr}
+}
+@media(max-width:800px){
+  .side{display:none}.main{margin:0;width:100%;padding:20px 16px 60px}
+  .hero{padding-top:16px}.store-checklist{grid-template-columns:1fr}
+  .store-build-banner{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .top{padding:0 13px}.main{padding:16px 12px 50px}.card{padding:16px}
+  .hero .h1{font-size:40px!important}.store-check{min-height:auto}
+}
 </style>
 
 <style id="forge-brand-studio">
@@ -1031,8 +1118,7 @@ function store(){
     "<div class='card store-order-card'><div class='eyebrow'>YOUR BUILD</div><h2>"+esc(brandName)+"</h2><div class='store-selected-product'>"+(p?.image?"<img src='"+esc(p.image)+"' alt='"+esc(productName)+"'>":"")+"<div><b>"+esc(productName)+"</b><div class='small'>Confirmed supplier product · one selected hero product</div></div></div><div class='store-build-details'><div><span>Website</span><b>"+(domain?esc(domain):"Not selected · choose an available domain")+"</b></div><div><span>Brand</span><b>"+esc(brandName)+"</b></div><div><span>Product</span><b>"+esc(productName)+"</b></div><div><span>Estimated completion</span><b>"+(s.status==="building"||s.status==="ready"?eta+" min est.":"Shown after payment")+"</b></div></div></div>"+
     "<div class='card store-invoice-card'><div class='eyebrow'>YOUR LAUNCH COST</div><h2>Everything you need to launch</h2><p class='small'>A simple upfront view of the required launch costs.</p><div class='invoice-row'><span>Store setup · one time</span><b>"+BDT(bill.setup)+"</b></div><div class='invoice-row'><span>Website domain"+(bill.hasCustomDomain?" · "+esc(domain)+" · "+bill.domainYears+" year":" · 1 year")+"</span><b>"+(bill.hasCustomDomain?BDT(bill.domainBdt):"Choose a domain first")+"</b></div><div class='invoice-row'><span>Store hosting · "+esc(bill.hostingValidity)+"</span><b>"+BDT(bill.hostingBdt)+"</b></div><div class='invoice-total'><span>Total launch cost</span><b>"+BDT(bill.launchTotal)+"</b></div><div class='notice' style='margin-top:12px'><b>Included</b><div class='small'>Store setup, your selected domain for the stated validity, and store hosting for the stated period.</div></div>"+(s.invoiceRef?"<div class='small' style='margin-top:8px'>Launch reference "+esc(s.invoiceRef)+"</div>":"")+"</div><div class='section'><div><h2>What Forge does after payment</h2><p>No repetitive setup work for the customer. AI prepares the store from the approved business decisions.</p></div></div>"+
   "<div class='store-checklist'>"+checklist.map((x,i)=>"<div class='store-check card'><div class='store-check-number'>"+String(i+1).padStart(2,"0")+"</div><div><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div><span class='status "+(s.status==="ready"?"":"amber")+"'>"+(s.status==="ready"?"READY":"QUEUED")+"</span></div>").join("")+"</div>"+
-  "<div class='store-automation card'><div><div class='eyebrow'>AUTOMATION RULE</div><h2>One approved identity flows everywhere.</h2><p class='small'>The company name, product name, domain direction, product image, pricing model, product story and SEO language are pulled from your approved Brand Studio and Product Lab decisions. Forge should not invent a different identity during store creation.</p></div><div class='store-flow'><span>Product</span><i>→</i><span>Brand</span><i>→</i><span>Store</span><i>→</i><span>SEO</span><i>→</i><span>QA</span><i>→</i><span>Launch</span></div></div>"+
-  "<div class='notice store-platform-note'><b>How the real store connection works:</b> Forge can automate the storefront build, product setup, media preparation and SEO, but the production integration still needs a connected commerce platform account and secure API authorization. For Shopify, the platform provides online-store hosting, custom-domain support and product/SEO management; a paid plan is required to publish a live store.</div>";
+  "";
 }
 function marketing(){let budget=Math.round((state.business?.budget||250000)*.15);return "<div class='hero'><div><div class='eyebrow'>AI growth loop</div><div class='h1'>Spend based on contribution, not vanity.</div><div class='sub'>Scale only when acquisition cost and returns still leave healthy contribution.</div></div><button class='btn primary' onclick=\"toast('Growth analysis refreshed')\">Run growth analysis →</button></div><div class='grid'><div class='card span3'><div class='label'>Monthly ad envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Target CAC</div><div class='stat'>৳320</div></div><div class='card span3'><div class='label'>Target ROAS</div><div class='stat'>3.2×</div></div><div class='card span3'><div class='label'>Creative tests</div><div class='stat'>12</div></div></div><div class='section'><h2>Campaign desk</h2></div><div class='card'><table class='table'><tr><th>Campaign</th><th>Channel</th><th>Budget</th><th>ROAS</th><th>Action</th></tr><tr><td>Hero product launch</td><td>Meta</td><td>৳12,000</td><td>3.8×</td><td><span class='status'>Scale 15%</span></td></tr><tr><td>UGC test</td><td>Meta</td><td>৳7,000</td><td>2.4×</td><td><span class='status amber'>Iterate</span></td></tr></table></div><div class='section'><h2>Creative factory</h2></div><div class='grid'>"+["3-second hook","Problem/solution reel","UGC script","Founder story","Offer creative","Retargeting creative"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Generate five variants and test one variable at a time.</p><button class='btn' onclick=\"toast('"+x+" brief generated')\">Generate →</button></div>").join("")+"</div>"}
 function support(){return "<div class='hero'><div><div class='eyebrow'>AI customer support</div><div class='h1'>Fast answers. Safe escalation.</div><div class='sub'>Routine questions can be automated; sensitive cases remain visible to a human.</div></div></div><div class='grid'><div class='card span4'><div class='label'>Conversations today</div><div class='stat'>84</div></div><div class='card span4'><div class='label'>Median response</div><div class='stat'>11 sec</div></div><div class='card span4'><div class='label'>Human escalations</div><div class='stat'>3</div></div></div><div class='section'><h2>Support queue</h2></div><div class='card'>"+[["Do you have size 42?","Catalog availability","Resolved"],["When will my parcel arrive?","Order tracking","Resolved"],["Can I exchange this size?","Policy","Resolved"],["Wrong item received.","Evidence required","Needs you"],["I want a refund for change of mind.","Policy","Needs you"]].map(x=>"<div class='kpi'><span><b>"+x[0]+"</b><div class='small'>"+x[1]+"</div></span><span class='status "+(x[2]==="Needs you"?"amber":"")+"'>"+x[2]+"</span></div>").join("")+"</div><div class='notice' style='margin-top:15px'><b>Safety rule:</b> AI must not invent stock, delivery dates, refunds or policy exceptions.</div>"}

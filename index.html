@@ -71,7 +71,51 @@ h3{font-weight:600;line-height:1.3}
 @media(max-width:1100px){.order-command{display:block}.order-flow{margin-top:16px;overflow:auto;padding-bottom:4px}.order-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.order-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.order-modal-grid{grid-template-columns:1fr}.order-modal-grid .cj-detail-img{width:100%;height:220px}.order-timeline{grid-template-columns:repeat(2,1fr)}}
 </style></style>
-</head>
+
+<style id="forge-brand-studio">
+.brand-hero{padding-bottom:24px}
+.brand-product-strip{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:20px;align-items:center;padding:16px;margin-bottom:14px;background:linear-gradient(120deg,#0d2119,#09140f)}
+.brand-product-media{width:120px;height:120px;border-radius:14px;background:#f6f6f3;display:grid;place-items:center;overflow:hidden}
+.brand-product-media img{width:100%;height:100%;object-fit:contain}
+.brand-product-info h2{margin:5px 0 4px;font-size:24px}
+.brand-commercial{display:grid;grid-template-columns:repeat(4,minmax(90px,1fr));gap:8px;margin-top:14px}
+.brand-commercial>div{padding:10px;border:1px solid rgba(169,238,204,.1);border-radius:11px;background:#091611}
+.brand-commercial span{display:block;font-size:9px;color:#70897e;text-transform:uppercase;letter-spacing:.11em}
+.brand-commercial b{display:block;margin-top:4px;font-size:14px}
+.brand-lock{padding:9px 11px;border:1px solid #315546;border-radius:11px;color:#8de6b7;font-size:9px;font-weight:800;letter-spacing:.14em;text-align:center}
+.brand-progress{display:flex;justify-content:space-between;gap:30px;align-items:center}
+.brand-progress h2{margin:5px 0}
+.brand-progress-meter{width:min(360px,35%);min-width:180px}
+.brand-progress-meter>b{display:block;text-align:right;margin-bottom:7px;font-size:20px}
+.brand-foundation .brand-thesis{font-family:var(--font-display);font-size:25px;line-height:1.2;letter-spacing:-.025em;margin:9px 0 18px;max-width:900px}
+.brand-proof-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.brand-proof-grid>div{padding:12px;border:1px solid rgba(169,238,204,.1);border-radius:12px;background:#091611}
+.brand-proof-grid span{display:block;font-size:9px;color:#70897e;text-transform:uppercase;letter-spacing:.12em}
+.brand-proof-grid b{display:block;font-size:12px;line-height:1.45;margin-top:4px;color:#c8d9d1;font-weight:500}
+.brand-coach{background:linear-gradient(145deg,#10251d,#091510)}
+.brand-coach h3{margin:7px 0}
+.brand-modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.brand-module{padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#0d1a16,#09140f);display:flex;flex-direction:column;min-height:265px}
+.brand-module.is-done{border-color:rgba(105,221,160,.28)}
+.brand-module-top{display:flex;justify-content:space-between;align-items:center}
+.brand-step{width:30px;height:30px;border-radius:9px;background:#173127;color:#b9f3d0;display:grid;place-items:center;font-size:11px;font-weight:800}
+.brand-module h3{margin:12px 0 3px;font-size:18px}
+.brand-module .small{margin-top:0}
+.brand-copy{padding:12px;border:1px solid rgba(169,238,204,.1);border-radius:11px;background:#091510;margin:9px 0 12px;line-height:1.55;flex:1}
+.brand-copy p{margin:8px 0 0}
+.brand-module>.btn{align-self:flex-start}
+.brand-name-list{display:flex;flex-direction:column;gap:7px;margin:9px 0 12px;flex:1}
+.brand-name-option{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:1px solid rgba(169,238,204,.1);background:#091510;color:#d9e8e1;border-radius:10px;padding:10px 11px}
+.brand-name-option:hover,.brand-name-option.selected{border-color:#56b98a;background:#10251d}
+.brand-name-option span{font-weight:700}
+.brand-name-option small{color:#7f9b8e}
+.brand-angle-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.brand-angle-list span{font-size:10px;padding:5px 7px;border:1px solid #29483b;border-radius:999px;color:#a9c1b5}
+.brand-next{margin-top:16px;display:flex;justify-content:space-between;gap:20px;align-items:center;background:linear-gradient(120deg,#123027,#0b1814)}
+.brand-next h2{margin:5px 0}
+@media(max-width:850px){.brand-product-strip{grid-template-columns:90px 1fr}.brand-lock{grid-column:2;justify-self:start}.brand-commercial{grid-template-columns:1fr 1fr}.brand-modules{grid-template-columns:1fr}.brand-progress{display:block}.brand-progress-meter{width:100%;margin-top:15px}.brand-next{display:block}.brand-next .actions{margin-top:14px}}
+@media(max-width:560px){.brand-product-strip{grid-template-columns:1fr}.brand-product-media{width:100%;height:200px}.brand-lock{grid-column:1}.brand-foundation .brand-thesis{font-size:21px}.brand-proof-grid{grid-template-columns:1fr}.brand-commercial{grid-template-columns:1fr 1fr}}
+</style></head>
 <body>
 <div id="app"></div><div id="toast" class="toast"></div><div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
 
@@ -335,7 +379,114 @@ function reviewQueued(i){
     "<div class='actions' style='margin-top:18px;justify-content:flex-end'>"+paymentButton+next+"<button class='btn' onclick='closeModal()'>Close</button></div>";
   document.getElementById("modal").classList.add("open");
 }
-function brand(){let b=state.business||{name:"Northstar Ventures",category:"Open to anything"};return "<div class='hero'><div><div class='eyebrow'>Brand studio</div><div class='h1'>One business thesis. One brand.</div><div class='sub'>Positioning, naming, product storytelling, packaging and launch assets.</div></div><button class='btn primary' onclick=\"toast('Brand direction regenerated')\">Generate direction</button></div><div class='grid'><div class='card span8'><div class='hero-banner'><div class='eyebrow'>"+b.name.toUpperCase()+"</div><div style='font-size:42px;font-weight:850;letter-spacing:-.06em'>"+(b.category==="Fashion & accessories"?"Carry less. Go further.":"Useful things, made better.")+"</div></div></div><div class='card span4'><div class='label'>Brand readiness</div><div class='stat'>86%</div><div class='progress'><i style='width:86%'></i></div></div></div><div class='section'><h2>Generate assets</h2></div><div class='grid'>"+["Positioning","Naming","Product copy","Packaging","Social system","Store merchandising"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Create a practical first version from the current business context.</p><button class='btn' onclick=\"toast('"+x+" generated')\">Generate →</button></div>").join("")+"</div>"}
+function brand(){
+  const p=state.selectedProduct;
+  const b=state.business||{};
+  const profile=state.profile||{};
+  const saved=state.brandStudio||{};
+  const name=p?.name||"No product confirmed yet";
+  const e=p?.economics||null;
+  const category=(p?.category||profile.category||"your category").toString();
+  const clean=String(name).replace(/\s+/g," ").trim();
+  const shortName=clean.split(" ").slice(0,4).join(" ");
+  const hasDirection=!!saved.direction;
+  const chosenName=saved.chosenName||"";
+  const modules=[
+    ["positioning","01","Positioning","Make the product mean something beyond its features."],
+    ["naming","02","Brand name","Create a name that can grow beyond one SKU."],
+    ["story","03","Product story","Turn the product into a clear reason to buy."],
+    ["packaging","04","Packaging","Define the physical experience from box to unboxing."],
+    ["launch","05","Launch system","Give marketing one coherent message to repeat."],
+    ["handoff","06","Brand handoff","Prepare the approved direction for Store Launch and AI Marketing."]
+  ];
+  const completed=modules.filter(m=>saved[m[0]]).length+(chosenName?1:0);
+  const progress=Math.min(100,Math.round((completed/7)*100));
+  const direction=saved.direction||{
+    audience:"Define the primary customer from the product's actual use case, price point and Bangladesh launch context.",
+    position:"Position "+shortName+" as a focused, credible offer—not a generic catalogue item.",
+    promise:"Make the main customer benefit obvious within the first few seconds of seeing the product.",
+    personality:"Modern, confident, useful and commercially clear; premium in presentation without pretending to be luxury.",
+    proof:"Use the real product, real specifications, real supplier evidence and real customer feedback as proof."
+  };
+  const candidates=saved.names||[
+    shortName.replace(/[^A-Za-z0-9 ]/g,"").split(" ").slice(0,2).join(" ")+" Co.",
+    (category.toLowerCase().includes("footwear")?"Stride":"Northstar")+" & Co.",
+    (category.toLowerCase().includes("bag")?"Carry":"Form")+" House"
+  ];
+  const story=saved.story||{
+    hook:"A practical product selected for a specific customer—not a product chosen first and marketed later.",
+    body:"The brand story should connect the customer's everyday problem, the product's strongest proof point and the reason the offer deserves its price. Keep claims specific and verifiable.",
+    content:"Lead with the product in real use, then show detail, proof, objection handling and the offer."
+  };
+  const packaging=saved.packaging||{
+    front:"Clean brand mark + product name. No clutter.",
+    inside:"Short thank-you message, care/use information and a simple next-purchase prompt.",
+    rule:"Packaging should reinforce the same positioning used on the product page and in advertising."
+  };
+  const launch=saved.launch||{
+    message:"One product. One clear reason to choose it.",
+    angles:["Problem → product → proof","Close-up quality / detail","Real-life use case","Customer objection → evidence"],
+    channels:"Meta, TikTok, creator seeding and the own store."
+  };
+  if(!p){
+    return "<div class='hero'><div><div class='eyebrow'>BRAND STUDIO</div><div class='h1'>Build the brand after the product is real.</div><div class='sub'>Brand Studio starts from a confirmed Product Lab selection. Once a product is confirmed, Forge carries its real product record into the brand, store and marketing workflow.</div></div><button class='btn primary' onclick=\"go('products')\">Choose a product first →</button></div>"+
+      "<div class='notice'><b>Nothing to brand yet.</b><div class='small'>Go to Product Lab, review the live supplier recommendations, confirm one product, and return here. Forge will then build the brand around that exact product instead of inventing a generic brand concept.</div></div>";
+  }
+  function moduleCard(key,num,title,desc,content,button){
+    const done=!!saved[key];
+    return "<article class='brand-module "+(done?"is-done":"")+"'><div class='brand-module-top'><span class='brand-step'>"+num+"</span><span class='status "+(done?"":"amber")+"'>"+(done?"Ready":"Open")+"</span></div><h3>"+title+"</h3><p class='small'>"+desc+"</p>"+content+(button||"")+"</article>";
+  }
+  return "<div class='hero brand-hero'><div><div class='eyebrow'>BRAND STUDIO · PRODUCT-AWARE</div><div class='h1'>Build the brand around the product you've already chosen.</div><div class='sub'>Forge uses the confirmed product, your business profile and the commercial model to create a brand system that can move directly into Store Launch and AI Marketing. No generic mood-board exercise.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Change product</button><button class='btn primary' onclick='generateBrandDirection()'>"+(hasDirection?"Refresh direction":"Generate brand direction")+" →</button></div></div>"+
+    "<div class='brand-product-strip card'><div class='brand-product-media'><img src='"+esc(p.image||"")+"' alt='"+esc(name)+"'></div><div class='brand-product-info'><div class='eyebrow'>CONFIRMED PRODUCT</div><h2>"+esc(name)+"</h2><p class='small'>"+esc(category)+" · SKU "+esc(p.sku||"—")+"</p><div class='brand-commercial'>"+
+      "<div><span>Supplier</span><b>"+moneyUsd(p.priceUsd)+"</b></div>"+
+      "<div><span>Planning sell</span><b>"+(e?BDT(e.selling):"—")+"</b></div>"+
+      "<div><span>Contribution / unit</span><b>"+(e?BDT(e.contribution):"—")+"</b></div>"+
+      "<div><span>Stock checked</span><b>"+formatQty(p.inventory||0)+"</b></div>"+
+    "</div></div><div class='brand-lock'>PRODUCT<br>LOCKED</div></div>"+
+    "<div class='brand-progress card'><div><div class='eyebrow'>BRAND BUILD</div><h2>"+(hasDirection?"Direction generated. Now refine the identity.":"Start with the commercial truth.")+"</h2><p class='small'>"+completed+" of 7 brand decisions prepared. The remaining steps stay editable until you approve the direction.</p></div><div class='brand-progress-meter'><b>"+progress+"%</b><div class='progress'><i style='width:"+progress+"%'></i></div></div></div>"+
+    "<div class='section'><div><h2>01 · Brand foundation</h2><p>Forge first defines why this product should exist as a brand.</p></div></div>"+
+    "<div class='brand-foundation grid'><div class='card span8'><div class='label'>BRAND THESIS</div><div class='brand-thesis'>"+esc(hasDirection?direction.position:"Generate a product-specific positioning direction.")+"</div><div class='brand-proof-grid'><div><span>Audience</span><b>"+esc(direction.audience)+"</b></div><div><span>Promise</span><b>"+esc(direction.promise)+"</b></div><div><span>Personality</span><b>"+esc(direction.personality)+"</b></div><div><span>Proof</span><b>"+esc(direction.proof)+"</b></div></div></div><div class='card span4 brand-coach'><div class='label'>FORGE COACH NOTE</div><h3>Don't brand the supplier listing.</h3><p class='small'>The supplier gives us the product. Forge turns that product into a customer-facing proposition with its own name, promise, story and commercial logic.</p><button class='btn primary' onclick='generateBrandDirection()'>"+(hasDirection?"Improve direction":"Build direction")+" →</button></div></div>"+
+    "<div class='section'><div><h2>02 · Build the identity</h2><p>Complete only what is needed to move the product toward launch.</p></div></div>"+
+    "<div class='brand-modules'>"+
+      moduleCard("positioning","01","Positioning","Define the customer, promise and market position.","<div class='brand-copy'>"+esc(direction.position)+"</div>","<button class='btn' onclick='generateBrandModule(\"positioning\")'>"+(saved.positioning?"Regenerate":"Generate")+" →</button>")+
+      moduleCard("naming","02","Brand name","Create a scalable name and select one before visual identity.","<div class='brand-name-list'>"+candidates.map((n,i)=>"<button class='brand-name-option "+(chosenName===n?"selected":"")+"' onclick='selectBrandName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenName===n?"Selected":"Use this direction →")+"</small></button>").join("")+"</div>","<button class='btn' onclick='generateBrandModule(\"naming\")'>Generate name directions →</button>")+
+      moduleCard("story","03","Product story","Give sales, product pages and ads one consistent narrative.","<div class='brand-copy'><b>"+esc(story.hook)+"</b><p class='small'>"+esc(story.body)+"</p><p class='small'><b>Content rhythm:</b> "+esc(story.content)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"story\")'>"+(saved.story?"Refine story":"Generate story")+" →</button>")+
+      moduleCard("packaging","04","Packaging","Make the unboxing experience reinforce the same promise.","<div class='brand-copy'><p><b>Front:</b> "+esc(packaging.front)+"</p><p><b>Inside:</b> "+esc(packaging.inside)+"</p><p><b>Rule:</b> "+esc(packaging.rule)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"packaging\")'>"+(saved.packaging?"Refine packaging":"Generate packaging")+" →</button>")+
+      moduleCard("launch","05","Launch system","Give the marketing team repeatable angles rather than random creatives.","<div class='brand-copy'><b>"+esc(launch.message)+"</b><div class='brand-angle-list'>"+launch.angles.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p class='small'>Channels: "+esc(launch.channels)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"launch\")'>"+(saved.launch?"Refine launch system":"Generate launch system")+" →</button>")+
+      moduleCard("handoff","06","Launch handoff","Once the identity is approved, pass the approved direction downstream.","<div class='brand-copy'>"+(saved.handoff?"<b>Ready for Store Launch and AI Marketing.</b><p class='small'>The selected product, brand name and approved direction stay attached to the same business record.</p>":"<b>One approval closes the loop.</b><p class='small'>Approve the core identity after selecting a name. Forge will keep the brand context attached to the product.</p>")+"</div>","<button class='btn primary' onclick='completeBrandHandoff()'>"+(saved.handoff?"Reconfirm handoff":"Approve & hand off")+" →</button>")+
+    "</div>"+
+    "<div class='brand-next card'><div><div class='eyebrow'>NEXT IN FORGE</div><h2>"+(chosenName?"Brand direction is anchored to "+esc(chosenName)+".":"Choose a brand name to anchor the identity.")+"</h2><p class='small'>The confirmed supplier product remains the commercial source of truth. Brand Studio adds customer-facing identity on top of it.</p></div><div class='actions'><button class='btn' onclick=\"go('plan')\">View business plan</button><button class='btn primary' onclick=\"go('store')\">Continue to Store Launch →</button></div></div>";
+}
+function generateBrandDirection(){
+  const p=state.selectedProduct;if(!p)return go("products");
+  state.brandStudio={...(state.brandStudio||{}),direction:{
+    audience:"Primary customers are selected from the product's actual use case, price point, market and the locked business profile.",
+    position:"Own a clear position around "+String(p.name||"this product").split(" ").slice(0,5).join(" ")+": useful, credible and easy to understand at the moment of purchase.",
+    promise:"Make the product's strongest customer benefit immediately understandable, then prove it with real product details and real use.",
+    personality:"Confident, modern, practical and premium in presentation without overclaiming.",
+    proof:"Real product photography, verified specifications, supplier evidence, customer feedback and transparent commercial terms."
+  },positioning:true};
+  persistProfile();render();toast("Product-specific brand direction created.");
+}
+function generateBrandModule(key){
+  const p=state.selectedProduct;if(!p)return go("products");
+  const base=String(p.name||"selected product");
+  const b=state.brandStudio||{};
+  if(key==="positioning"){b.positioning=true;b.direction=b.direction||{};b.direction.position="Position "+base.split(" ").slice(0,6).join(" ")+" around a specific customer problem and a believable benefit—not around generic category language.";}
+  if(key==="naming"){b.naming=true;b.names=[base.replace(/[^A-Za-z0-9 ]/g,"").split(" ").slice(0,2).join(" ")+" Co.","Northstar "+(base.split(" ")[0]||"Goods"),"Form & Function"];}
+  if(key==="story"){b.story={hook:"A focused product chosen for a real use case.",body:"Start with the customer's situation, show the product solving it, prove the important quality or utility point, then present the offer.",content:"Use-case first → detail → proof → objection handling → offer."};}
+  if(key==="packaging"){b.packaging={front:"Brand mark + product name + one restrained descriptor.",inside:"Thank-you message + care/use guidance + support contact.",rule:"Packaging should look like the brand, not like a supplier shipment."};}
+  if(key==="launch"){b.launch={message:"Show the product. Explain the reason. Prove the claim.",angles:["Use-case demonstration","Product detail / quality proof","Objection handling","Social proof / creator use"],channels:"Meta, TikTok, creator seeding and the own store."};}
+  state.brandStudio=b;persistProfile();render();toast(key.charAt(0).toUpperCase()+key.slice(1)+" module updated.");
+}
+function selectBrandName(i){
+  const b=state.brandStudio||{};const names=b.names||[String(state.selectedProduct?.name||"Brand").split(" ").slice(0,2).join(" ")+" Co.","Northstar & Co.","Form House"];
+  b.names=names;b.chosenName=names[i]||names[0];state.brandStudio=b;persistProfile();render();toast("Brand name selected.");
+}
+function completeBrandHandoff(){
+  const b=state.brandStudio||{};if(!b.chosenName)return toast("Select a brand name before handoff.");
+  b.handoff=true;state.brandStudio=b;persistProfile();render();toast("Brand Studio approved — ready for Store Launch.");
+}
 function store(){return "<div class='hero'><div><div class='eyebrow'>Store launch</div><div class='h1'>From product economics to checkout.</div><div class='sub'>Pricing, catalog, policies, analytics and support must agree before launch.</div></div><button class='btn primary' onclick=\"toast('Store preview opened')\">Preview store ↗</button></div><div class='card'><div class='row' style='justify-content:space-between'><b>"+(state.business?state.business.name.toLowerCase().replace(/ /g,""):"yourbusiness")+".store</b><span class='status'>72% ready</span></div><div class='progress' style='margin:18px 0'><i style='width:72%'></i></div></div><div class='section'><h2>Launch checklist</h2></div><div class='grid'>"+["Hero product approved","Pricing + margin checked","Product photography","Descriptions + SEO","Payment methods","Delivery / COD rules","Return & exchange policy","Analytics + pixels","WhatsApp / chat","Order notifications","Trust blocks","Launch campaign"].map((x,i)=>"<div class='card span3'><div class='row' style='justify-content:space-between'><b>"+x+"</b><span class='status "+(i>7?"amber":"")+"'>"+(i<8?"Done":"Next")+"</span></div><p class='small'>AI checklist with human approval for money, policy and customer-trust decisions.</p></div>").join("")+"</div>"}
 function marketing(){let budget=Math.round((state.business?.budget||250000)*.15);return "<div class='hero'><div><div class='eyebrow'>AI growth loop</div><div class='h1'>Spend based on contribution, not vanity.</div><div class='sub'>Scale only when acquisition cost and returns still leave healthy contribution.</div></div><button class='btn primary' onclick=\"toast('Growth analysis refreshed')\">Run growth analysis →</button></div><div class='grid'><div class='card span3'><div class='label'>Monthly ad envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Target CAC</div><div class='stat'>৳320</div></div><div class='card span3'><div class='label'>Target ROAS</div><div class='stat'>3.2×</div></div><div class='card span3'><div class='label'>Creative tests</div><div class='stat'>12</div></div></div><div class='section'><h2>Campaign desk</h2></div><div class='card'><table class='table'><tr><th>Campaign</th><th>Channel</th><th>Budget</th><th>ROAS</th><th>Action</th></tr><tr><td>Hero product launch</td><td>Meta</td><td>৳12,000</td><td>3.8×</td><td><span class='status'>Scale 15%</span></td></tr><tr><td>UGC test</td><td>Meta</td><td>৳7,000</td><td>2.4×</td><td><span class='status amber'>Iterate</span></td></tr></table></div><div class='section'><h2>Creative factory</h2></div><div class='grid'>"+["3-second hook","Problem/solution reel","UGC script","Founder story","Offer creative","Retargeting creative"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Generate five variants and test one variable at a time.</p><button class='btn' onclick=\"toast('"+x+" brief generated')\">Generate →</button></div>").join("")+"</div>"}
 function support(){return "<div class='hero'><div><div class='eyebrow'>AI customer support</div><div class='h1'>Fast answers. Safe escalation.</div><div class='sub'>Routine questions can be automated; sensitive cases remain visible to a human.</div></div></div><div class='grid'><div class='card span4'><div class='label'>Conversations today</div><div class='stat'>84</div></div><div class='card span4'><div class='label'>Median response</div><div class='stat'>11 sec</div></div><div class='card span4'><div class='label'>Human escalations</div><div class='stat'>3</div></div></div><div class='section'><h2>Support queue</h2></div><div class='card'>"+[["Do you have size 42?","Catalog availability","Resolved"],["When will my parcel arrive?","Order tracking","Resolved"],["Can I exchange this size?","Policy","Resolved"],["Wrong item received.","Evidence required","Needs you"],["I want a refund for change of mind.","Policy","Needs you"]].map(x=>"<div class='kpi'><span><b>"+x[0]+"</b><div class='small'>"+x[1]+"</div></span><span class='status "+(x[2]==="Needs you"?"amber":"")+"'>"+x[2]+"</span></div>").join("")+"</div><div class='notice' style='margin-top:15px'><b>Safety rule:</b> AI must not invent stock, delivery dates, refunds or policy exceptions.</div>"}

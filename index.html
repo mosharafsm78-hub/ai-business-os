@@ -941,9 +941,8 @@ function render(){
     if(state.page==="products")setTimeout(autoCjSearch,0);
   }catch(err){
     console.error("Forge render error",state.page,err);
-    document.getElementById("app").innerHTML=shell(
-      "<div class='hero'><div><div class='eyebrow'>FORGE RECOVERY</div><div class='h1'>This workspace hit an error.</div><div class='sub'>Your saved business data is safe. Forge could not render this page, so you can retry or return to Orders.</div></div><div class='actions'><button class='btn' onclick="go('orders')">Back to Orders</button><button class='btn primary' onclick="go('brand')">Retry Brand Studio</button></div></div><div class='notice'><b>Technical detail</b><div class='small'>"+esc(String(err&&err.message||err))+"</div></div>"
-    );
+    const detail=esc(String(err&&err.message||err));
+    document.getElementById("app").innerHTML=shell(`<div class="hero"><div><div class="eyebrow">FORGE RECOVERY</div><div class="h1">This workspace hit an error.</div><div class="sub">Your saved business data is safe. Forge could not render this page, so you can retry or return to Orders.</div></div><div class="actions"><button class="btn" onclick="go('orders')">Back to Orders</button><button class="btn primary" onclick="go('brand')">Retry Brand Studio</button></div></div><div class="notice"><b>Technical detail</b><div class="small">${detail}</div></div>`);
   }
 }
 render();

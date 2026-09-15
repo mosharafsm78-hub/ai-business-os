@@ -24,6 +24,20 @@
 .corner-panel .nav.active{background:#132a20}
 .source-note{font-size:10px;color:#6f877d;margin-top:12px;line-height:1.5}
 @media(max-width:560px){.corner-tab{top:auto;bottom:22%}.corner-panel{top:64px;width:92vw}.locked-grid{grid-template-columns:1fr}}
+/* FORGE_BRAND_NAMING_POLISH */
+.brand-name-list{display:grid;gap:8px;margin-top:12px}
+.brand-name-option{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:13px 14px;border:1px solid rgba(169,238,204,.12);border-radius:12px;background:#091712;color:#e7f3ed}
+.brand-name-option:hover{border-color:#58b98d;background:#0d2119}
+.brand-name-option.selected{border-color:#69dda0;background:#10281e;box-shadow:inset 0 0 0 1px rgba(105,221,160,.2)}
+.brand-name-option small{color:#84a397;font-weight:700;white-space:nowrap}
+.brand-name-option.selected small{color:#b9f3d0}
+.brand-manual{margin-top:12px;padding:14px;border:1px dashed rgba(169,238,204,.2);border-radius:13px;background:#08140f}
+.brand-manual-grid{display:grid;grid-template-columns:1fr auto;gap:8px}
+.brand-refresh-note{margin-top:9px;color:#78958a;font-size:10px;line-height:1.5}
+.brand-domain-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.brand-suggestion-count{color:#79cfa6;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:650px){.brand-manual-grid,.brand-domain-grid{grid-template-columns:1fr}.brand-name-option{align-items:flex-start;flex-direction:column}.brand-name-option small{white-space:normal}}
+
 .onboarding{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(900px 650px at 70% 0,#173c2e 0,transparent 60%),var(--bg)}
 .onboarding-card{width:min(1100px,100%);padding:clamp(24px,5vw,56px);border:1px solid #29483b;border-radius:28px;background:#09150fef;box-shadow:0 30px 100px #0008}
 .locked-profile{margin-top:16px;padding:15px;border:1px solid #29483b;border-radius:15px;background:#091510}
@@ -523,11 +537,7 @@ function brand(){
     proof:"Real product photography, verified specifications, supplier evidence, customer feedback and transparent commercial terms."
   };
   const identity=saved.identity||{};
-  const candidates=saved.names||[
-    (category.toLowerCase().includes("bag")?"Carry":"Northstar")+" & Co.",
-    (category.toLowerCase().includes("footwear")?"Stride":"Form")+" House",
-    "Novera Goods"
-  ];
+  const candidates=saved.names||generateNameSet(p,0);
   const chosenName=saved.chosenName||"";
   const productNames=saved.productNames||[
     productCore+" Essential",
@@ -581,9 +591,9 @@ function brand(){
     "<div class='section'><div><h2>02 · Build the identity</h2><p>These are the concrete decisions you will use on your store, social pages, packaging and ads.</p></div></div>"+
     "<div class='brand-modules'>"+
       moduleCard("positioning","01","Positioning","Define the customer, promise and market position.","<div class='brand-copy'>"+escHtml(direction.position)+"</div>","<button class='btn' onclick='generateBrandModule(\"positioning\")'>"+(saved.positioning?"Refine positioning":"Generate positioning")+" →</button>")+
-      moduleCard("naming","02","Company & brand name","Choose a name that can grow beyond one product.","<div class='brand-name-list'>"+candidates.map((n,i)=>"<button class='brand-name-option "+(chosenName===n?"selected":"")+"' onclick='selectBrandName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenName===n?"Selected":"Use this name →")+"</small></button>").join("")+"</div>","<button class='btn' onclick='generateBrandModule(\"naming\")'>Refresh name ideas →</button>")+
-      moduleCard("productNaming","03","Product name","Replace the supplier listing title with a short, memorable customer-facing name.","<div class='brand-name-list'>"+productNames.map((n,i)=>"<button class='brand-name-option "+(chosenProductName===n?"selected":"")+"' onclick='selectProductName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenProductName===n?"Selected":"Use this product name →")+"</small></button>").join("")+"</div>","<button class='btn' onclick='generateBrandModule(\"productNaming\")'>Generate product names →</button>")+
-      moduleCard("digital","04","Digital identity","Create one consistent Facebook Page, Instagram handle and website domain direction.","<div class='brand-kit'><div class='brand-kit-item'><div class='kit-label'>Facebook</div><div class='kit-value'>@"+esc(social.facebook)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Instagram</div><div class='kit-value'>@"+esc(social.instagram)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Domain</div><div class='kit-value'>"+esc(social.domain)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Status</div><div class='kit-value'>"+(saved.digital?"Prepared":"Suggested")+"</div></div></div>","<button class='btn' onclick='generateBrandModule(\"digital\")'>"+(saved.digital?"Refine digital identity":"Create digital identity")+" →</button>")+
+      moduleCard("naming","02","Company & brand name","Forge keeps generating fresh directions until you find one that feels like your company. You can also use the name you already dreamed of.","<div class='brand-suggestion-count'>Fresh set · "+(b.nameRefreshCount||0)+" refreshes</div><div class='brand-name-list'>"+candidates.map((n,i)=>"<button class='brand-name-option "+(chosenName===n?"selected":"")+"' onclick='selectBrandName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenName===n?"Selected":"Use this name →")+"</small></button>").join("")+"</div><div class='brand-manual'><div class='label'>YOUR OWN COMPANY / BRAND NAME</div><div class='small' style='margin:5px 0 9px'>Already have a name in mind? Enter it and Forge will use it throughout the brand system.</div><div class='brand-manual-grid'><input class='input' id='manualBrandName' placeholder='e.g. Arvo Living' value='"+esc(chosenName&&!candidates.includes(chosenName)?chosenName:"")+"'><button class='btn' onclick='useManualBrandName()'>Use my name →</button></div></div><div class='brand-refresh-note'>Refresh does not repeat the same three names. Each refresh creates a new naming direction from the product, category and business profile.</div>","<button class='btn primary' onclick='generateBrandModule(\"naming\")'>Refresh names ↻</button>")+
+      moduleCard("productNaming","03","Product name","Replace the supplier listing title with a short, memorable customer-facing name.","<div class='brand-suggestion-count'>Fresh product-name set</div><div class='brand-name-list'>"+productNames.map((n,i)=>"<button class='brand-name-option "+(chosenProductName===n?"selected":"")+"' onclick='selectProductName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenProductName===n?"Selected":"Use this product name →")+"</small></button>").join("")+"</div>","<button class='btn primary' onclick='generateBrandModule(\"productNaming\")'>Refresh product names ↻</button>")+
+      moduleCard("digital","04","Digital identity","Create one consistent Facebook Page, Instagram handle and website domain direction.","<div class='brand-kit'><div class='brand-kit-item'><div class='kit-label'>Facebook</div><div class='kit-value'>@"+esc(social.facebook)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Instagram</div><div class='kit-value'>@"+esc(social.instagram)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Suggested domain</div><div class='kit-value'>"+esc(social.domain)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Status</div><div class='kit-value'>"+(saved.digital?"Prepared":"Suggested")+" · Availability check required</div></div></div><div class='brand-manual'><div class='label'>YOUR OWN DOMAIN</div><div class='small' style='margin:5px 0 9px'>If you already own a domain or have a different one in mind, enter it here. Forge will keep it as your digital identity.</div><div class='brand-manual-grid'><input class='input' id='manualBrandDomain' placeholder='e.g. arvoliving.com' value='"+esc(social.domain||"")+"'><button class='btn' onclick='useManualDomain()'>Use my domain →</button></div></div>","<button class='btn primary' onclick='generateBrandModule(\"digital\")'>Refresh digital direction ↻</button>")+
       moduleCard("story","05","Product story","Give product pages, sales and ads one consistent narrative.","<div class='brand-copy'><b>"+escHtml(story.hook)+"</b><p>"+escHtml(story.body)+"</p><p><b>Content rhythm:</b> "+escHtml(story.content)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"story\")'>"+(saved.story?"Refine story":"Generate story")+" →</button>")+
       moduleCard("packaging","06","Packaging","Make the physical experience feel like your brand, not a supplier parcel.","<div class='brand-copy'><p><b>Front:</b> "+escHtml(packaging.front)+"</p><p><b>Inside:</b> "+escHtml(packaging.inside)+"</p><p><b>Rule:</b> "+escHtml(packaging.rule)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"packaging\")'>"+(saved.packaging?"Refine packaging":"Generate packaging")+" →</button>")+
       moduleCard("launch","07","Launch system","Give marketing a repeatable message instead of random creative ideas.","<div class='brand-copy'><b>"+escHtml(launch.message)+"</b><div class='brand-angle-list'>"+launch.angles.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p><b>Channels:</b> "+escHtml(launch.channels)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"launch\")'>"+(saved.launch?"Refine launch system":"Generate launch system")+" →</button>")+
@@ -633,7 +643,7 @@ function generateBrandModule(key){
   const category=String(p.category||state.profile?.category||"").toLowerCase();
   const b=state.brandStudio||{};
   if(key==="positioning"){b.positioning=true;b.direction=b.direction||{};b.direction.position="Position "+core+" around a specific customer problem and a believable benefit—not around generic category language.";}
-  if(key==="naming"){b.naming=true;b.names=category.includes("bag")?["Carry & Co.","Form House","Novera Goods"]:category.includes("footwear")?["Stride House","Northstar Goods","Form & Sole"]:["Northstar & Co.","Form House","Novera Goods"];}
+  if(key==="naming"){b.naming=true;b.nameRefreshCount=Number(b.nameRefreshCount||0)+1;b.names=generateNameSet(p,b.nameRefreshCount);}
   if(key==="productNaming"){b.productNaming=true;b.productNames=[core+" Essential",core+" Signature",core+" Everyday"];}
   if(key==="digital"){
     b.digital=true;
@@ -647,6 +657,31 @@ function generateBrandModule(key){
   state.brandStudio=b;persistProfile();render();toast(key.charAt(0).toUpperCase()+key.slice(1)+" module updated.");
 }
 
+function generateNameSet(p,cycle){
+  const cat=String(p.category||state.profile?.category||"").toLowerCase();
+  const seedNames={
+    bag:[["Carryva","Mora & Co.","Veyra Living"],["Lunaro","Cove & Form","Avela Goods"],["Vanta Carry","Nomi House","Sora & Co."],["Orla Goods","Maven Carry","Velora"],["Cora & Lane","Aster Carry","Nove & Co."]],
+    footwear:[["Stride House","Solevia","Form & Sole"],["Veyro","Northline Goods","Aero & Co."],["Morrow Sole","Crest Footwear","Nexa Step"],["Urban Form","Vanta Sole","Rove Goods"],["Solaire Goods","North & Sole","Aven Step"]],
+    beauty:[["Nura Form","Velune Beauty","Mira & Co."],["Aurelia Labs","Novi Skin","Luma Form"],["Veya Beauty","Serein Labs","Mora Skin"],["Elora Care","Nuvia","Sola Beauty"],["Aven Beauty","Ciela Labs","Viora"]],
+    home:[["Hearth & Form","Mora Home","Nove Living"],["Cedar & Co.","Vela Home","Aster Living"],["Forma Home","Luno Living","Nora House"],["Maven Home","Cove & Form","Veya Living"],["Arden Home","Novi Living","Luma House"]],
+    default:[["Northstar & Co.","Form House","Novera Goods"],["Morrow & Co.","Vela Goods","Aster House"],["Novi & Co.","Crest Goods","Mora House"],["Veyra Goods","Northline Co.","Luno House"],["Aven & Co.","Cove Goods","Sora House"]]
+  };
+  const group=cat.includes("bag")?seedNames.bag:cat.includes("footwear")||cat.includes("shoe")?seedNames.footwear:cat.includes("beauty")?seedNames.beauty:cat.includes("home")?seedNames.home:seedNames.default;
+  return group[Math.abs(Number(cycle||0))%group.length];
+}
+function useManualBrandName(){
+  const input=document.getElementById("manualBrandName");
+  const name=(input?.value||"").trim();
+  if(name.length<2)return toast("Enter your company or brand name first.");
+  const b=state.brandStudio||{};
+  b.chosenName=name;b.names=[name,...(b.names||[]).filter(x=>x!==name).slice(0,2)];
+  b.naming=true;
+  const h=name.toLowerCase().replace(/[^a-z0-9]+/g,"").replace(/[^a-z0-9]+/g,"");
+  const handle=h||"yourbrand";
+  b.social={facebook:handle,instagram:handle,domain:(b.social?.domain||handle+".com")};
+  b.digital=true;
+  state.brandStudio=b;persistProfile();render();toast("Your brand name is now the active identity.");
+}
 function selectBrandName(i){
   const b=state.brandStudio||{};
   const names=b.names||["Northstar & Co.","Form House","Novera Goods"];
@@ -654,9 +689,18 @@ function selectBrandName(i){
   b.chosenName=names[i]||names[0];
   const h=String(b.chosenName).toLowerCase().replace(/[^a-z0-9]+/g,"");
   b.social={facebook:h,instagram:h,domain:h+".com"};
+  b.naming=true;b.digital=true;
   b.digital=true;
   state.brandStudio=b;
   persistProfile();render();toast("Company / brand name selected. Digital identity updated to match.");
+}
+function useManualDomain(){
+  const input=document.getElementById("manualBrandDomain");
+  const domain=(input?.value||"").trim().toLowerCase().replace(/^https?:\/\//,"").replace(/\/$/,"");
+  if(!domain || !domain.includes("."))return toast("Enter a valid domain, such as yourbrand.com.");
+  const b=state.brandStudio||{};b.social=b.social||{};
+  b.social.domain=domain;b.digital=true;
+  state.brandStudio=b;persistProfile();render();toast("Your domain is now the active digital identity.");
 }
 function selectProductName(i){
   const b=state.brandStudio||{};

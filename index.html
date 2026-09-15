@@ -51,7 +51,7 @@
 .brand-suggestion-count{color:#79cfa6;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
 @media(max-width:1100px){.cj-results{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.cj-results{grid-template-columns:1fr}.brand-manual-grid,.brand-domain-grid{grid-template-columns:1fr}.brand-name-option{align-items:flex-start;flex-direction:column}.brand-name-option small{white-space:normal}}
 
-{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(900px 650px at 70% 0,#173c2e 0,transparent 60%),var(--bg)}
+.onboarding{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(900px 650px at 70% 0,#173c2e 0,transparent 60%),var(--bg)}
 .onboarding-card{width:min(1100px,100%);padding:clamp(24px,5vw,56px);border:1px solid #29483b;border-radius:28px;background:#09150fef;box-shadow:0 30px 100px #0008}
 .locked-profile{margin-top:16px;padding:15px;border:1px solid #29483b;border-radius:15px;background:#091510}
 
@@ -760,7 +760,10 @@ const SUPABASE_PUBLISHABLE_KEY="sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW";
 const FX_RATE_URL=SUPABASE_URL+"/functions/v1/fx-rate";
 const SHOPIFY_BASIC_MONTHLY_USD=39;
 const SHOPIFY_BASIC_YEARLY_USD=29;
-const FORGE_USD_BDT_RATE=130;\nconst FORGE_VAT_RATE=0.15;\nconst FORGE_BILLING_USD_BDT=FORGE_USD_BDT_RATE*(1+FORGE_VAT_RATE);\nlet forgeFxRate=FORGE_BILLING_USD_BDT;
+const FORGE_USD_BDT_RATE=130;
+const FORGE_VAT_RATE=0.15;
+const FORGE_BILLING_USD_BDT=FORGE_USD_BDT_RATE*(1+FORGE_VAT_RATE);
+let forgeFxRate=FORGE_BILLING_USD_BDT;
 let forgeFxSource="Google Finance";
 let forgeFxFetchedAt=null;
 let forgeFxLoading=false;
@@ -809,7 +812,9 @@ async function refreshForgeFxRate(){
     const res=await fetch(FX_RATE_URL,{headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+SUPABASE_PUBLISHABLE_KEY}});
     const data=await res.json();
     if(!res.ok||!data.ok||!Number(data.rate))throw new Error(data.error||"FX rate unavailable");
-    // Forge launch pricing uses a fixed BDT 130/USD base plus 15% VAT.\n    // Keep the external FX service available for diagnostics, but never use its market rate for customer billing.\n    forgeFxRate=FORGE_BILLING_USD_BDT;
+    // Forge launch pricing uses a fixed BDT 130/USD base plus 15% VAT.
+    // Keep the external FX service available for diagnostics, but never use its market rate for customer billing.
+    forgeFxRate=FORGE_BILLING_USD_BDT;
     forgeFxSource=data.source||"Google Finance";
     forgeFxFetchedAt=data.fetchedAt||new Date().toISOString();
     render();

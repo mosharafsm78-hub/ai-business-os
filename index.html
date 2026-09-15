@@ -52,8 +52,8 @@ const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
 const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,sourcingQueue:savedQueue,chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
-function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,sourcingQueue:state.sourcingQueue}))}
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,sourcingQueue:savedQueue,chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,sourcingQueue:state.sourcingQueue}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
 const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
@@ -349,11 +349,12 @@ function addCjToQueue(i){
   state.selectedProduct=item;
   state.planStatus="preparing";
   state.planRequestedAt=new Date().toISOString();
+  state.planEtaMinutes=10+Math.abs(String(p.id||p.name||"").split("").reduce((a,ch)=>a+ch.charCodeAt(0),0))%41;
   state.business=state.business||{name:(state.profile?.occupation||"My Business"),budget:Number(state.profile?.budget||0)};
-  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,sourcingQueue:state.sourcingQueue}))}catch(e){}
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,sourcingQueue:state.sourcingQueue}))}catch(e){}
   closeModal();
   toast("Product confirmed — draft order created. Business plan preparation started.");
-  go("orders");
+  go("plan");
 }
 
 function render(){let pages={home,advisor,ideas,products,plan,orders,brand,store,marketing,support,analytics};if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();return}document.getElementById("app").innerHTML=shell(pages[state.page]());if(state.page==="products")setTimeout(autoCjSearch,0)}

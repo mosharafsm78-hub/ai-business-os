@@ -760,7 +760,7 @@ function domainLivePriceLabel(result){
 function domainLaunchNotice(domain){
   const r=domainResult(domain);
   if(!r)return "";
-  if(r.status==="available")return "<div class='notice domain-handoff-success'><b>✓ "+esc(domain)+" is available.</b><span>Forge moved this domain into Store Launch. Review the live registration price there.</span><button class='btn primary' onclick='go("store")'>Continue to Store Launch →</button></div>";
+  if(r.status==="available")return "<div class='notice domain-handoff-success'><b>✓ "+esc(domain)+" is available.</b><span>Forge moved this domain into Store Launch. Review the live registration price there.</span><button class='btn primary' onclick='go(\"store\")'>Continue to Store Launch →</button></div>";
   if(r.status==="taken")return "<div class='notice danger'><b>"+esc(domain)+" is already registered.</b><span>This domain will not be used for your store. Choose another domain and check it before moving to Store Launch.</span></div>";
   if(r.status==="likely_available")return "<div class='notice'><b>"+esc(domain)+" looks available.</b><span>Forge has not received an exact registrar result, so it will not treat this domain as purchase-ready yet.</span></div>";
   return "";
@@ -918,7 +918,7 @@ function store(){
         ? "<button class='btn primary' onclick=\"toast('Store preview is being prepared')\">Preview completed store ↗</button>"
         : "<button class='btn primary' onclick='payStoreLaunch()'>Pay ৳5,000 & start build →</button>";
   const domainReady=!!bill.hasCustomDomain;
-  const domainAttention=readyForInvoice&&!domainReady&&s.status!=="building"&&s.status!=="ready"?"<div class='notice danger' style='margin-bottom:15px'><b>Domain selection still needs attention.</b><span>The suggested domain is not confirmed as available, so Forge will not put it on the invoice or pretend it is yours.</span><button class='btn' onclick='go("brand")'>Check / change domain →</button></div>":"";
+  const domainAttention=readyForInvoice&&!domainReady&&s.status!=="building"&&s.status!=="ready"?"<div class='notice danger' style='margin-bottom:15px'><b>Domain selection still needs attention.</b><span>The suggested domain is not confirmed as available, so Forge will not put it on the invoice or pretend it is yours.</span><button class='btn' onclick='go(\"brand\")'>Check / change domain →</button></div>":"";
   return "<div class='hero store-launch-hero'><div><div class='eyebrow'>STORE LAUNCH · AUTOMATED BUILD</div><div class='h1'>Pay once. Forge builds the store around your decisions.</div><div class='sub'>You already chose the product, company name, customer-facing product name and digital identity. Store Launch turns those approved decisions into a working storefront instead of asking you to build everything yourself.</div></div><div class='actions'>"+primaryButton+"</div></div>"+
   "<div class='store-build-banner card'><div><div class='eyebrow'>BUILD STATUS</div><h2>"+statusTitle+"</h2><p class='small'>"+statusText+"</p></div><div class='store-build-meter'><b>"+(s.status==="building"?progress+"%":s.status==="ready"?"100%":"NOT STARTED")+"</b>"+(s.status==="building"||s.status==="ready"?"<div class='progress'><i style='width:"+progress+"%'></i></div>":"<div class='progress'><i style='width:0%'></i></div>")+"</div></div>"+
   "<div class='store-build-grid'>"+

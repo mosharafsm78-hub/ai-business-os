@@ -51,11 +51,12 @@
 const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:saved?.selectedProduct||null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:saved?.planStatus||null,planRequestedAt:saved?.planRequestedAt||null,sourcingQueue:saved?.sourcingQueue||[],chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,sourcingQueue:savedQueue,chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
 function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,sourcingQueue:state.sourcingQueue}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
-const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Sourcing & Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
+const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
 const BDT=n=>"৳"+Number(n||0).toLocaleString("en-BD");
 const pct=n=>Math.round(Number(n)||0)+"%";
 function nav(){return navItems.map(x=>"<button class='nav "+(state.page===x[0]?"active":"")+"' onclick=\"go('"+x[0]+"')\"><span class='ico'>"+x[1]+"</span>"+x[2]+"</button>").join("")}
@@ -145,13 +146,13 @@ function liveEconomics(p){
 }
 function productLabHeader(){
   const p=state.selectedProduct;
-  return "<div class='hero'><div><div class='eyebrow'>Product Lab · live catalogue intelligence</div><div class='h1'>Forge finds the products. You choose the one.</div><div class='sub'>Forge privately checks the connected supplier catalogue using your locked entrepreneur profile, then shows a small shortlist of real products. Supplier branding stays behind the system.</div></div><div class='actions'><button class='btn' onclick=\"go('ideas')\">Change business direction</button>"+(p?"<button class='btn primary' onclick=\"go('orders')\">Sourcing & Orders →</button>":"")+"</div></div>";
+  const direction=state.selectedOpportunityName||state.profile?.category||"your business direction";
+  return "<div class='hero'><div><div class='eyebrow'>Product Lab · personalized sourcing</div><div class='h1'>Products chosen for your business.</div><div class='sub'>Forge is matching real supplier products to <b>"+esc(direction)+"</b>, your locked capital, risk capacity, market and time. You do not browse a supplier marketplace here.</div></div><div class='actions'><button class='btn' onclick="go('ideas')">Change business direction</button>"+(p?"<button class='btn primary' onclick=\"go('orders')\">Orders →</button>":"")+"</div></div>";
 }
-function products(){
-  return productLabHeader()+
-  "<div class='notice'><div class='row' style='justify-content:space-between;gap:16px'><div><b>Personalized product shortlist</b><div class='small'>No manual marketplace browsing. Forge selects products from the connected supplier network according to your capital, risk capacity, time, market and business direction.</div></div><span class='pill online'>● LIVE SUPPLIER DATA</span></div></div>"+
-  cjPanel();
+function cjPanel(){
+  return "<section class='cj-live'><div class='cj-head'><div><div class='eyebrow'>PERSONALIZED PRODUCT SOURCING</div><h2>We found these products for you</h2><div class='small'>Real supplier images, names, current supplier prices and stock data. Forge calculates the Bangladesh planning economics underneath.</div></div><div class='cj-live-note'><span class='pill online'>● LIVE PRICE CHECK</span><div class='small' id='cjstatus' style='margin-top:8px'>Selecting products from the connected supplier catalogue…</div></div></div><div class='cj-toolbar'><div class='cj-count' id='cjmeta'>Finding 6 relevant products…</div><div class='cj-fresh' id='cjfresh'>Supplier data checked live</div></div><div id='cjresults' class='cj-results'><div class='cj-empty cj-loading'><b>Finding products for your profile…</b><br><span class='small'>This can take a few seconds.</span></div></div></section>";
 }
+function products(){return productLabHeader()+cjPanel();}
 function goPlan(){go("plan")}
 function goOrders(){go("orders")}
 
@@ -163,19 +164,24 @@ function landedCost(){let p=state.selectedProduct||opportunities()[0];let d=prod
 function recommendedBatch(d){let p=state.profile,base=d.batch;if(p.risk==="Conservative"||p.riskCapacity==="Low")return Math.max(12,Math.round(base*.6));if(p.risk==="Aggressive"&&p.budget>=500000)return Math.round(base*1.75);if(p.budget>=1000000&&p.riskCapacity==="High")return Math.round(base*1.4);return base}
 function personalizedPlan(d){let p=state.profile,mode=planMode(p);if(mode==="Scale-ready")return ["Validate supplier samples and negotiate commercial terms across 2–3 qualified suppliers.","Launch with "+recommendedBatch(d)+" units plus a controlled content and paid-acquisition system.","Build a hero SKU, supporting bundle and clear repeat/reorder logic.","Scale winning creatives and channels only while CAC and contribution stay inside the locked model.","Expand supplier depth, wholesale/retail channels and SKU range only after validated sell-through."];if(mode==="Capital-protective")return ["Sample from multiple suppliers; do not place a large first PO.","Start with "+recommendedBatch(d)+" units or a pre-order/limited-drop validation.","Use low-cost content and customer interviews before heavy paid acquisition.","Reorder only after strong sell-through, positive contribution and acceptable returns.","Keep the majority of unused capital protected until the business proves repeatability."];return ["Validate the offer with samples and 15–30 target-customer conversations.","Start with "+recommendedBatch(d)+" units and keep a protected cash reserve.","Run controlled content and paid tests; cut weak creatives and SKUs quickly.","Reorder only when sell-through and contribution meet the Forge scale trigger.","Use the first 30–60 days to turn the winning product into a repeatable acquisition system."]}
 function orders(){
-  const b=state.business||{budget:Number(state.profile?.budget||0)};
   const queue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
-  const selected=state.selectedProduct, e=selected?.economics;
-  const queueHtml=queue.length?queue.map((p,i)=>"<tr><td>#SRC-"+String(i+1).padStart(4,"0")+"</td><td><div class='row' style='gap:9px'><img src='"+esc(p.image)+"' style='width:52px;height:52px;border-radius:8px;object-fit:contain;background:#10231b'><div><b>"+esc(p.name)+"</b><div class='small'>"+esc(p.sku||"—")+"</div></div></div></td><td>"+moneyUsd(p.priceUsd)+"<div class='small'>≈ "+BDT(bdtEstimate(p.priceUsd))+"</div></td><td>"+formatQty(p.inventory)+"</td><td><span class='status amber'>Confirmed · procurement pending</span></td><td><button class='btn' onclick='reviewQueued("+i+")'>Review</button></td></tr>").join(""):"<tr><td colspan='6'><div class='cj-empty'>No product confirmed yet. Product Lab will place the chosen product here.</div></td></tr>";
-  return "<div class='hero'><div><div class='eyebrow'>Sourcing & Orders · confirmed products</div><div class='h1'>Your chosen product is now in procurement.</div><div class='sub'>This is the operational handoff from Product Lab. The exact supplier record is retained here; no supplier order is created until the final variant, quantity, shipping and payment are approved.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Compare products</button>"+(selected?"<button class='btn primary' onclick=\"go('plan')\">View product business plan →</button>":"")+"</div></div>"+
-  "<div class='grid'><div class='card span3'><div class='label'>Available capital</div><div class='stat'>"+BDT(b.budget)+"</div></div><div class='card span3'><div class='label'>Confirmed products</div><div class='stat'>"+queue.length+"</div></div><div class='card span3'><div class='label'>Current supplier price</div><div class='stat'>"+(selected?BDT(bdtEstimate(selected.priceUsd)):"—")+"</div></div><div class='card span3'><div class='label'>Procurement status</div><div class='stat' style='font-size:20px'>"+(selected?"READY":"EMPTY")+"</div></div>"+
-  (selected?"<div class='section'><div><h2>Confirmed hero product</h2><p>This exact supplier product is the one Forge will use for the business plan and procurement workflow.</p></div></div><div class='card'><div class='row' style='justify-content:space-between;gap:18px'><div class='row' style='gap:14px'><img src='"+esc(selected.image)+"' style='width:96px;height:96px;border-radius:14px;object-fit:contain;background:#10231b'><div><div class='eyebrow'>CONFIRMED PRODUCT</div><h2 style='margin:5px 0'>"+esc(selected.name)+"</h2><div class='small'>SKU "+esc(selected.sku||"—")+" · "+esc(selected.category||"")+"</div></div></div><div style='text-align:right'><div class='label'>Live supplier price</div><b style='font-size:26px'>"+moneyUsd(selected.priceUsd)+"</b><div class='small'>≈ "+BDT(bdtEstimate(selected.priceUsd))+"</div></div></div><div class='locked-grid' style='margin-top:18px'><div class='locked-item'><div class='label'>Estimated landed</div><div class='v'>"+BDT(e?.landed)+"</div></div><div class='locked-item'><div class='label'>Estimated selling</div><div class='v'>"+BDT(e?.selling)+"</div></div><div class='locked-item'><div class='label'>Marketing / CAC</div><div class='v'>"+BDT(e?.cac)+"</div></div><div class='locked-item'><div class='label'>Estimated contribution</div><div class='v'>"+BDT(e?.contribution)+"</div></div></div></div>":"")+
-  "<div class='section'><div><h2>Confirmed sourcing queue</h2><p>Products selected in Product Lab appear here automatically.</p></div></div><div class='card'><table class='table'><thead><tr><th>Reference</th><th>Product</th><th>Live supplier price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead><tbody>"+queueHtml+"</tbody></table></div>"+
-  "<div class='section'><h2>Procurement controls</h2></div><div class='grid'>"+["Recheck the exact variant / SKU and current supplier price.","Recheck live inventory and delivery route before payment.","Calculate final freight, duties, payment fees and final landed cost.","Confirm quantity and customer commitment before supplier payment.","Only then create the supplier purchase order."].map((x,i)=>"<div class='card span4'><b>"+(i+1)+" · "+x+"</b><p class='small'>This keeps the customer's confirmed product separate from the final cash commitment.</p></div>").join("")+"</div>";
+  const rows=queue.length?queue.map((p,i)=>{
+    const status=p.orderStatus==="placed"?"Order placed":p.orderStatus==="processing"?"Processing":"Draft · ready for final approval";
+    const statusClass=p.orderStatus==="placed"?"green":"amber";
+    return "<tr><td><b>"+esc(p.orderRef||("#"+String(i+1).padStart(4,"0")))+"</b><div class='small'>"+new Date(p.selectedAt||Date.now()).toLocaleDateString("en-BD")+"</div></td>"+
+      "<td><div class='row' style='gap:10px'><img src='"+esc(p.image)+"' style='width:58px;height:58px;border-radius:10px;object-fit:contain;background:#10231b'><div><b>"+esc(p.name)+"</b><div class='small'>SKU "+esc(p.sku||"—")+"</div></div></div></td>"+
+      "<td><b>"+moneyUsd(p.priceUsd)+"</b><div class='small'>≈ "+BDT(bdtEstimate(p.priceUsd))+" supplier cost</div></td>"+
+      "<td>"+formatQty(p.inventory)+"</td><td><span class='status "+statusClass+"'>"+status+"</span></td>"+
+      "<td><button class='btn' onclick='reviewQueued("+i+")'>Open order →</button></td></tr>";
+  }).join(""):"<tr><td colspan='6'><div class='cj-empty' style='padding:45px'><b>No orders yet.</b><br><span class='small'>Choose a product in Product Lab and it will appear here as a draft order.</span><br><button class='btn primary' style='margin-top:14px' onclick=\"go('products')\">Open Product Lab →</button></div></td></tr>";
+  return "<div class='hero'><div><div class='eyebrow'>Orders</div><div class='h1'>Your orders, in one place.</div><div class='sub'>Product Lab creates a draft order from the exact product you choose. Final variant, quantity, shipping and payment are approved here before any supplier purchase is made.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Find another product</button>"+(queue.length?"<button class='btn primary' onclick=\"go('plan')\">View business plan →</button>":"")+"</div></div>"+
+  "<div class='grid'><div class='card span4'><div class='label'>Total orders</div><div class='stat'>"+queue.length+"</div></div><div class='card span4'><div class='label'>Draft orders</div><div class='stat'>"+queue.filter(x=>x.orderStatus==="draft").length+"</div></div><div class='card span4'><div class='label'>Placed orders</div><div class='stat'>"+queue.filter(x=>x.orderStatus==="placed").length+"</div></div></div>"+
+  "<div class='section'><div><h2>Order list</h2><p>Only customer orders appear here. Supplier catalogue browsing stays inside Product Lab.</p></div></div>"+
+  "<div class='card'><div style='overflow:auto'><table class='table'><thead><tr><th>Order</th><th>Product</th><th>Supplier cost</th><th>Stock</th><th>Status</th><th></th></tr></thead><tbody>"+rows+"</tbody></table></div></div>";
 }
 function reviewQueued(i){
   const p=(state.sourcingQueue||[])[i]; if(!p)return;
-  document.getElementById("modalbox").innerHTML="<div class='row' style='justify-content:space-between'><div><div class='eyebrow'>SOURCING QUEUE</div><h2 style='margin:5px 0'>"+esc(p.name)+"</h2></div><button class='btn' onclick='closeModal()'>✕</button></div><div class='cj-detail-grid' style='margin-top:18px'><img class='cj-detail-img' src='"+esc(p.image)+"'><div><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>≈ "+BDT(bdtEstimate(p.priceUsd))+" planning estimate</div><div class='cj-data'><div>SKU / SPU<b>"+esc(p.sku||"—")+"</b></div><div>Inventory<b>"+formatQty(p.inventory)+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Check at order")+"</b></div><div>Shipping<b>"+(p.freeShipping?"Free shipping":"Not confirmed")+"</b></div></div></div></div><div class='cj-order-note'>The current sourcing cost is not the final customer price. Final landed cost must include freight, duties, packaging, payment fees, returns and the selected customer's locked risk profile.</div><div class='actions' style='margin-top:16px'><button class='btn primary' onclick='closeModal();toast(&quot;Order confirmation flow is the next procurement step&quot;)'>Continue to order review →</button><button class='btn' onclick='closeModal()'>Close</button></div>";
+  document.getElementById("modalbox").innerHTML="<div class='row' style='justify-content:space-between'><div><div class='eyebrow'>ORDER</div><h2 style='margin:5px 0'>"+esc(p.name)+"</h2></div><button class='btn' onclick='closeModal()'>✕</button></div><div class='cj-detail-grid' style='margin-top:18px'><img class='cj-detail-img' src='"+esc(p.image)+"'><div><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>≈ "+BDT(bdtEstimate(p.priceUsd))+" planning estimate</div><div class='cj-data'><div>SKU / SPU<b>"+esc(p.sku||"—")+"</b></div><div>Inventory<b>"+formatQty(p.inventory)+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Check at order")+"</b></div><div>Shipping<b>"+(p.freeShipping?"Free shipping":"Not confirmed")+"</b></div></div></div></div><div class='cj-order-note'>The current sourcing cost is not the final customer price. Final landed cost must include freight, duties, packaging, payment fees, returns and the selected customer's locked risk profile.</div><div class='actions' style='margin-top:16px'><button class='btn primary' onclick='closeModal();toast(&quot;Order confirmation flow is the next procurement step&quot;)'>Continue to order review →</button><button class='btn' onclick='closeModal()'>Close</button></div>";
   document.getElementById("modal").classList.add("open");
 }
 
@@ -221,6 +227,58 @@ function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&l
 function bdtEstimate(usd){return Math.round(Number(usd||0)*CJ_USD_BDT)}
 function moneyUsd(v){return "$"+Number(v||0).toFixed(2)}
 function formatQty(v){return Number(v||0).toLocaleString("en-US")}
+
+function cjRecommendationKeyword(){
+  const p=state.profile||{};
+  const d=String(state.selectedOpportunityName||"").toLowerCase();
+  const cat=String(p.category||"").toLowerCase();
+  if(d.includes("footwear")||d.includes("shoe")) return "men sneakers";
+  if(d.includes("carry")||d.includes("bag")) return "women handbags";
+  if(d.includes("fragrance")) return "home fragrance diffuser";
+  if(d.includes("watch")) return "men watches";
+  if(d.includes("beauty")) return "beauty personal care";
+  if(d.includes("fitness")) return "fitness accessories";
+  if(d.includes("private-label")||d.includes("private label")){
+    if(cat.includes("beauty")) return "beauty personal care";
+    if(cat.includes("home")) return "home organization";
+    if(cat.includes("sports")) return "fitness accessories";
+    return "fashion accessories";
+  }
+  if(cat.includes("fashion")) return "fashion accessories";
+  if(cat.includes("beauty")) return "beauty personal care";
+  if(cat.includes("home")) return "home living";
+  if(cat.includes("electronics")) return "consumer electronics";
+  if(cat.includes("sports")) return "fitness accessories";
+  return "fashion accessories";
+}
+async function fetchCjKeyword(keyword,page=1){
+  const url=CJ_PROXY+"?keyword="+encodeURIComponent(keyword)+"&page="+page+"&size=24";
+  const r=await fetch(url);
+  const j=await r.json();
+  if(!r.ok||!j.ok) throw Error(j.error||"The connected supplier catalogue could not be reached.");
+  return j;
+}
+async function autoCjSearch(){
+  const box=document.getElementById("cjresults"),status=document.getElementById("cjstatus"),meta=document.getElementById("cjmeta"),fresh=document.getElementById("cjfresh");
+  if(!box)return;
+  const keyword=cjRecommendationKeyword();
+  if(status)status.textContent="Matching live supplier products to your profile…";
+  if(meta)meta.textContent="Finding 6 relevant products…";
+  box.innerHTML="<div class='cj-empty cj-loading' style='grid-column:1/-1'><b>Finding "+esc(keyword)+" products…</b><br><span class='small'>Forge is checking the connected supplier catalogue now.</span></div>";
+  try{
+    const j=await fetchCjKeyword(keyword,1);
+    cjState=Array.isArray(j.products)?j.products.slice(0,6):[];
+    cjLastFetched=j.fetchedAt||new Date().toISOString();
+    renderCjResults({products:cjState,fetchedAt:cjLastFetched});
+    if(status)status.textContent="Matched to "+keyword+" · live supplier data";
+    if(fresh)fresh.textContent="Checked "+new Date(cjLastFetched).toLocaleTimeString("en-BD",{hour:"2-digit",minute:"2-digit"});
+  }catch(e){
+    cjState=[];
+    box.innerHTML="<div class='cj-empty' style='grid-column:1/-1'><b>Live product matching is temporarily unavailable.</b><br><span class='small'>"+esc(e.message)+"</span><br><br><button class='btn primary' onclick='autoCjSearch()'>Try again</button></div>";
+    if(status)status.textContent="Supplier connection needs another try";
+    if(meta)meta.textContent="No supplier products loaded";
+  }
+}
 
 async function cjSearch(page=1){
   const q=(document.getElementById("cjq")?.value||"").trim();
@@ -285,7 +343,7 @@ function addCjToQueue(i){
   const p=cjState[i]; if(!p)return;
   const e=liveEconomics(p);
   state.sourcingQueue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
-  const item={...p,economics:e,selectedAt:new Date().toISOString(),sourceType:"connected_supplier",planStatus:"preparing",planRequestedAt:new Date().toISOString()};
+  const item={...p,economics:e,selectedAt:new Date().toISOString(),sourceType:"connected_supplier",orderStatus:"draft",orderRef:"FORGE-"+new Date().toISOString().replace(/\D/g,"").slice(0,14),planStatus:"preparing",planRequestedAt:new Date().toISOString()};
   const existing=state.sourcingQueue.findIndex(x=>x.id===p.id);
   if(existing>=0)state.sourcingQueue[existing]=item;else state.sourcingQueue.unshift(item);
   state.selectedProduct=item;
@@ -294,11 +352,11 @@ function addCjToQueue(i){
   state.business=state.business||{name:(state.profile?.occupation||"My Business"),budget:Number(state.profile?.budget||0)};
   try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,sourcingQueue:state.sourcingQueue}))}catch(e){}
   closeModal();
-  toast("Product confirmed — moved to Sourcing & Orders. Business plan preparation started.");
+  toast("Product confirmed — draft order created. Business plan preparation started.");
   go("orders");
 }
 
-function render(){let pages={home,advisor,ideas,products,plan,orders,brand,store,marketing,support,analytics};if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();return}document.getElementById("app").innerHTML=shell(pages[state.page]())}
+function render(){let pages={home,advisor,ideas,products,plan,orders,brand,store,marketing,support,analytics};if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();return}document.getElementById("app").innerHTML=shell(pages[state.page]());if(state.page==="products")setTimeout(autoCjSearch,0)}
 render();
 </script>
 </body>

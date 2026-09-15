@@ -28,6 +28,9 @@
 .onboarding-card{width:min(1100px,100%);padding:clamp(24px,5vw,56px);border:1px solid #29483b;border-radius:28px;background:#09150fef;box-shadow:0 30px 100px #0008}
 .locked-profile{margin-top:16px;padding:15px;border:1px solid #29483b;border-radius:15px;background:#091510}
 
+
+/* FORGE_CJ_LIVE_SOURCING */
+.cj-live{margin-top:18px;padding:18px;border:1px solid #29483b;border-radius:18px;background:#091610}.cj-search{display:grid;grid-template-columns:1fr 140px auto;gap:9px}.cj-results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.cj-card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0b1914}.cj-card img{width:100%;height:170px;object-fit:contain;background:#13231d}.cj-card-body{padding:13px}.cj-card-body h3{margin:7px 0}.cj-price{font-size:19px;font-weight:850}.cj-empty{padding:18px;border:1px dashed #315546;border-radius:12px;color:var(--muted);text-align:center}@media(max-width:800px){.cj-results{grid-template-columns:1fr 1fr}}@media(max-width:560px){.cj-search{grid-template-columns:1fr}.cj-results{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -138,6 +141,17 @@ function answer(v){let s=v.toLowerCase(),p=state.selectedProduct||opportunities(
 function go(p){state.page=p;render();window.scrollTo({top:0,behavior:"smooth"})}
 function toast(t){let e=document.getElementById("toast");e.textContent=t;e.style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>e.style.display="none",2500)}
 function onboardingLanding(){return "<div class='onboarding'><div class='onboarding-card'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='eyebrow' style='margin-top:32px'>Step 0 · before the dashboard</div><div class='h1'>Tell Forge who you are.<br>Then we build around you.</div><p class='sub'>You will not see the full operating system until your entrepreneur profile is complete. Capital, income, expenses, risk, experience and time become locked decision inputs.</p><div class='grid' style='margin-top:25px'><div class='card span4'><b>01 · Your reality</b><p class='small'>Income, expenses, capital and reserve.</p></div><div class='card span4'><b>02 · Your risk</b><p class='small'>Risk appetite, risk capacity and loss tolerance.</p></div><div class='card span4'><b>03 · Your direction</b><p class='small'>Category, goal, time, skills and business model.</p></div></div><button class='btn primary' style='margin-top:24px;padding:14px 20px' onclick='openWizard()'>Start my Forge profile →</button><p class='small' style='margin-top:12px'>Your profile is private to this browser session and stored locally for continuity.</p></div></div>"}
+
+/* FORGE_CJ_LIVE_SOURCING */
+const CJ_PROXY="https://pmyfswozvkdpqgnsiibf.supabase.co/functions/v1/cj-products";
+let cjState=[];
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\":"&quot;","'":"&#039;"}[m]))}
+async function cjSearch(){const q=(document.getElementById("cjq")?.value||"").trim(),box=document.getElementById("cjresults");if(!q){toast("Enter a product keyword");return}box.innerHTML="<div class='cj-empty'>Searching live supplier catalogue…</div>";try{const r=await fetch(CJ_PROXY+"?keyword="+encodeURIComponent(q)+"&size=12");const j=await r.json();if(!r.ok||!j.ok)throw Error(j.error||"Supplier connection is not configured.");cjState=j.products||[];box.innerHTML=cjState.map((p,i)=>"<div class='cj-card'>"+(p.image?"<img src='"+esc(p.image)+"' loading='lazy'>":"")+"<div class='cj-card-body'><span class='tag'>LIVE SUPPLIER</span><h3>"+esc(p.name)+"</h3><div class='cj-price'>$"+Number(p.priceUsd||0).toFixed(2)+"</div><div class='small'>"+esc(p.category||"Category not supplied")+" · SKU "+esc(p.sku||"—")+"</div><button class='btn primary' style='margin-top:10px;width:100%' onclick='selectCj("+i+")'>Use this product →</button></div></div>").join("")||"<div class='cj-empty'>No products found.</div>"}catch(e){box.innerHTML="<div class='cj-empty'><b>Live sourcing is waiting for the secure supplier credential.</b><br><span class='small'>"+esc(e.message)+"</span></div>"}}
+function selectCj(i){const p=cjState[i];if(!p)return;state.selectedProduct={name:p.name,icon:"◈",margin:0,cap:0,risk:"Live",thesis:"Live supplier product selected.",time:0,experience:"Live",cj:p};state.page="products";render();toast("Live supplier product selected")}
+function cjPanel(){return "<div class='cj-live'><div class='eyebrow'>REAL-TIME PRODUCT SOURCING</div><h2 style='margin:6px 0'>Find a product from the supplier catalogue</h2><p class='small'>Search returns supplier images and current supplier pricing. Forge then applies its locked Bangladesh planning model.</p><div class='cj-search'><input id='cjq' class='input' placeholder='e.g. leather loafer, handbag, watch' onkeydown='if(event.key===\"Enter\")cjSearch()'><button class='btn primary' onclick='cjSearch()'>Search live</button><button class='btn' onclick='document.getElementById(\"cjq\").value=\"\"'>Clear</button></div><div id='cjresults'><div class='cj-empty'>Enter a keyword to search.</div></div></div>"}
+const _forgeProducts=products;
+products=function(){const html=_forgeProducts();return html+cjPanel()};
+
 function render(){let pages={home,advisor,ideas,products,plan,orders,brand,store,marketing,support,analytics};if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();return}document.getElementById("app").innerHTML=shell(pages[state.page]())}
 render();
 </script>

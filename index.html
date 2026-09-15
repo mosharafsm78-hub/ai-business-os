@@ -1094,6 +1094,7 @@ function render(){
   try{
     document.getElementById("app").innerHTML=shell(pageFn());
     if(state.page==="products")setTimeout(autoCjSearch,0);
+    if(state.page==="plan" && state.planStatus==="preparing")setTimeout(()=>{ if(state.page==="plan") render(); },500);
   }catch(err){
     console.error("Forge render error",state.page,err);
     const detail=esc(String(err&&err.message||err));

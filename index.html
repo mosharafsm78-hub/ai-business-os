@@ -756,16 +756,18 @@ function domainCheckLabel(domain){
   if(!r)return "Availability not checked";
   if(r.status==="available")return "Available to register";
   if(r.status==="taken")return "Already registered";
+  if(r.status==="setup_required")return "Registrar setup required";
+  if(r.status==="unsupported")return "Extension not supported by registrar API";
   if(r.status==="likely_available")return "Likely available · confirm at registrar";
   return "Check could not be confirmed";
 }
 function domainLivePriceLabel(result){
   if(!result)return "Price shown after availability check";
   if(result.status!=="available")return "Not available for this launch";
-  if(Number(result.priceUsd)>0){
+  if(Number(result.priceAmount ?? result.priceUsd)>0){
     const years=Number(result.priceYears||1);
     const currency=result.priceCurrency||"USD";
-    return currency+" "+Number(result.priceUsd).toFixed(2)+" for "+years+" year"+(years===1?"":"s")+" · LIVE";
+    return currency+" "+Number(result.priceAmount ?? result.priceUsd).toFixed(2)+" for "+years+" year"+(years===1?"":"s")+" · LIVE";
   }
   return result.priceUnavailableReason?"Registrar price unavailable right now":"Waiting for live registrar price";
 }
@@ -777,6 +779,8 @@ function domainLaunchNotice(domain){
     return "<div class='domain-result-card "+(selected?"selected":"")+"'><div><div class='domain-result-title'>✓ "+esc(domain)+" is available</div><div class='domain-result-price'>"+esc(domainLivePriceLabel(r))+"</div><div class='small'>Verified by the connected registrar. Forge will use this exact domain for Store Launch only after you select it.</div></div><div class='domain-result-actions'>"+(selected?"<span class='status'>Selected for Store Launch</span>":"<button class='btn primary' onclick='selectAvailableDomain(\""+esc(domain)+"\")'>Use this domain →</button>")+"<button class='btn' onclick='go(\"store\")'>Open Store Launch</button></div></div>";
   }
   if(r.status==="taken")return "<div class='notice danger'><b>"+esc(domain)+" is already registered.</b><span>This domain cannot be used for this launch. Choose another domain and check it before selecting.</span></div>";
+  if(r.status==="setup_required")return "<div class='notice danger'><b>Registrar connection needs one-time setup.</b><span>Connect the Cloudflare Registrar account to Forge before this domain can be verified or priced.</span></div>";
+  if(r.status==="unsupported")return "<div class='notice danger'><b>"+esc(domain)+" cannot be registered through the connected registrar API.</b><span>Choose another supported extension or domain.</span></div>";
   if(r.status==="likely_available")return "<div class='notice danger'><b>"+esc(domain)+" is not yet registrar-verified.</b><span>Forge only has the RDAP fallback result. The connected Namecheap registrar has not returned an exact availability + price result, so this domain cannot be selected yet.</span></div>";
   return "";
 }
@@ -792,6 +796,8 @@ async function checkDomainAvailability(domain){
     const b=state.brandStudio||{};b.domainChecks=b.domainChecks||{};b.domainChecks[clean]=result;state.brandStudio=b;persistProfile();render();
     if(result.status==="available")toast(clean+" is available to register.");
     else if(result.status==="taken")toast(clean+" is already registered.");
+    else if(result.status==="setup_required")toast("Cloudflare Registrar is not connected yet.");
+    else if(result.status==="unsupported")toast(clean+" is not supported by the connected registrar API.");
     else if(result.status==="likely_available")toast(clean+" looks available, but final registrar confirmation is required.");
     else toast("Forge could not confirm availability for "+clean+".");
   }catch(e){toast("Domain check failed: "+(e.message||"try again"));console.error(e);}
@@ -963,7 +969,7 @@ function store(){
   domainAttention+domainChoicePanel+
   "<div class='store-build-grid'>"+
     "<div class='card store-order-card'><div class='eyebrow'>YOUR BUILD</div><h2>"+esc(brandName)+"</h2><div class='store-selected-product'>"+(p?.image?"<img src='"+esc(p.image)+"' alt='"+esc(productName)+"'>":"")+"<div><b>"+esc(productName)+"</b><div class='small'>Confirmed supplier product · one selected hero product</div></div></div><div class='store-build-details'><div><span>Website</span><b>"+(domain?esc(domain):"Not selected · choose an available domain")+"</b></div><div><span>Brand</span><b>"+esc(brandName)+"</b></div><div><span>Product</span><b>"+esc(productName)+"</b></div><div><span>Estimated completion</span><b>"+(s.status==="building"||s.status==="ready"?eta+" min est.":"Shown after payment")+"</b></div></div></div>"+
-    "<div class='card store-invoice-card'><div class='eyebrow'>LAUNCH INVOICE</div><h2>What you pay</h2><div class='invoice-row'><span>Forge store setup · one time</span><b>৳5,000</b></div><div class='invoice-row'><span>Domain"+(bill.hasCustomDomain?" · "+esc(domain):"")+"</span><b>"+(bill.hasCustomDomain?esc(domainLivePriceLabel(bill.domainResult)):"Select an available domain first")+"</b></div>"+(bill.hasCustomDomain&&bill.domainResult?.priceUsd?"<div class='small domain-price-source'>Live registrar price from Namecheap · "+esc(bill.domainResult.priceType==="premium"?"premium registration":"standard registration")+"</div>":"")+"<div class='invoice-row'><span>Platform / hosting</span><b>Depends on platform</b></div><div class='invoice-row'><span>Optional apps / services</span><b>Only if required</b></div><div class='invoice-total'><span>Forge setup payable now</span><b>৳5,000</b></div><p class='small'>The ৳5,000 is the one-time Forge build fee. Domain registration, Shopify/platform subscription and third-party services are separate variable costs and should never be hidden inside the build fee.</p>"+(s.invoiceRef?"<div class='small'>Invoice "+esc(s.invoiceRef)+"</div>":"")+"</div>"+
+    "<div class='card store-invoice-card'><div class='eyebrow'>LAUNCH INVOICE</div><h2>What you pay</h2><div class='invoice-row'><span>Forge store setup · one time</span><b>৳5,000</b></div><div class='invoice-row'><span>Domain"+(bill.hasCustomDomain?" · "+esc(domain):"")+"</span><b>"+(bill.hasCustomDomain?esc(domainLivePriceLabel(bill.domainResult)):"Select an available domain first")+"</b></div>"+(bill.hasCustomDomain&&(Number(bill.domainResult?.priceAmount ?? bill.domainResult?.priceUsd)>0)?"<div class='small domain-price-source'>Live registrar price from Cloudflare Registrar · "+esc(bill.domainResult.priceType==="premium"?"premium registration":"standard registration")+"</div>":"")+"<div class='invoice-row'><span>Platform / hosting</span><b>Depends on platform</b></div><div class='invoice-row'><span>Optional apps / services</span><b>Only if required</b></div><div class='invoice-total'><span>Forge setup payable now</span><b>৳5,000</b></div><p class='small'>The ৳5,000 is the one-time Forge build fee. Domain registration, Shopify/platform subscription and third-party services are separate variable costs and should never be hidden inside the build fee.</p>"+(s.invoiceRef?"<div class='small'>Invoice "+esc(s.invoiceRef)+"</div>":"")+"</div>"+
   "</div>"+
   "<div class='section'><div><h2>What Forge does after payment</h2><p>No repetitive setup work for the customer. AI prepares the store from the approved business decisions.</p></div></div>"+
   "<div class='store-checklist'>"+checklist.map((x,i)=>"<div class='store-check card'><div class='store-check-number'>"+String(i+1).padStart(2,"0")+"</div><div><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div><span class='status "+(s.status==="ready"?"":"amber")+"'>"+(s.status==="ready"?"READY":"QUEUED")+"</span></div>").join("")+"</div>"+

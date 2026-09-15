@@ -526,7 +526,7 @@ function reviewQueued(i){
     "<div class='actions' style='margin-top:18px;justify-content:flex-end'>"+(p.paymentStatus==="unpaid"?"<button class='btn delete-order-btn' onclick='deleteQueuedOrder("+i+")'>Delete this order</button>":"")+paymentButton+next+"<button class='btn' onclick='closeModal()'>Close</button></div>";
   document.getElementById("modal").classList.add("open");
 }
-function brand(){
+function brandStudioPage(){
   const p=state.selectedProduct;
   const profile=state.profile||{};
   const saved=state.brandStudio||{};
@@ -932,7 +932,20 @@ function addCjToQueue(i){
   go("plan");
 }
 
-function render(){let pages={home,advisor,ideas,products,plan,orders,brand,store,marketing,support,analytics};if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();return}document.getElementById("app").innerHTML=shell(pages[state.page]());if(state.page==="products")setTimeout(autoCjSearch,0)}
+function render(){
+  let pages={home,advisor,ideas,products,plan,orders,brand:brandStudioPage,store,marketing,support,analytics};
+  if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();return}
+  const pageFn=pages[state.page]||home;
+  try{
+    document.getElementById("app").innerHTML=shell(pageFn());
+    if(state.page==="products")setTimeout(autoCjSearch,0);
+  }catch(err){
+    console.error("Forge render error",state.page,err);
+    document.getElementById("app").innerHTML=shell(
+      "<div class='hero'><div><div class='eyebrow'>FORGE RECOVERY</div><div class='h1'>This workspace hit an error.</div><div class='sub'>Your saved business data is safe. Forge could not render this page, so you can retry or return to Orders.</div></div><div class='actions'><button class='btn' onclick="go('orders')">Back to Orders</button><button class='btn primary' onclick="go('brand')">Retry Brand Studio</button></div></div><div class='notice'><b>Technical detail</b><div class='small'>"+esc(String(err&&err.message||err))+"</div></div>"
+    );
+  }
+}
 render();
 </script>
 </body>

@@ -36,7 +36,7 @@
 .brand-refresh-note{margin-top:9px;color:#78958a;font-size:10px;line-height:1.5}
 .brand-domain-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .brand-suggestion-count{color:#79cfa6;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
-@media(max-width:650px){.brand-manual-grid,.brand-domain-grid{grid-template-columns:1fr}.brand-name-option{align-items:flex-start;flex-direction:column}.brand-name-option small{white-space:normal}}
+@media(max-width:1100px){.cj-results{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.cj-results{grid-template-columns:1fr}.brand-manual-grid,.brand-domain-grid{grid-template-columns:1fr}.brand-name-option{align-items:flex-start;flex-direction:column}.brand-name-option small{white-space:normal}}
 
 .onboarding{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(900px 650px at 70% 0,#173c2e 0,transparent 60%),var(--bg)}
 .onboarding-card{width:min(1100px,100%);padding:clamp(24px,5vw,56px);border:1px solid #29483b;border-radius:28px;background:#09150fef;box-shadow:0 30px 100px #0008}
@@ -47,7 +47,7 @@
 .cj-live{margin-top:22px;padding:22px;border:1px solid #29483b;border-radius:22px;background:linear-gradient(180deg,#0a1913,#08120e);box-shadow:0 20px 60px #0004}
 .cj-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}.cj-head h2{margin:6px 0}.cj-live-note{max-width:420px;text-align:right}
 .cj-search{display:grid;grid-template-columns:minmax(0,1fr) 150px 88px;gap:9px;margin-top:16px}.cj-search .input{min-width:0}
-.cj-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+.cj-results{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:16px}.cj-more{display:flex;justify-content:center;margin-top:18px}.cj-more .btn{min-width:220px}
 .cj-card{border:1px solid #254638;border-radius:18px;overflow:hidden;background:#0b1914;display:flex;flex-direction:column;min-width:0;transition:.18s ease}.cj-card:hover{transform:translateY(-2px);border-color:#55b98d;box-shadow:0 18px 45px #0005}
 .cj-image-wrap{height:210px;background:#10231b;position:relative;display:grid;place-items:center}.cj-card img{width:100%;height:100%;object-fit:contain}.cj-live-badge{position:absolute;top:10px;left:10px;background:#b7f2d1;color:#07150f;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900;letter-spacing:.08em}.cj-card-body{padding:15px;display:flex;flex-direction:column;flex:1}.cj-card-body h3{margin:8px 0 5px;font-size:15px;line-height:1.35}.cj-meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.cj-chip{font-size:10px;padding:5px 7px;border:1px solid #29483b;border-radius:999px;color:#9eb6aa}.cj-price-row{display:flex;align-items:end;justify-content:space-between;gap:8px;margin-top:5px}.cj-price{font-size:22px;font-weight:900}.cj-bdt{font-size:12px;color:#9eb6aa}.cj-data{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;padding-top:10px;border-top:1px solid #1d362b}.cj-data div{font-size:11px;color:#8ea79b}.cj-data b{display:block;color:#e8f2ed;font-size:12px;margin-top:2px}.cj-footer{margin-top:auto}.cj-empty{padding:25px;border:1px dashed #315546;border-radius:14px;color:var(--muted);text-align:center}.cj-empty b{color:#dcebe4}.cj-loading{display:grid;place-items:center;min-height:180px}
 .cj-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}.cj-count{font-size:12px;color:#7f9a8d}.cj-fresh{font-size:11px;color:#79cfa6}
@@ -838,14 +838,30 @@ async function autoCjSearch(){
   if(!box)return;
   const keyword=cjRecommendationKeyword();
   if(status)status.textContent="Matching live supplier products to your profile…";
-  if(meta)meta.textContent="Finding 6 relevant products…";
-  box.innerHTML="<div class='cj-empty cj-loading' style='grid-column:1/-1'><b>Finding "+esc(keyword)+" products…</b><br><span class='small'>Forge is checking the connected supplier catalogue now.</span></div>";
+  if(meta)meta.textContent="Finding 20 different products…";
+  box.innerHTML="<div class='cj-empty cj-loading' style='grid-column:1/-1'><b>Finding 20 "+esc(keyword)+" products…</b><br><span class='small'>Forge is checking multiple supplier result pages and removing duplicates before showing them.</span></div>";
   try{
-    const j=await fetchCjKeyword(keyword,1);
-    cjState=Array.isArray(j.products)?j.products.slice(0,6):[];
-    cjLastFetched=j.fetchedAt||new Date().toISOString();
+    const collected=[],seen=new Set();
+    const confirmed=new Set((state.sourcingQueue||[]).map(x=>String(x.id||x.name||"").trim().toLowerCase()));
+    for(let page=1;page<=3 && collected.length<20;page++){
+      const j=await fetchCjKeyword(keyword,page);
+      const products=Array.isArray(j.products)?j.products:[];
+      for(const p of products){
+        const idKey=String(p.id||p.productId||p.sku||"").trim().toLowerCase();
+        const nameKey=String(p.name||"").trim().toLowerCase();
+        const uniqueKey=idKey||nameKey;
+        if(!uniqueKey||seen.has(uniqueKey))continue;
+        if(confirmed.has(uniqueKey)||confirmed.has(nameKey))continue;
+        seen.add(uniqueKey);
+        collected.push(p);
+        if(collected.length>=20)break;
+      }
+      cjLastFetched=j.fetchedAt||cjLastFetched;
+    }
+    cjState=collected.slice(0,20);
+    cjLastFetched=cjLastFetched||new Date().toISOString();
     renderCjResults({products:cjState,fetchedAt:cjLastFetched});
-    if(status)status.textContent="Matched to "+keyword+" · live supplier data";
+    if(status)status.textContent=cjState.length+" unique live products matched to your profile";
     if(fresh)fresh.textContent="Checked "+new Date(cjLastFetched).toLocaleTimeString("en-BD",{hour:"2-digit",minute:"2-digit"});
   }catch(e){
     cjState=[];
@@ -854,7 +870,6 @@ async function autoCjSearch(){
     if(meta)meta.textContent="No supplier products loaded";
   }
 }
-
 async function cjSearch(page=1){
   const q=(document.getElementById("cjq")?.value||"").trim();
   const box=document.getElementById("cjresults");
@@ -900,7 +915,7 @@ function renderCjResults(j){
       "</div></article>";
   }).join("");
   const meta=document.getElementById("cjmeta");
-  if(meta) meta.innerHTML="<b>"+cjState.length+" real products</b> matched to your profile · live supplier prices";
+  if(meta) meta.innerHTML="<b>"+cjState.length+" unique real products</b> matched to your profile · live supplier prices";
 }
 
 function reviewCj(i){

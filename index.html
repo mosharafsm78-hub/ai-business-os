@@ -115,7 +115,23 @@ h3{font-weight:600;line-height:1.3}
 .brand-next h2{margin:5px 0}
 @media(max-width:850px){.brand-product-strip{grid-template-columns:90px 1fr}.brand-lock{grid-column:2;justify-self:start}.brand-commercial{grid-template-columns:1fr 1fr}.brand-modules{grid-template-columns:1fr}.brand-progress{display:block}.brand-progress-meter{width:100%;margin-top:15px}.brand-next{display:block}.brand-next .actions{margin-top:14px}}
 @media(max-width:560px){.brand-product-strip{grid-template-columns:1fr}.brand-product-media{width:100%;height:200px}.brand-lock{grid-column:1}.brand-foundation .brand-thesis{font-size:21px}.brand-proof-grid{grid-template-columns:1fr}.brand-commercial{grid-template-columns:1fr 1fr}}
-</style></head>
+</style><style id="forge-quantity-controls">
+.qty-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}
+.qty-box{padding:11px 12px;border:1px solid rgba(169,238,204,.11);border-radius:12px;background:#091611}
+.qty-box.highlight{border-color:rgba(169,238,204,.28);background:#0d2119}
+.qty-box .qty-value{font-size:20px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
+.qty-box .qty-help{font-size:10px;color:#718b80;margin-top:2px;line-height:1.35}
+.qty-editor{display:flex;align-items:center;gap:8px;margin-top:14px;padding:12px;border:1px solid rgba(169,238,204,.14);border-radius:13px;background:#0b1914}
+.qty-editor label{font-size:10px;color:#789087;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.qty-input{width:110px;background:#07110e;color:#fff;border:1px solid #315546;border-radius:10px;padding:10px 11px;font-weight:800;text-align:center;outline:0}
+.qty-input:focus{border-color:#69dda0}
+.qty-cap{font-size:11px;color:#8fa99d}
+.qty-warning{margin-top:10px;padding:10px 12px;border-radius:11px;border:1px solid rgba(242,206,131,.25);background:#211a0d;color:#d9bd7b;font-size:11px;line-height:1.45}
+.qty-note{margin-top:9px;font-size:10px;color:#718b80;line-height:1.5}
+@media(max-width:900px){.qty-summary{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.qty-summary{grid-template-columns:1fr 1fr}.qty-editor{align-items:flex-start;flex-wrap:wrap}.qty-input{width:100%}}
+</style>
+</head>
 <body>
 <div id="app"></div><div id="toast" class="toast"></div><div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
 
@@ -245,7 +261,42 @@ function orderLifecycle(p){
   if(payment==="submitted")return {key:"payment_review",label:"Payment submitted",tone:"amber",desc:"Payment awaiting verification"};
   return {key:"payment",label:"Pending payment",tone:"amber",desc:"Payment required before procurement"};
 }
+function quantityPlan(p){
+  const e=p.economics||liveEconomics(p);
+  const stock=Number(p.inventory||0);
+  const budget=Number(state.profile?.budget||state.business?.budget||0);
+  const category=String(p.category||state.profile?.category||"").toLowerCase();
+  const supplierMoq=Math.max(0,Number(p.moq||p.minOrderQty||0));
+  let businessMin=10;
+  if(category.includes("bag"))businessMin=12;
+  else if(category.includes("shoe")||category.includes("footwear"))businessMin=12;
+  else if(category.includes("watch"))businessMin=10;
+  else if(category.includes("beauty")||category.includes("cosmetic"))businessMin=15;
+  else if(category.includes("home"))businessMin=12;
+  else if(category.includes("fitness")||category.includes("sport"))businessMin=10;
+  businessMin=Math.max(businessMin,supplierMoq);
+  const affordable=budget>0?Math.floor((budget*.25)/Math.max(1,e.landed)):businessMin*2;
+  const risk=String(state.profile?.risk||"Balanced").toLowerCase();
+  const riskFactor=risk.includes("conservative")?.65:risk.includes("growth")||risk.includes("aggressive")?1.15:.85;
+  const suggested=Math.max(businessMin,Math.round((Math.max(businessMin,affordable*riskFactor))/5)*5);
+  const plannedBase=budget>0?Math.floor((budget*.20)/Math.max(1,e.landed)):suggested;
+  const planned=Math.max(businessMin,Math.min(suggested,Math.max(businessMin,Math.round(plannedBase/5)*5)));
+  return {minimum:businessMin,suggested,planned,stock,affordable};
+}
+function normalizeOrderQuantity(p){
+  const qp=quantityPlan(p);
+  let q=Number(p.orderQty||0);
+  if(!Number.isFinite(q)||q<qp.minimum)q=qp.planned;
+  if(qp.stock>0)q=Math.min(q,qp.stock);
+  if(q<qp.minimum && qp.stock>=qp.minimum)q=qp.minimum;
+  p.orderQty=q;
+  p.minimumOrderQty=qp.minimum;
+  p.suggestedOrderQty=qp.suggested;
+  p.plannedOrderQty=qp.planned;
+  return qp;
+}
 function orderTotals(p){
+  normalizeOrderQuantity(p);
   const qty=Math.max(1,Number(p.orderQty||1));
   const e=p.economics||liveEconomics(p);
   return {qty,landed:Number(e.landed||0),selling:Number(e.selling||0),payable:Math.max(0,Math.round(Number(e.landed||0)*qty)),contribution:Number(e.contribution||0)};
@@ -258,6 +309,8 @@ function orderCounts(queue){
 let ordersFilter="all";
 function orders(){
   const queue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
+  queue.forEach(normalizeOrderQuantity);
+  try{persistProfile()}catch{}
   const counts=orderCounts(queue);
   const visible=queue.filter(p=>{
     if(ordersFilter==="all")return true;
@@ -273,32 +326,34 @@ function orders(){
     ["in_transit","In transit",counts.in_transit],
     ["delivered","Delivered",counts.delivered]
   ];
-  const rows=visible.length?visible.map((p)=>{
-    const realIndex=queue.indexOf(p), stage=orderLifecycle(p), t=orderTotals(p);
+  const rows=visible.length?visible.map(p=>{
+    const realIndex=queue.indexOf(p),stage=orderLifecycle(p),t=orderTotals(p),qp=quantityPlan(p);
     const paymentLabel=p.paymentStatus==="paid"?"Paid":p.paymentStatus==="submitted"?"Submitted":"Unpaid";
     return "<tr>"+
       "<td><b>"+esc(p.orderRef||"FORGE-ORDER")+"</b><div class='small'>"+new Date(p.selectedAt||Date.now()).toLocaleDateString("en-BD")+"</div></td>"+
-      "<td><div class='order-product'><img src='"+esc(p.image)+"' alt='"+esc(p.name)+"'><div><b>"+esc(p.name)+"</b><div class='small'>SKU "+esc(p.sku||"—")+"</div><div class='small'>Qty "+t.qty+" · "+esc(p.variant||"Standard variant")+"</div></div></div></td>"+
-      "<td><b>"+BDT(t.payable)+"</b><div class='small'>supplier + estimated landed cost</div></td>"+
+      "<td><div class='order-product'><img src='"+esc(p.image)+"' alt='"+esc(p.name)+"'><div><b>"+esc(p.name)+"</b><div class='small'>SKU "+esc(p.sku||"—")+"</div><div class='small'>Quantity <b>"+t.qty+"</b> · "+esc(p.variant||"Standard variant")+"</div></div></div></td>"+
+      "<td><b>"+BDT(t.payable)+"</b><div class='small'>"+t.qty+" units · landed estimate</div></td>"+
       "<td><span class='status "+stage.tone+"'>"+stage.label+"</span><div class='small order-stage-note'>"+stage.desc+"</div></td>"+
       "<td><span class='payment-dot "+(paymentLabel==="Paid"?"is-paid":"")+"'>"+paymentLabel+"</span></td>"+
       "<td><button class='btn' onclick='reviewQueued("+realIndex+")'>Open order →</button></td>"+
     "</tr>";
   }).join(""):"<tr><td colspan='6'><div class='cj-empty' style='padding:45px'><b>No orders in this stage.</b><br><span class='small'>Choose a product in Product Lab or change the filter above.</span></div></td></tr>";
 
-  return "<div class='hero order-hero'><div><div class='eyebrow'>ORDER OPERATIONS</div><div class='h1'>From payment to delivery.</div><div class='sub'>Every confirmed product becomes a customer order here. Forge keeps supplier sourcing behind the scenes, collects payment first, then moves the order through procurement, shipment and delivery.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Find another product</button>"+(state.selectedProduct?"<button class='btn primary' onclick=\"go('plan')\">View business plan →</button>":"")+"</div></div>"+
-  "<div class='order-command card'><div><div class='eyebrow'>ORDER CONTROL</div><h2 style='margin:5px 0'>One order. One operational record.</h2><p class='small'>The product, quantity, payment, supplier cost, procurement status and delivery status stay connected from confirmation to completion.</p></div><div class='order-flow'><span class='is-active'>01 Product</span><i>→</i><span>02 Payment</span><i>→</i><span>03 Procurement</span><i>→</i><span>04 Shipping</span><i>→</i><span>05 Delivered</span></div></div>"+
+  const active=queue.filter(p=>["payment","payment_review"].includes(orderLifecycle(p).key)).reduce((n,p)=>n+1,0);
+  const inventoryCommit=queue.reduce((n,p)=>n+Number(p.orderQty||0),0);
+  return "<div class='hero order-hero'><div><div class='eyebrow'>ORDER OPERATIONS</div><div class='h1'>From payment to delivery.</div><div class='sub'>Every confirmed product becomes a real operational order here. Quantity is mandatory: Forge sets a sensible launch minimum, recommends a starting quantity and lets you choose the final quantity before payment.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Find another product</button>"+(state.selectedProduct?"<button class='btn primary' onclick=\"go('plan')\">View business plan →</button>":"")+"</div></div>"+
+  "<div class='order-command card'><div><div class='eyebrow'>ORDER CONTROL</div><h2 style='margin:5px 0'>One product. One quantity. One operational record.</h2><p class='small'>A single unit is treated as a sample, not a business launch. Forge calculates a minimum launch quantity, a suggested quantity and a planned quantity from your capital, risk profile, product economics and available stock.</p></div><div class='order-flow'><span class='is-active'>01 Product</span><i>→</i><span>02 Quantity</span><i>→</i><span>03 Payment</span><i>→</i><span>04 Procurement</span><i>→</i><span>05 Shipping</span><i>→</i><span>06 Delivered</span></div></div>"+
   "<div class='order-metrics'>"+
-    "<div class='card'><div class='label'>TOTAL ORDERS</div><div class='stat'>"+counts.all+"</div><div class='small'>All confirmed products</div></div>"+
-    "<div class='card action-metric'><div class='label'>PENDING PAYMENT</div><div class='stat'>"+counts.payment+"</div><div class='small'>Customer action required</div></div>"+
-    "<div class='card'><div class='label'>PAID</div><div class='stat'>"+counts.paid+"</div><div class='small'>Ready for procurement</div></div>"+
+    "<div class='card'><div class='label'>TOTAL ORDERS</div><div class='stat'>"+counts.all+"</div><div class='small'>Confirmed product orders</div></div>"+
+    "<div class='card action-metric'><div class='label'>PENDING PAYMENT</div><div class='stat'>"+counts.payment+"</div><div class='small'>"+active+" require payment action</div></div>"+
+    "<div class='card'><div class='label'>UNITS COMMITTED</div><div class='stat'>"+inventoryCommit.toLocaleString("en-US")+"</div><div class='small'>Across confirmed orders</div></div>"+
     "<div class='card'><div class='label'>IN TRANSIT</div><div class='stat'>"+counts.in_transit+"</div><div class='small'>Shipment underway</div></div>"+
     "<div class='card'><div class='label'>DELIVERED</div><div class='stat'>"+counts.delivered+"</div><div class='small'>Completed orders</div></div>"+
   "</div>"+
-  "<div class='section order-section-head'><div><div class='eyebrow'>YOUR ORDERS</div><h2>Order workspace</h2><p>Supplier catalogue browsing stays inside Product Lab. This page is only for your confirmed orders and their operational lifecycle.</p></div></div>"+
+  "<div class='section order-section-head'><div><div class='eyebrow'>YOUR ORDERS</div><h2>Order workspace</h2><p>Only confirmed products appear here. Supplier catalogue browsing remains inside Product Lab.</p></div></div>"+
   "<div class='order-tabs'>"+tabs.map(t=>"<button class='"+(ordersFilter===t[0]?"active":"")+"' onclick='setOrdersFilter(\""+t[0]+"\")'>"+t[1]+" <b>"+t[2]+"</b></button>").join("")+"</div>"+
   "<div class='card order-table-card'><div style='overflow:auto'><table class='table order-table'><thead><tr><th>Order</th><th>Product</th><th>Customer payable</th><th>Stage</th><th>Payment</th><th></th></tr></thead><tbody>"+rows+"</tbody></table></div></div>"+
-  "<div class='notice order-policy'><b>Procurement rule:</b> payment must be received and verified before Forge releases a supplier purchase. Supplier stock, variant, freight and final landed cost are rechecked immediately before procurement.</div>";
+  "<div class='notice order-policy'><b>Procurement rule:</b> payment must be received and verified before Forge releases a supplier purchase. Final variant, quantity, supplier stock, freight and landed cost are rechecked immediately before procurement.</div>";
 }
 function setOrdersFilter(filter){
   ordersFilter=filter||"all";
@@ -352,30 +407,56 @@ function markDelivered(i){
   toast("Order marked delivered.");
   reviewQueued(i);
 }
+function setOrderQuantity(i,value){
+  const p=(state.sourcingQueue||[])[i];if(!p)return;
+  const qp=quantityPlan(p);
+  let q=Math.floor(Number(value||0));
+  if(!Number.isFinite(q))q=qp.planned;
+  if(q<qp.minimum){toast("Minimum launch quantity is "+qp.minimum+" units.");q=qp.minimum;}
+  if(qp.stock>0 && q>qp.stock){toast("Only "+formatQty(qp.stock)+" units are currently shown in supplier stock.");q=qp.stock;}
+  if(q<1)q=1;
+  updateQueuedOrder(i,{orderQty:q,minimumOrderQty:qp.minimum,suggestedOrderQty:qp.suggested,plannedOrderQty:qp.planned});
+  reviewQueued(i);
+}
 function reviewQueued(i){
   const p=(state.sourcingQueue||[])[i]; if(!p)return;
+  const qp=quantityPlan(p);
+  if(!p.orderQty||Number(p.orderQty)<qp.minimum)p.orderQty=qp.planned;
   const t=orderTotals(p),stage=orderLifecycle(p);
   const paymentButton=p.paymentStatus==="paid"
     ? "<span class='status green'>Payment verified</span>"
     : p.paymentStatus==="submitted"
       ? "<button class='btn' onclick='markPaymentReceived("+i+")'>Verify payment received</button>"
-      : "<button class='btn primary' onclick='markPaymentSubmitted("+i+")'>Proceed to payment →</button>";
+      : "<button class='btn primary' onclick='markPaymentSubmitted("+i+")'>Make payment →</button>";
   let next="";
   if(p.paymentStatus==="paid" && !["processing","ordered"].includes(p.orderStatus)) next="<button class='btn primary' onclick='advanceProcurement("+i+")'>Release to procurement →</button>";
   else if(p.paymentStatus==="paid" && p.orderStatus==="processing") next="<button class='btn primary' onclick='markSupplierOrdered("+i+")'>Confirm supplier order placed →</button>";
   else if(p.orderStatus==="ordered" && p.deliveryStatus!=="in_transit" && p.deliveryStatus!=="delivered") next="<button class='btn primary' onclick='markInTransit("+i+")'>Mark shipment in transit →</button>";
   else if(p.deliveryStatus==="in_transit") next="<button class='btn primary' onclick='markDelivered("+i+")'>Mark delivered →</button>";
 
+  const stockWarning=qp.stock>0&&qp.stock<qp.minimum
+    ? "<div class='qty-warning'><b>Launch quantity cannot be met from current displayed stock.</b> Forge recommends "+qp.minimum+" units, but the supplier currently shows only "+formatQty(qp.stock)+". Recheck live stock or choose another product before paying.</div>"
+    : "";
+
   document.getElementById("modalbox").innerHTML=
-    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>ORDER "+esc(p.orderRef||"")+"</div><h2 style='margin:5px 0'>"+esc(p.name)+"</h2><div class='small'>"+stage.label+" · created "+new Date(p.selectedAt||Date.now()).toLocaleString("en-BD")+"</div></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
+    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>ORDER "+esc(p.orderRef||"")+" · QUANTITY REQUIRED</div><h2 style='margin:5px 0'>"+esc(p.name)+"</h2><div class='small'>"+stage.label+" · created "+new Date(p.selectedAt||Date.now()).toLocaleString("en-BD")+"</div></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
     "<div class='order-modal-grid' style='margin-top:20px'>"+
       "<div><img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'></div>"+
-      "<div><div class='cj-detail-price'>"+BDT(t.payable)+"</div><div class='small'>Customer payable for "+t.qty+" unit"+(t.qty===1?"":"s")+" · final amount rechecked before supplier purchase</div>"+
-        "<div class='cj-data order-detail-data'><div>Variant<b>"+esc(p.variant||"Standard variant")+"</b></div><div>Quantity<b>"+t.qty+"</b></div><div>Supplier cost<b>"+moneyUsd(p.priceUsd)+" · ≈ "+BDT(bdtEstimate(p.priceUsd))+"</b></div><div>Estimated landed / unit<b>"+BDT(t.landed)+"</b></div><div>Estimated selling / unit<b>"+BDT(t.selling)+"</b></div><div>Stock<b>"+formatQty(p.inventory)+"</b></div></div>"+
+      "<div><div class='cj-detail-price'>"+BDT(t.payable)+"</div><div class='small'>Customer payable for <b>"+t.qty+" units</b> · based on estimated landed cost per unit</div>"+
+        "<div class='qty-summary'>"+
+          "<div class='qty-box'><div class='label'>MINIMUM TO LAUNCH</div><div class='qty-value'>"+qp.minimum+" units</div><div class='qty-help'>Below this is a sample, not a proper opening batch.</div></div>"+
+          "<div class='qty-box'><div class='label'>FORGE SUGGESTED</div><div class='qty-value'>"+qp.suggested+" units</div><div class='qty-help'>Balanced against capital, risk and unit economics.</div></div>"+
+          "<div class='qty-box highlight'><div class='label'>FORGE PLANNED</div><div class='qty-value'>"+qp.planned+" units</div><div class='qty-help'>Starting quantity used by the business plan.</div></div>"+
+          "<div class='qty-box'><div class='label'>SUPPLIER STOCK</div><div class='qty-value'>"+formatQty(qp.stock)+"</div><div class='qty-help'>Rechecked before procurement.</div></div>"+
+        "</div>"+
+        "<div class='qty-editor'><label for='orderQtyInput'>Your quantity</label><input id='orderQtyInput' class='qty-input' type='number' min='"+qp.minimum+"' max='"+(qp.stock>0?qp.stock:"")+"' step='1' value='"+t.qty+"' onchange='setOrderQuantity("+i+",this.value)' onkeydown=\"if(event.key==='Enter')setOrderQuantity("+i+",this.value)\"><span class='qty-cap'>Choose "+qp.minimum+" or more units. Final stock is checked again before purchase.</span></div>"+
+        stockWarning+
+        "<div class='qty-note'>Forge does not force you to buy the suggested quantity. You can increase or decrease the batch above the minimum when stock and capital allow. The chosen quantity becomes the quantity used for payment, procurement and the product-specific business plan.</div>"+
+        "<div class='cj-data order-detail-data'><div>Variant<b>"+esc(p.variant||"Standard variant")+"</b></div><div>Quantity<b>"+t.qty+" units</b></div><div>Supplier cost / unit<b>"+moneyUsd(p.priceUsd)+" · ≈ "+BDT(bdtEstimate(p.priceUsd))+"</b></div><div>Estimated landed / unit<b>"+BDT(t.landed)+"</b></div><div>Estimated selling / unit<b>"+BDT(t.selling)+"</b></div><div>Estimated contribution / unit<b>"+BDT(t.contribution)+"</b></div></div>"+
       "</div>"+
     "</div>"+
     "<div class='order-timeline'><div class='"+(p.paymentStatus==="paid"?"done":"current")+"'><b>01</b><span>Payment</span><small>"+(p.paymentStatus==="paid"?"Verified":"Awaiting payment")+"</small></div><div class='"+(p.orderStatus==="processing"||p.orderStatus==="ordered"?"done":"")+"'><b>02</b><span>Procurement</span><small>"+(p.orderStatus==="ordered"?"Supplier order placed":p.orderStatus==="processing"?"Preparing supplier order":"Waiting for payment")+"</small></div><div class='"+(p.deliveryStatus==="in_transit"||p.deliveryStatus==="delivered"?"done":"")+"'><b>03</b><span>Shipping</span><small>"+(p.deliveryStatus==="delivered"?"Delivered":p.deliveryStatus==="in_transit"?"In transit":"Not started")+"</small></div><div class='"+(p.deliveryStatus==="delivered"?"done":"")+"'><b>04</b><span>Delivery</span><small>"+(p.deliveryStatus==="delivered"?"Completed":"Pending")+"</small></div></div>"+
-    "<div class='notice' style='margin-top:18px'><b>How this order works</b><div class='small'>You confirm the product → payment is received and verified → Forge releases procurement → the supplier order is placed → shipment is tracked → the order is delivered. Supplier browsing never appears in this workspace.</div></div>"+
+    "<div class='notice' style='margin-top:18px'><b>How this order works</b><div class='small'>Choose the quantity → make payment → payment is verified → Forge releases procurement → the supplier order is placed → shipment is tracked → delivery is recorded. No supplier catalogue is exposed in this workspace.</div></div>"+
     "<div class='actions' style='margin-top:18px;justify-content:flex-end'>"+paymentButton+next+"<button class='btn' onclick='closeModal()'>Close</button></div>";
   document.getElementById("modal").classList.add("open");
 }
@@ -672,8 +753,8 @@ function reviewCj(i){
 function addCjToQueue(i){
   const p=cjState[i]; if(!p)return;
   const e=liveEconomics(p);
-  state.sourcingQueue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
-  const item={...p,economics:e,selectedAt:new Date().toISOString(),sourceType:"connected_supplier",orderStatus:"draft",paymentStatus:"unpaid",procurementStatus:"awaiting_payment",deliveryStatus:"not_started",orderQty:1,variant:"Standard variant",orderRef:"FORGE-"+new Date().toISOString().replace(/\D/g,"").slice(0,14),planStatus:"preparing",planRequestedAt:new Date().toISOString()};
+  const qp=quantityPlan(p);
+  const item={...p,economics:e,selectedAt:new Date().toISOString(),sourceType:"connected_supplier",orderStatus:"draft",paymentStatus:"unpaid",procurementStatus:"awaiting_payment",deliveryStatus:"not_started",orderQty:qp.planned,minimumOrderQty:qp.minimum,suggestedOrderQty:qp.suggested,plannedOrderQty:qp.planned,variant:"Standard variant",orderRef:"FORGE-"+new Date().toISOString().replace(/\D/g,"").slice(0,14),planStatus:"preparing",planRequestedAt:new Date().toISOString()};
   const existing=state.sourcingQueue.findIndex(x=>x.id===p.id);
   if(existing>=0)state.sourcingQueue[existing]=item;else state.sourcingQueue.unshift(item);
   state.selectedProduct=item;
@@ -681,9 +762,9 @@ function addCjToQueue(i){
   state.planRequestedAt=new Date().toISOString();
   state.planEtaMinutes=10+Math.abs(String(p.id||p.name||"").split("").reduce((a,ch)=>a+ch.charCodeAt(0),0))%41;
   state.business=state.business||{name:(state.profile?.occupation||"My Business"),budget:Number(state.profile?.budget||0)};
-  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,sourcingQueue:state.sourcingQueue}))}catch(e){}
+  try{persistProfile()}catch(e){}
   closeModal();
-  toast("Product confirmed — draft order created. Business plan preparation started.");
+  toast("Product confirmed with "+qp.planned+" planned units. Draft order created and business-plan preparation started.");
   go("plan");
 }
 

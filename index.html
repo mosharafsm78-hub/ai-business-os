@@ -308,6 +308,32 @@ function cjPanel(){
   "</section>";
 }
 
+function reviewCj(i){
+  const p=cjState[i]; if(!p)return;
+  document.getElementById("modalbox").innerHTML=
+    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>CURRENT SOURCING OPTION</div><h2 style='margin:5px 0'>Review before securing</h2></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
+    "<div class='cj-detail-grid' style='margin-top:18px'>"+
+    "<img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'>"+
+    "<div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+BDT(bdtEstimate(p.priceUsd))+"</div><div class='cj-detail-bdt'>Current sourcing cost · "+moneyUsd(p.priceUsd)+"</div>"+
+    "<div class='cj-data'><div>Category<b>"+esc(p.category)+"</b></div><div>Available stock<b>"+formatQty(p.inventory)+"</b></div><div>SKU<b>"+esc(p.sku||"—")+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Checked at order")+"</b></div></div></div></div>"+
+    "<div class='cj-order-note'>This does <b>not</b> place an order. It reserves this product as a sourcing candidate inside Forge. Final variant, shipping, quantity and payable amount are rechecked immediately before any supplier order.</div>"+
+    "<div class='actions' style='margin-top:16px'><button class='btn primary' onclick='addCjToQueue("+i+")'>Secure this business product →</button><button class='btn' onclick='closeModal()'>Back</button></div>";
+  document.getElementById("modal").classList.add("open");
+}
+
+function addCjToQueue(i){
+  const p=cjState[i]; if(!p)return;
+  state.sourcingQueue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
+  const item={...p,selectedAt:new Date().toISOString(),sourceType:"connected_supplier"};
+  const existing=state.sourcingQueue.findIndex(x=>x.id===p.id);
+  if(existing>=0) state.sourcingQueue[existing]=item; else state.sourcingQueue.unshift(item);
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,sourcingQueue:state.sourcingQueue}))}catch(e){}
+  state.selectedProduct=item;
+  closeModal();
+  toast("Product secured in your sourcing queue");
+  go("orders");
+}
+
 const _forgeProducts=products;
 products=function(){
   const html=_forgeProducts();

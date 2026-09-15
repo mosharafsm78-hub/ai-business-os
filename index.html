@@ -61,7 +61,16 @@ h3{font-weight:600;line-height:1.3}
 .locked-item .v{font-size:22px}
 .notice{border-radius:14px}
 @media(max-width:800px){.hero{padding:26px 0 22px}.hero .h1{font-size:42px!important}.hero .sub{font-size:14px}}
-</style>
+<style id="forge-orders-polish">
+.order-hero{padding-bottom:26px}.order-command{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:22px;margin-bottom:18px;background:linear-gradient(120deg,rgba(24,53,43,.72),rgba(7,24,18,.7));border:1px solid rgba(169,238,204,.13)}
+.order-command>div:first-child{max-width:650px}.order-flow{display:flex;align-items:center;gap:9px;white-space:nowrap;font-size:11px;font-weight:700;color:#8da99c}.order-flow span{padding:8px 10px;border:1px solid rgba(169,238,204,.12);border-radius:999px}.order-flow .is-active{color:#06140e;background:#b7f4d3;border-color:#b7f4d3}.order-flow i{font-style:normal;color:#527064}
+.order-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.order-metrics .card{min-height:118px}.order-metrics .action-metric{border-color:rgba(255,196,96,.26)}
+.order-section-head{margin-bottom:10px}.order-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.order-tabs button{appearance:none;border:1px solid rgba(169,238,204,.13);background:rgba(7,24,18,.5);color:#a9c0b4;padding:10px 13px;border-radius:10px;font:600 12px "DM Sans",sans-serif;cursor:pointer}.order-tabs button:hover{border-color:rgba(169,238,204,.28);color:#eaf7f0}.order-tabs button.active{background:#b7f4d3;color:#06140e;border-color:#b7f4d3}.order-tabs b{margin-left:5px}
+.order-table-card{padding:8px 18px}.order-table th{white-space:nowrap}.order-table td{vertical-align:middle}.order-product{display:flex;align-items:center;gap:11px;min-width:300px}.order-product img{width:54px;height:54px;border-radius:11px;object-fit:contain;background:#10231b;border:1px solid rgba(169,238,204,.08)}.order-stage-note{margin-top:4px}.payment-dot{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#f0c77b}.payment-dot:before{content:"";width:7px;height:7px;border-radius:50%;background:#f0c77b}.payment-dot.is-paid{color:#8ce8b8}.payment-dot.is-paid:before{background:#8ce8b8}.order-policy{margin-top:14px}
+.order-modal-grid{display:grid;grid-template-columns:220px 1fr;gap:22px}.order-modal-grid .cj-detail-img{width:220px;height:220px}.order-detail-data{margin-top:16px}.order-timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}.order-timeline>div{padding:12px;border:1px solid rgba(169,238,204,.1);border-radius:12px;background:rgba(7,24,18,.45)}.order-timeline>div.done{border-color:rgba(169,238,204,.28)}.order-timeline>div.current{border-color:rgba(255,196,96,.35)}.order-timeline b{display:block;font-size:11px;color:#89a69a}.order-timeline span{display:block;font-weight:700;margin-top:3px}.order-timeline small{display:block;color:#86a094;margin-top:3px}
+@media(max-width:1100px){.order-command{display:block}.order-flow{margin-top:16px;overflow:auto;padding-bottom:4px}.order-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.order-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.order-modal-grid{grid-template-columns:1fr}.order-modal-grid .cj-detail-img{width:100%;height:220px}.order-timeline{grid-template-columns:repeat(2,1fr)}}
+</style></style>
 </head>
 <body>
 <div id="app"></div><div id="toast" class="toast"></div><div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
@@ -182,28 +191,150 @@ function recalc(){let price=+document.getElementById("calcprice").value||0,cost=
 function landedCost(){let p=state.selectedProduct||opportunities()[0];let d=productCatalog()[p.name];return d?.landed||890}
 function recommendedBatch(d){let p=state.profile,base=d.batch;if(p.risk==="Conservative"||p.riskCapacity==="Low")return Math.max(12,Math.round(base*.6));if(p.risk==="Aggressive"&&p.budget>=500000)return Math.round(base*1.75);if(p.budget>=1000000&&p.riskCapacity==="High")return Math.round(base*1.4);return base}
 function personalizedPlan(d){let p=state.profile,mode=planMode(p);if(mode==="Scale-ready")return ["Validate supplier samples and negotiate commercial terms across 2–3 qualified suppliers.","Launch with "+recommendedBatch(d)+" units plus a controlled content and paid-acquisition system.","Build a hero SKU, supporting bundle and clear repeat/reorder logic.","Scale winning creatives and channels only while CAC and contribution stay inside the locked model.","Expand supplier depth, wholesale/retail channels and SKU range only after validated sell-through."];if(mode==="Capital-protective")return ["Sample from multiple suppliers; do not place a large first PO.","Start with "+recommendedBatch(d)+" units or a pre-order/limited-drop validation.","Use low-cost content and customer interviews before heavy paid acquisition.","Reorder only after strong sell-through, positive contribution and acceptable returns.","Keep the majority of unused capital protected until the business proves repeatability."];return ["Validate the offer with samples and 15–30 target-customer conversations.","Start with "+recommendedBatch(d)+" units and keep a protected cash reserve.","Run controlled content and paid tests; cut weak creatives and SKUs quickly.","Reorder only when sell-through and contribution meet the Forge scale trigger.","Use the first 30–60 days to turn the winning product into a repeatable acquisition system."]}
+function orderLifecycle(p){
+  const payment=p.paymentStatus||"unpaid";
+  const procurement=p.orderStatus||"draft";
+  if(p.deliveryStatus==="delivered")return {key:"delivered",label:"Delivered",tone:"green",desc:"Order delivered"};
+  if(p.deliveryStatus==="in_transit")return {key:"in_transit",label:"In transit",tone:"blue",desc:"Shipment is moving"};
+  if(procurement==="ordered"||procurement==="processing")return {key:"procurement",label:"Procurement",tone:"blue",desc:"Supplier order is being processed"};
+  if(payment==="paid")return {key:"paid",label:"Paid · procurement next",tone:"green",desc:"Payment received; supplier purchase is next"};
+  if(payment==="submitted")return {key:"payment_review",label:"Payment submitted",tone:"amber",desc:"Payment awaiting verification"};
+  return {key:"payment",label:"Pending payment",tone:"amber",desc:"Payment required before procurement"};
+}
+function orderTotals(p){
+  const qty=Math.max(1,Number(p.orderQty||1));
+  const e=p.economics||liveEconomics(p);
+  return {qty,landed:Number(e.landed||0),selling:Number(e.selling||0),payable:Math.max(0,Math.round(Number(e.landed||0)*qty)),contribution:Number(e.contribution||0)};
+}
+function orderCounts(queue){
+  const out={all:queue.length,payment:0,paid:0,procurement:0,in_transit:0,delivered:0};
+  queue.forEach(p=>{const k=orderLifecycle(p).key;if(k==="payment"||k==="payment_review")out.payment++;else if(k==="paid")out.paid++;else if(k==="procurement")out.procurement++;else if(k==="in_transit")out.in_transit++;else if(k==="delivered")out.delivered++;});
+  return out;
+}
+let ordersFilter="all";
 function orders(){
   const queue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
-  const rows=queue.length?queue.map((p,i)=>{
-    const status=p.orderStatus==="placed"?"Order placed":p.orderStatus==="processing"?"Processing":"Draft · ready for final approval";
-    const statusClass=p.orderStatus==="placed"?"green":"amber";
-    return "<tr><td><b>"+esc(p.orderRef||("#"+String(i+1).padStart(4,"0")))+"</b><div class='small'>"+new Date(p.selectedAt||Date.now()).toLocaleDateString("en-BD")+"</div></td>"+
-      "<td><div class='row' style='gap:10px'><img src='"+esc(p.image)+"' style='width:58px;height:58px;border-radius:10px;object-fit:contain;background:#10231b'><div><b>"+esc(p.name)+"</b><div class='small'>SKU "+esc(p.sku||"—")+"</div></div></div></td>"+
-      "<td><b>"+moneyUsd(p.priceUsd)+"</b><div class='small'>≈ "+BDT(bdtEstimate(p.priceUsd))+" supplier cost</div></td>"+
-      "<td>"+formatQty(p.inventory)+"</td><td><span class='status "+statusClass+"'>"+status+"</span></td>"+
-      "<td><button class='btn' onclick='reviewQueued("+i+")'>Open order →</button></td></tr>";
-  }).join(""):"<tr><td colspan='6'><div class='cj-empty' style='padding:45px'><b>No orders yet.</b><br><span class='small'>Choose a product in Product Lab and it will appear here as a draft order.</span><br><button class='btn primary' style='margin-top:14px' onclick=\"go('products')\">Open Product Lab →</button></div></td></tr>";
-  return "<div class='hero'><div><div class='eyebrow'>Orders</div><div class='h1'>Your orders, in one place.</div><div class='sub'>Product Lab creates a draft order from the exact product you choose. Final variant, quantity, shipping and payment are approved here before any supplier purchase is made.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Find another product</button>"+(queue.length?"<button class='btn primary' onclick=\"go('plan')\">View business plan →</button>":"")+"</div></div>"+
-  "<div class='grid'><div class='card span4'><div class='label'>Total orders</div><div class='stat'>"+queue.length+"</div></div><div class='card span4'><div class='label'>Draft orders</div><div class='stat'>"+queue.filter(x=>x.orderStatus==="draft").length+"</div></div><div class='card span4'><div class='label'>Placed orders</div><div class='stat'>"+queue.filter(x=>x.orderStatus==="placed").length+"</div></div></div>"+
-  "<div class='section'><div><h2>Order list</h2><p>Only customer orders appear here. Supplier catalogue browsing stays inside Product Lab.</p></div></div>"+
-  "<div class='card'><div style='overflow:auto'><table class='table'><thead><tr><th>Order</th><th>Product</th><th>Supplier cost</th><th>Stock</th><th>Status</th><th></th></tr></thead><tbody>"+rows+"</tbody></table></div></div>";
+  const counts=orderCounts(queue);
+  const visible=queue.filter(p=>{
+    if(ordersFilter==="all")return true;
+    const k=orderLifecycle(p).key;
+    if(ordersFilter==="payment")return k==="payment"||k==="payment_review";
+    return k===ordersFilter;
+  });
+  const tabs=[
+    ["all","All orders",counts.all],
+    ["payment","Pending payment",counts.payment],
+    ["paid","Paid",counts.paid],
+    ["procurement","Procurement",counts.procurement],
+    ["in_transit","In transit",counts.in_transit],
+    ["delivered","Delivered",counts.delivered]
+  ];
+  const rows=visible.length?visible.map((p)=>{
+    const realIndex=queue.indexOf(p), stage=orderLifecycle(p), t=orderTotals(p);
+    const paymentLabel=p.paymentStatus==="paid"?"Paid":p.paymentStatus==="submitted"?"Submitted":"Unpaid";
+    return "<tr>"+
+      "<td><b>"+esc(p.orderRef||"FORGE-ORDER")+"</b><div class='small'>"+new Date(p.selectedAt||Date.now()).toLocaleDateString("en-BD")+"</div></td>"+
+      "<td><div class='order-product'><img src='"+esc(p.image)+"' alt='"+esc(p.name)+"'><div><b>"+esc(p.name)+"</b><div class='small'>SKU "+esc(p.sku||"—")+"</div><div class='small'>Qty "+t.qty+" · "+esc(p.variant||"Standard variant")+"</div></div></div></td>"+
+      "<td><b>"+BDT(t.payable)+"</b><div class='small'>supplier + estimated landed cost</div></td>"+
+      "<td><span class='status "+stage.tone+"'>"+stage.label+"</span><div class='small order-stage-note'>"+stage.desc+"</div></td>"+
+      "<td><span class='payment-dot "+(paymentLabel==="Paid"?"is-paid":"")+"'>"+paymentLabel+"</span></td>"+
+      "<td><button class='btn' onclick='reviewQueued("+realIndex+")'>Open order →</button></td>"+
+    "</tr>";
+  }).join(""):"<tr><td colspan='6'><div class='cj-empty' style='padding:45px'><b>No orders in this stage.</b><br><span class='small'>Choose a product in Product Lab or change the filter above.</span></div></td></tr>";
+
+  return "<div class='hero order-hero'><div><div class='eyebrow'>ORDER OPERATIONS</div><div class='h1'>From payment to delivery.</div><div class='sub'>Every confirmed product becomes a customer order here. Forge keeps supplier sourcing behind the scenes, collects payment first, then moves the order through procurement, shipment and delivery.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Find another product</button>"+(state.selectedProduct?"<button class='btn primary' onclick=\"go('plan')\">View business plan →</button>":"")+"</div></div>"+
+  "<div class='order-command card'><div><div class='eyebrow'>ORDER CONTROL</div><h2 style='margin:5px 0'>One order. One operational record.</h2><p class='small'>The product, quantity, payment, supplier cost, procurement status and delivery status stay connected from confirmation to completion.</p></div><div class='order-flow'><span class='is-active'>01 Product</span><i>→</i><span>02 Payment</span><i>→</i><span>03 Procurement</span><i>→</i><span>04 Shipping</span><i>→</i><span>05 Delivered</span></div></div>"+
+  "<div class='order-metrics'>"+
+    "<div class='card'><div class='label'>TOTAL ORDERS</div><div class='stat'>"+counts.all+"</div><div class='small'>All confirmed products</div></div>"+
+    "<div class='card action-metric'><div class='label'>PENDING PAYMENT</div><div class='stat'>"+counts.payment+"</div><div class='small'>Customer action required</div></div>"+
+    "<div class='card'><div class='label'>PAID</div><div class='stat'>"+counts.paid+"</div><div class='small'>Ready for procurement</div></div>"+
+    "<div class='card'><div class='label'>IN TRANSIT</div><div class='stat'>"+counts.in_transit+"</div><div class='small'>Shipment underway</div></div>"+
+    "<div class='card'><div class='label'>DELIVERED</div><div class='stat'>"+counts.delivered+"</div><div class='small'>Completed orders</div></div>"+
+  "</div>"+
+  "<div class='section order-section-head'><div><div class='eyebrow'>YOUR ORDERS</div><h2>Order workspace</h2><p>Supplier catalogue browsing stays inside Product Lab. This page is only for your confirmed orders and their operational lifecycle.</p></div></div>"+
+  "<div class='order-tabs'>"+tabs.map(t=>"<button class='"+(ordersFilter===t[0]?"active":"")+"' onclick='setOrdersFilter(\""+t[0]+"\")'>"+t[1]+" <b>"+t[2]+"</b></button>").join("")+"</div>"+
+  "<div class='card order-table-card'><div style='overflow:auto'><table class='table order-table'><thead><tr><th>Order</th><th>Product</th><th>Customer payable</th><th>Stage</th><th>Payment</th><th></th></tr></thead><tbody>"+rows+"</tbody></table></div></div>"+
+  "<div class='notice order-policy'><b>Procurement rule:</b> payment must be received and verified before Forge releases a supplier purchase. Supplier stock, variant, freight and final landed cost are rechecked immediately before procurement.</div>";
+}
+function setOrdersFilter(filter){
+  ordersFilter=filter||"all";
+  render();
+  scrollTo({top:0,behavior:"smooth"});
+}
+function updateQueuedOrder(i,patch){
+  const q=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
+  if(!q[i])return;
+  q[i]={...q[i],...patch,updatedAt:new Date().toISOString()};
+  state.sourcingQueue=q;
+  if(state.selectedProduct?.orderRef===q[i].orderRef)state.selectedProduct=q[i];
+  try{persistProfile()}catch{}
+  render();
+}
+function markPaymentSubmitted(i){
+  const p=(state.sourcingQueue||[])[i];if(!p)return;
+  updateQueuedOrder(i,{paymentStatus:"submitted",paymentSubmittedAt:new Date().toISOString()});
+  toast("Payment submitted for verification.");
+  reviewQueued(i);
+}
+function markPaymentReceived(i){
+  const p=(state.sourcingQueue||[])[i];if(!p)return;
+  updateQueuedOrder(i,{paymentStatus:"paid",paidAt:new Date().toISOString(),orderStatus:"draft",procurementStatus:"ready"});
+  toast("Payment recorded. Order is ready for procurement.");
+  reviewQueued(i);
+}
+function advanceProcurement(i){
+  const p=(state.sourcingQueue||[])[i];if(!p)return;
+  if(p.paymentStatus!=="paid")return toast("Payment must be verified before procurement.");
+  updateQueuedOrder(i,{orderStatus:"processing",procurementStatus:"supplier_order_pending",procurementStartedAt:new Date().toISOString()});
+  toast("Order moved to procurement.");
+  reviewQueued(i);
+}
+function markSupplierOrdered(i){
+  const p=(state.sourcingQueue||[])[i];if(!p)return;
+  if(p.paymentStatus!=="paid")return toast("Verify payment first.");
+  updateQueuedOrder(i,{orderStatus:"ordered",procurementStatus:"supplier_order_placed",supplierOrderAt:new Date().toISOString()});
+  toast("Supplier procurement recorded.");
+  reviewQueued(i);
+}
+function markInTransit(i){
+  const p=(state.sourcingQueue||[])[i];if(!p)return;
+  updateQueuedOrder(i,{deliveryStatus:"in_transit",shippedAt:new Date().toISOString()});
+  toast("Shipment marked in transit.");
+  reviewQueued(i);
+}
+function markDelivered(i){
+  const p=(state.sourcingQueue||[])[i];if(!p)return;
+  updateQueuedOrder(i,{deliveryStatus:"delivered",deliveredAt:new Date().toISOString()});
+  toast("Order marked delivered.");
+  reviewQueued(i);
 }
 function reviewQueued(i){
   const p=(state.sourcingQueue||[])[i]; if(!p)return;
-  document.getElementById("modalbox").innerHTML="<div class='row' style='justify-content:space-between'><div><div class='eyebrow'>ORDER</div><h2 style='margin:5px 0'>"+esc(p.name)+"</h2></div><button class='btn' onclick='closeModal()'>✕</button></div><div class='cj-detail-grid' style='margin-top:18px'><img class='cj-detail-img' src='"+esc(p.image)+"'><div><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>≈ "+BDT(bdtEstimate(p.priceUsd))+" planning estimate</div><div class='cj-data'><div>SKU / SPU<b>"+esc(p.sku||"—")+"</b></div><div>Inventory<b>"+formatQty(p.inventory)+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Check at order")+"</b></div><div>Shipping<b>"+(p.freeShipping?"Free shipping":"Not confirmed")+"</b></div></div></div></div><div class='cj-order-note'>The current sourcing cost is not the final customer price. Final landed cost must include freight, duties, packaging, payment fees, returns and the selected customer's locked risk profile.</div><div class='actions' style='margin-top:16px'><button class='btn primary' onclick='closeModal();toast(&quot;Order confirmation flow is the next procurement step&quot;)'>Continue to order review →</button><button class='btn' onclick='closeModal()'>Close</button></div>";
+  const t=orderTotals(p),stage=orderLifecycle(p);
+  const paymentButton=p.paymentStatus==="paid"
+    ? "<span class='status green'>Payment verified</span>"
+    : p.paymentStatus==="submitted"
+      ? "<button class='btn' onclick='markPaymentReceived("+i+")'>Verify payment received</button>"
+      : "<button class='btn primary' onclick='markPaymentSubmitted("+i+")'>Proceed to payment →</button>";
+  let next="";
+  if(p.paymentStatus==="paid" && !["processing","ordered"].includes(p.orderStatus)) next="<button class='btn primary' onclick='advanceProcurement("+i+")'>Release to procurement →</button>";
+  else if(p.paymentStatus==="paid" && p.orderStatus==="processing") next="<button class='btn primary' onclick='markSupplierOrdered("+i+")'>Confirm supplier order placed →</button>";
+  else if(p.orderStatus==="ordered" && p.deliveryStatus!=="in_transit" && p.deliveryStatus!=="delivered") next="<button class='btn primary' onclick='markInTransit("+i+")'>Mark shipment in transit →</button>";
+  else if(p.deliveryStatus==="in_transit") next="<button class='btn primary' onclick='markDelivered("+i+")'>Mark delivered →</button>";
+
+  document.getElementById("modalbox").innerHTML=
+    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>ORDER "+esc(p.orderRef||"")+"</div><h2 style='margin:5px 0'>"+esc(p.name)+"</h2><div class='small'>"+stage.label+" · created "+new Date(p.selectedAt||Date.now()).toLocaleString("en-BD")+"</div></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
+    "<div class='order-modal-grid' style='margin-top:20px'>"+
+      "<div><img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'></div>"+
+      "<div><div class='cj-detail-price'>"+BDT(t.payable)+"</div><div class='small'>Customer payable for "+t.qty+" unit"+(t.qty===1?"":"s")+" · final amount rechecked before supplier purchase</div>"+
+        "<div class='cj-data order-detail-data'><div>Variant<b>"+esc(p.variant||"Standard variant")+"</b></div><div>Quantity<b>"+t.qty+"</b></div><div>Supplier cost<b>"+moneyUsd(p.priceUsd)+" · ≈ "+BDT(bdtEstimate(p.priceUsd))+"</b></div><div>Estimated landed / unit<b>"+BDT(t.landed)+"</b></div><div>Estimated selling / unit<b>"+BDT(t.selling)+"</b></div><div>Stock<b>"+formatQty(p.inventory)+"</b></div></div>"+
+      "</div>"+
+    "</div>"+
+    "<div class='order-timeline'><div class='"+(p.paymentStatus==="paid"?"done":"current")+"'><b>01</b><span>Payment</span><small>"+(p.paymentStatus==="paid"?"Verified":"Awaiting payment")+"</small></div><div class='"+(p.orderStatus==="processing"||p.orderStatus==="ordered"?"done":"")+"'><b>02</b><span>Procurement</span><small>"+(p.orderStatus==="ordered"?"Supplier order placed":p.orderStatus==="processing"?"Preparing supplier order":"Waiting for payment")+"</small></div><div class='"+(p.deliveryStatus==="in_transit"||p.deliveryStatus==="delivered"?"done":"")+"'><b>03</b><span>Shipping</span><small>"+(p.deliveryStatus==="delivered"?"Delivered":p.deliveryStatus==="in_transit"?"In transit":"Not started")+"</small></div><div class='"+(p.deliveryStatus==="delivered"?"done":"")+"'><b>04</b><span>Delivery</span><small>"+(p.deliveryStatus==="delivered"?"Completed":"Pending")+"</small></div></div>"+
+    "<div class='notice' style='margin-top:18px'><b>How this order works</b><div class='small'>You confirm the product → payment is received and verified → Forge releases procurement → the supplier order is placed → shipment is tracked → the order is delivered. Supplier browsing never appears in this workspace.</div></div>"+
+    "<div class='actions' style='margin-top:18px;justify-content:flex-end'>"+paymentButton+next+"<button class='btn' onclick='closeModal()'>Close</button></div>";
   document.getElementById("modal").classList.add("open");
 }
-
 function brand(){let b=state.business||{name:"Northstar Ventures",category:"Open to anything"};return "<div class='hero'><div><div class='eyebrow'>Brand studio</div><div class='h1'>One business thesis. One brand.</div><div class='sub'>Positioning, naming, product storytelling, packaging and launch assets.</div></div><button class='btn primary' onclick=\"toast('Brand direction regenerated')\">Generate direction</button></div><div class='grid'><div class='card span8'><div class='hero-banner'><div class='eyebrow'>"+b.name.toUpperCase()+"</div><div style='font-size:42px;font-weight:850;letter-spacing:-.06em'>"+(b.category==="Fashion & accessories"?"Carry less. Go further.":"Useful things, made better.")+"</div></div></div><div class='card span4'><div class='label'>Brand readiness</div><div class='stat'>86%</div><div class='progress'><i style='width:86%'></i></div></div></div><div class='section'><h2>Generate assets</h2></div><div class='grid'>"+["Positioning","Naming","Product copy","Packaging","Social system","Store merchandising"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Create a practical first version from the current business context.</p><button class='btn' onclick=\"toast('"+x+" generated')\">Generate →</button></div>").join("")+"</div>"}
 function store(){return "<div class='hero'><div><div class='eyebrow'>Store launch</div><div class='h1'>From product economics to checkout.</div><div class='sub'>Pricing, catalog, policies, analytics and support must agree before launch.</div></div><button class='btn primary' onclick=\"toast('Store preview opened')\">Preview store ↗</button></div><div class='card'><div class='row' style='justify-content:space-between'><b>"+(state.business?state.business.name.toLowerCase().replace(/ /g,""):"yourbusiness")+".store</b><span class='status'>72% ready</span></div><div class='progress' style='margin:18px 0'><i style='width:72%'></i></div></div><div class='section'><h2>Launch checklist</h2></div><div class='grid'>"+["Hero product approved","Pricing + margin checked","Product photography","Descriptions + SEO","Payment methods","Delivery / COD rules","Return & exchange policy","Analytics + pixels","WhatsApp / chat","Order notifications","Trust blocks","Launch campaign"].map((x,i)=>"<div class='card span3'><div class='row' style='justify-content:space-between'><b>"+x+"</b><span class='status "+(i>7?"amber":"")+"'>"+(i<8?"Done":"Next")+"</span></div><p class='small'>AI checklist with human approval for money, policy and customer-trust decisions.</p></div>").join("")+"</div>"}
 function marketing(){let budget=Math.round((state.business?.budget||250000)*.15);return "<div class='hero'><div><div class='eyebrow'>AI growth loop</div><div class='h1'>Spend based on contribution, not vanity.</div><div class='sub'>Scale only when acquisition cost and returns still leave healthy contribution.</div></div><button class='btn primary' onclick=\"toast('Growth analysis refreshed')\">Run growth analysis →</button></div><div class='grid'><div class='card span3'><div class='label'>Monthly ad envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Target CAC</div><div class='stat'>৳320</div></div><div class='card span3'><div class='label'>Target ROAS</div><div class='stat'>3.2×</div></div><div class='card span3'><div class='label'>Creative tests</div><div class='stat'>12</div></div></div><div class='section'><h2>Campaign desk</h2></div><div class='card'><table class='table'><tr><th>Campaign</th><th>Channel</th><th>Budget</th><th>ROAS</th><th>Action</th></tr><tr><td>Hero product launch</td><td>Meta</td><td>৳12,000</td><td>3.8×</td><td><span class='status'>Scale 15%</span></td></tr><tr><td>UGC test</td><td>Meta</td><td>৳7,000</td><td>2.4×</td><td><span class='status amber'>Iterate</span></td></tr></table></div><div class='section'><h2>Creative factory</h2></div><div class='grid'>"+["3-second hook","Problem/solution reel","UGC script","Founder story","Offer creative","Retargeting creative"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Generate five variants and test one variable at a time.</p><button class='btn' onclick=\"toast('"+x+" brief generated')\">Generate →</button></div>").join("")+"</div>"}
@@ -391,7 +522,7 @@ function addCjToQueue(i){
   const p=cjState[i]; if(!p)return;
   const e=liveEconomics(p);
   state.sourcingQueue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
-  const item={...p,economics:e,selectedAt:new Date().toISOString(),sourceType:"connected_supplier",orderStatus:"draft",orderRef:"FORGE-"+new Date().toISOString().replace(/\D/g,"").slice(0,14),planStatus:"preparing",planRequestedAt:new Date().toISOString()};
+  const item={...p,economics:e,selectedAt:new Date().toISOString(),sourceType:"connected_supplier",orderStatus:"draft",paymentStatus:"unpaid",procurementStatus:"awaiting_payment",deliveryStatus:"not_started",orderQty:1,variant:"Standard variant",orderRef:"FORGE-"+new Date().toISOString().replace(/\D/g,"").slice(0,14),planStatus:"preparing",planRequestedAt:new Date().toISOString()};
   const existing=state.sourcingQueue.findIndex(x=>x.id===p.id);
   if(existing>=0)state.sourcingQueue[existing]=item;else state.sourcingQueue.unshift(item);
   state.selectedProduct=item;

@@ -25,3 +25,7 @@ The entrepreneur makes the important choices. AI handles research, recommendatio
 ## Prototype note
 
 The current experience uses simulated local actions so the complete UX can be tested before production integrations are connected. Production work will replace these simulations with authentication, AI APIs, payments, supplier/procurement services, commerce, logistics and advertising APIs.
+
+## Deployment
+
+GitHub Pages deployment is configured through GitHub Actions.

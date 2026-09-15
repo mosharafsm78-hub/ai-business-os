@@ -945,7 +945,7 @@ function startStoreBuildPayment(){
   state.storeLaunch=s;
   persistProfile();
   render();
-  toast("Launch invoice prepared. Pay the one-time ৳5,000 setup fee to start the build.");
+  toast("Launch invoice prepared. Review the live total above, then pay to start the build.");
 }
 function payStoreLaunch(){
   const selected=state.selectedProduct;
@@ -1012,7 +1012,7 @@ function store(){
       ? "<button class='btn primary' onclick='refreshStoreBuild()'>Check build status ↻</button>"
       : s.status==="ready"
         ? "<button class='btn primary' onclick=\"toast('Store preview is being prepared')\">Preview completed store ↗</button>"
-        : "<button class='btn primary' onclick='payStoreLaunch()'>Pay ৳5,000 & start build →</button>";
+        : "<button class='btn primary' onclick='payStoreLaunch()'>Pay live launch total & start build →</button>";
   const domainReady=!!bill.hasCustomDomain;
   const domainChoices=availableDomainChoices();
   const domainChoicePanel=!domainReady && domainChoices.length

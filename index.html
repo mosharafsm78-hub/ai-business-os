@@ -25,7 +25,7 @@
 .source-note{font-size:10px;color:#6f877d;margin-top:12px;line-height:1.5}
 @media(max-width:560px){.corner-tab{top:auto;bottom:22%}.corner-panel{top:64px;width:92vw}.locked-grid{grid-template-columns:1fr}}
 /* FORGE_BRAND_NAMING_POLISH */
-.brand-name-list{display:grid;gap:8px;margin-top:12px}
+.brand-name-list{display:grid;gap:8px;margin-top:12px}.qty-stock-warning{color:#f1c66a!important}.btn:disabled{opacity:.45;cursor:not-allowed;filter:saturate(.5)}.qty-warning{border:1px solid rgba(241,198,106,.3);background:rgba(241,198,106,.06);color:#d9c78e;padding:13px 14px;border-radius:12px;margin:12px 0;line-height:1.5}
 .brand-name-option{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:13px 14px;border:1px solid rgba(169,238,204,.12);border-radius:12px;background:#091712;color:#e7f3ed}
 .brand-name-option:hover{border-color:#58b98d;background:#0d2119}
 .brand-name-option.selected{border-color:#69dda0;background:#10281e;box-shadow:inset 0 0 0 1px rgba(105,221,160,.2)}
@@ -314,8 +314,8 @@ function normalizeOrderQuantity(p){
   const qp=quantityPlan(p);
   let q=Number(p.orderQty||0);
   if(!Number.isFinite(q)||q<qp.minimum)q=qp.planned;
-  if(qp.stock>0)q=Math.min(q,qp.stock);
-  if(q<qp.minimum && qp.stock>=qp.minimum)q=qp.minimum;
+  // Never silently reduce the customer's planned quantity because of current stock.
+  // Keep the requested quantity visible; procurement/payment will be blocked if stock is insufficient.
   p.orderQty=q;
   p.minimumOrderQty=qp.minimum;
   p.suggestedOrderQty=qp.suggested;
@@ -360,7 +360,7 @@ function orders(){
       "<td><b>"+esc(p.orderRef||"FORGE-ORDER")+"</b><div class='small'>"+new Date(p.selectedAt||Date.now()).toLocaleDateString("en-BD")+"</div></td>"+
       "<td><div class='order-product'><img src='"+esc(p.image)+"' alt='"+esc(p.name)+"'><div><b>"+esc(p.name)+"</b><div class='small'>SKU "+esc(p.sku||"—")+"</div><div class='small'>"+esc(p.variant||"Standard variant")+"</div></div></div></td>"+
       "<td><div class='order-qty-cell'><div class='qty-stepper'><button "+(p.paymentStatus==="unpaid"?"":"disabled")+" onclick='adjustOrderQuantity("+realIndex+",-1)' aria-label='Decrease quantity'>−</button><input "+(p.paymentStatus==="unpaid"?"":"disabled")+" type='number' min='"+qp.minimum+"' max='"+(qp.stock>0?qp.stock:"")+"' step='1' value='"+t.qty+"' onchange='setOrderQuantity("+realIndex+",this.value,false)' aria-label='Order quantity'><button "+(p.paymentStatus==="unpaid"?"":"disabled")+" onclick='adjustOrderQuantity("+realIndex+",1)' aria-label='Increase quantity'>+</button></div><div class='order-qty-meta'><span>Min "+qp.minimum+"</span><span>Suggested "+qp.suggested+"</span><span class='planned'>Plan "+qp.planned+"</span></div></div></td>"+
-      "<td><b>"+BDT(t.payable)+"</b><div class='small'>"+t.qty+" units · landed estimate</div></td>"+
+      "<td><b>"+BDT(t.payable)+"</b><div class='small'>"+t.qty+" units × "+BDT(t.landed)+" landed/unit</div><div class='small "+(t.qty>qp.stock&&qp.stock>0?"qty-stock-warning":"")+"'>"+esc(orderStockStatus(p,t.qty).text)+"</div></td>"+
       "<td><span class='status "+stage.tone+"'>"+stage.label+"</span><div class='small order-stage-note'>"+stage.desc+"</div></td>"+
       "<td><span class='payment-dot "+(paymentLabel==="Paid"?"is-paid":"")+"'>"+paymentLabel+"</span></td>"+
       "<td><div class='order-actions'><button class='btn' onclick='reviewQueued("+realIndex+")'>Open order →</button>"+(p.paymentStatus==="unpaid"?"<button class='btn delete-order-btn' onclick='deleteQueuedOrder("+realIndex+")' title='Delete order' aria-label='Delete order'>✕</button>":"")+"</div></td>"+
@@ -381,7 +381,7 @@ function orders(){
   "<div class='section order-section-head'><div><div class='eyebrow'>YOUR ORDERS</div><h2>Order workspace</h2><p>Only confirmed products appear here. Supplier catalogue browsing remains inside Product Lab.</p></div></div>"+
   "<div class='order-tabs'>"+tabs.map(t=>"<button class='"+(ordersFilter===t[0]?"active":"")+"' onclick='setOrdersFilter(\""+t[0]+"\")'>"+t[1]+" <b>"+t[2]+"</b></button>").join("")+"</div>"+
   "<div class='card order-table-card'><div style='overflow:auto'><table class='table order-table'><thead><tr><th>Order</th><th>Product</th><th>Quantity</th><th>Customer payable</th><th>Stage</th><th>Payment</th><th></th></tr></thead><tbody>"+rows+"</tbody></table></div></div>"+
-  "<div class='qty-planning-note'><strong>How quantity works:</strong> Forge uses your capital, income/risk profile, product economics, supplier minimums and live stock to calculate <b>Minimum</b>, <b>Suggested</b> and <b>Planned</b> quantities. The <b>Planned</b> quantity is the starting point—not a forced purchase. You can edit it directly in the order table before payment.</div>"+
+  "<div class='qty-planning-note'><strong>How quantity works:</strong> Forge uses your capital, income/risk profile, product economics, supplier minimums and live stock to calculate <b>Minimum</b>, <b>Suggested</b> and <b>Planned</b> quantities. The <b>Planned</b> quantity is Forge's recommended starting point—not a forced purchase. You can edit it directly. Your selected quantity always drives the order total; supplier stock is checked separately and never silently changes your number.</div>"+
   "<div class='notice order-policy'><b>Procurement rule:</b> payment must be received and verified before Forge releases a supplier purchase. Final variant, quantity, supplier stock, freight and landed cost are rechecked immediately before procurement.</div>";
 }
 function setOrdersFilter(filter){
@@ -446,7 +446,6 @@ function setOrderQuantity(i,value,openDetail=true){
   let q=Math.floor(Number(value||0));
   if(!Number.isFinite(q))q=qp.planned;
   if(q<qp.minimum){toast("Minimum launch quantity is "+qp.minimum+" units.");q=qp.minimum;}
-  if(qp.stock>0 && q>qp.stock){toast("Only "+formatQty(qp.stock)+" units are currently shown in supplier stock.");q=qp.stock;}
   if(q<1)q=1;
   updateQueuedOrder(i,{orderQty:q,minimumOrderQty:qp.minimum,suggestedOrderQty:qp.suggested,plannedOrderQty:qp.planned});
   toast("Quantity set to "+formatQty(q)+" units.");
@@ -474,25 +473,36 @@ function deleteQueuedOrder(i){
   render();
   toast("Order deleted. The product is no longer committed.");
 }
+function orderStockStatus(p,qty){
+  const stock=Number(p.inventory||0);
+  if(!stock)return {ok:true,text:"Stock check required before procurement.",tone:"neutral"};
+  if(qty>stock)return {ok:false,text:"Requested "+formatQty(qty)+" · supplier currently shows "+formatQty(stock)+" available",tone:"warning"};
+  return {ok:true,text:formatQty(stock)+" available in supplier stock",tone:"good"};
+}
 function reviewQueued(i){
   const p=(state.sourcingQueue||[])[i]; if(!p)return;
   const qp=quantityPlan(p);
   if(!p.orderQty||Number(p.orderQty)<qp.minimum)p.orderQty=qp.planned;
   const t=orderTotals(p),stage=orderLifecycle(p);
+  const stockState=orderStockStatus(p,t.qty);
   const paymentButton=p.paymentStatus==="paid"
     ? "<span class='status green'>Payment verified</span>"
     : p.paymentStatus==="submitted"
       ? "<button class='btn' onclick='markPaymentReceived("+i+")'>Verify payment received</button>"
-      : "<button class='btn primary' onclick='markPaymentSubmitted("+i+")'>Make payment →</button>";
+      : stockState.ok
+        ? "<button class='btn primary' onclick='markPaymentSubmitted("+i+")'>Make payment →</button>"
+        : "<button class='btn' disabled title='Supplier stock is below your requested quantity'>Waiting for stock →</button>";
   let next="";
   if(p.paymentStatus==="paid" && !["processing","ordered"].includes(p.orderStatus)) next="<button class='btn primary' onclick='advanceProcurement("+i+")'>Release to procurement →</button>";
   else if(p.paymentStatus==="paid" && p.orderStatus==="processing") next="<button class='btn primary' onclick='markSupplierOrdered("+i+")'>Confirm supplier order placed →</button>";
   else if(p.orderStatus==="ordered" && p.deliveryStatus!=="in_transit" && p.deliveryStatus!=="delivered") next="<button class='btn primary' onclick='markInTransit("+i+")'>Mark shipment in transit →</button>";
   else if(p.deliveryStatus==="in_transit") next="<button class='btn primary' onclick='markDelivered("+i+")'>Mark delivered →</button>";
 
-  const stockWarning=qp.stock>0&&qp.stock<qp.minimum
-    ? "<div class='qty-warning'><b>Launch quantity cannot be met from current displayed stock.</b> Forge recommends "+qp.minimum+" units, but the supplier currently shows only "+formatQty(qp.stock)+". Recheck live stock or choose another product before paying.</div>"
-    : "";
+  const stockWarning=!stockState.ok
+    ? "<div class='qty-warning'><b>Stock is below your requested quantity.</b> You selected "+formatQty(t.qty)+" units, but the supplier currently shows "+formatQty(qp.stock)+" units. Your quantity and total stay unchanged so you can see the true order economics; payment/procurement remains blocked until stock is sufficient or you reduce the quantity.</div>"
+    : (qp.stock>0&&qp.stock<qp.minimum
+      ? "<div class='qty-warning'><b>This supplier cannot currently support Forge's minimum launch quantity.</b> Forge recommends at least "+qp.minimum+" units, but only "+formatQty(qp.stock)+" are currently shown. Consider another supplier/product.</div>"
+      : "");
 
   document.getElementById("modalbox").innerHTML=
     "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>ORDER "+esc(p.orderRef||"")+" · QUANTITY REQUIRED</div><h2 style='margin:5px 0'>"+esc(p.name)+"</h2><div class='small'>"+stage.label+" · created "+new Date(p.selectedAt||Date.now()).toLocaleString("en-BD")+"</div></div><button class='btn' onclick='closeModal()'>✕</button></div>"+

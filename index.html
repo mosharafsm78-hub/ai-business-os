@@ -43,20 +43,20 @@
 
 .cj-live{margin-top:24px}.cj-head{display:flex;justify-content:space-between;gap:24px;align-items:flex-start}.cj-live-note{text-align:right;min-width:220px}.cj-toolbar{display:flex;justify-content:space-between;gap:12px;margin:18px 0 12px}.cj-count{font-size:13px;color:#9bb9ab}.cj-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.cj-card{overflow:hidden;border:1px solid rgba(156,235,198,.16);border-radius:18px;background:#071912;box-shadow:0 10px 30px rgba(0,0,0,.16)}.cj-image-wrap{height:250px;background:#f6f6f3;position:relative;display:flex;align-items:center;justify-content:center}.cj-image-wrap img{width:100%;height:100%;object-fit:contain}.cj-live-badge{position:absolute;z-index:2;left:12px;top:12px;padding:6px 9px;border-radius:999px;background:#b4f3d0;color:#062116;font-size:10px;font-weight:800;letter-spacing:.08em}.cj-card-body{padding:16px}.cj-card-body h3{min-height:46px;margin:7px 0 10px;font-size:17px;line-height:1.25}.cj-meta{display:flex;gap:7px;flex-wrap:wrap}.cj-chip{font-size:10px;padding:5px 8px;border-radius:999px;border:1px solid rgba(156,235,198,.18);color:#9bb9ab}.cj-price-row{display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(156,235,198,.12);margin-top:13px;padding-top:13px}.cj-price{font-size:22px;font-weight:800}.cj-bdt{font-size:11px;color:#8fa99d;margin-top:3px}.cj-data{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.cj-data>div{padding:9px;border-radius:10px;background:rgba(255,255,255,.025);font-size:11px;color:#8fa99d}.cj-data b{display:block;color:#eaf7f0;font-size:13px;margin-top:3px}.cj-data .small{font-size:9px}.cj-footer{margin-top:14px}@media(max-width:1000px){.cj-results{grid-template-columns:1fr 1fr}.cj-head{display:block}.cj-live-note{text-align:left;margin-top:12px}}@media(max-width:680px){.cj-results{grid-template-columns:1fr}.cj-image-wrap{height:220px}}
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-:root{--font-body:"DM Sans",Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-display:"Space Grotesk","DM Sans",Inter,system-ui,sans-serif}
-body{font-family:var(--font-body);font-size:14px;line-height:1.55;letter-spacing:-.006em}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+:root{--font-body:"DM Sans",Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-display:"Manrope","DM Sans",Inter,system-ui,sans-serif}
+body{font-family:var(--font-body);font-size:14px;line-height:1.55;letter-spacing:-.004em}
 h1,h2,h3,h4,.h1,.stat,.v,.brand{font-family:var(--font-display);letter-spacing:-.035em}
-h1,.h1{font-weight:600;line-height:.98}
-h2{font-weight:600;line-height:1.12}
-h3{font-weight:600;line-height:1.3}
-.sub,.small,p{line-height:1.6}
-.label,.eyebrow,.tag,.navlabel{font-family:var(--font-body);font-weight:600;letter-spacing:.14em}
+h1,.h1{font-weight:700;line-height:1.02}
+h2{font-weight:700;line-height:1.15}
+h3{font-weight:700;line-height:1.3}
+.sub,.small,p{line-height:1.62}
+.label,.eyebrow,.tag,.navlabel{font-family:var(--font-body);font-weight:700;letter-spacing:.13em}
 .card{border-radius:16px}
 .hero{padding:38px 0 30px}
 .hero .h1{max-width:980px}
 .hero .sub{max-width:820px;font-size:15px}
-.btn{font-weight:600}
+.btn{font-weight:700}
 .kpi b,.stat,.v{font-variant-numeric:tabular-nums}
 .locked-item .v{font-size:22px}
 .notice{border-radius:14px}
@@ -82,40 +82,38 @@ h3{font-weight:600;line-height:1.3}
 .brand-commercial>div{padding:10px;border:1px solid rgba(169,238,204,.1);border-radius:11px;background:#091611}
 .brand-commercial span{display:block;font-size:9px;color:#70897e;text-transform:uppercase;letter-spacing:.11em}
 .brand-commercial b{display:block;margin-top:4px;font-size:14px}
-.brand-lock{padding:9px 11px;border:1px solid #315546;border-radius:11px;color:#8de6b7;font-size:9px;font-weight:800;letter-spacing:.14em;text-align:center}
-.brand-progress{display:flex;justify-content:space-between;gap:30px;align-items:center}
-.brand-progress h2{margin:5px 0}
-.brand-progress-meter{width:min(360px,35%);min-width:180px}
-.brand-progress-meter>b{display:block;text-align:right;margin-bottom:7px;font-size:20px}
-.brand-foundation .brand-thesis{font-family:var(--font-display);font-size:25px;line-height:1.2;letter-spacing:-.025em;margin:9px 0 18px;max-width:900px}
-.brand-proof-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-.brand-proof-grid>div{padding:12px;border:1px solid rgba(169,238,204,.1);border-radius:12px;background:#091611}
-.brand-proof-grid span{display:block;font-size:9px;color:#70897e;text-transform:uppercase;letter-spacing:.12em}
-.brand-proof-grid b{display:block;font-size:12px;line-height:1.45;margin-top:4px;color:#c8d9d1;font-weight:500}
-.brand-coach{background:linear-gradient(145deg,#10251d,#091510)}
-.brand-coach h3{margin:7px 0}
+.brand-lock{padding:9px 11px;border:1px solid #315546;border-radius:11px;color:#8de6b7;font-size:9px;font-weight:800;letter-spacing:.12em;text-align:center}
+.brand-progress{display:flex;justify-content:space-between;gap:25px;align-items:center;margin-bottom:18px}
+.brand-progress-meter{min-width:270px}.brand-progress-meter>b{display:block;text-align:right;font-size:28px;margin-bottom:8px}
+.brand-foundation{margin-top:12px}.brand-thesis{font-family:var(--font-display);font-size:24px;line-height:1.18;letter-spacing:-.025em;margin:10px 0 20px;max-width:900px}
+.brand-proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.brand-proof-grid>div{padding:13px;border:1px solid rgba(169,238,204,.1);border-radius:12px;background:#091611}
+.brand-proof-grid span{display:block;font-size:9px;color:#718a7e;text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px}
+.brand-proof-grid b{font-size:12px;line-height:1.5;font-weight:600;color:#d6e6de}
+.brand-coach{display:flex;flex-direction:column}.brand-coach .btn{margin-top:auto;align-self:flex-start}
 .brand-modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.brand-module{padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#0d1a16,#09140f);display:flex;flex-direction:column;min-height:265px}
-.brand-module.is-done{border-color:rgba(105,221,160,.28)}
-.brand-module-top{display:flex;justify-content:space-between;align-items:center}
-.brand-step{width:30px;height:30px;border-radius:9px;background:#173127;color:#b9f3d0;display:grid;place-items:center;font-size:11px;font-weight:800}
-.brand-module h3{margin:12px 0 3px;font-size:18px}
-.brand-module .small{margin-top:0}
-.brand-copy{padding:12px;border:1px solid rgba(169,238,204,.1);border-radius:11px;background:#091510;margin:9px 0 12px;line-height:1.55;flex:1}
-.brand-copy p{margin:8px 0 0}
-.brand-module>.btn{align-self:flex-start}
-.brand-name-list{display:flex;flex-direction:column;gap:7px;margin:9px 0 12px;flex:1}
-.brand-name-option{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:1px solid rgba(169,238,204,.1);background:#091510;color:#d9e8e1;border-radius:10px;padding:10px 11px}
-.brand-name-option:hover,.brand-name-option.selected{border-color:#56b98a;background:#10251d}
-.brand-name-option span{font-weight:700}
-.brand-name-option small{color:#7f9b8e}
-.brand-angle-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.brand-angle-list span{font-size:10px;padding:5px 7px;border:1px solid #29483b;border-radius:999px;color:#a9c1b5}
-.brand-next{margin-top:16px;display:flex;justify-content:space-between;gap:20px;align-items:center;background:linear-gradient(120deg,#123027,#0b1814)}
-.brand-next h2{margin:5px 0}
-@media(max-width:850px){.brand-product-strip{grid-template-columns:90px 1fr}.brand-lock{grid-column:2;justify-self:start}.brand-commercial{grid-template-columns:1fr 1fr}.brand-modules{grid-template-columns:1fr}.brand-progress{display:block}.brand-progress-meter{width:100%;margin-top:15px}.brand-next{display:block}.brand-next .actions{margin-top:14px}}
-@media(max-width:560px){.brand-product-strip{grid-template-columns:1fr}.brand-product-media{width:100%;height:200px}.brand-lock{grid-column:1}.brand-foundation .brand-thesis{font-size:21px}.brand-proof-grid{grid-template-columns:1fr}.brand-commercial{grid-template-columns:1fr 1fr}}
-</style><style id="forge-quantity-controls">
+.brand-module{padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#0d1a16,#09140f);min-height:250px;display:flex;flex-direction:column}
+.brand-module.is-done{border-color:rgba(105,221,160,.24)}
+.brand-module-top{display:flex;justify-content:space-between;align-items:center}.brand-step{font-size:11px;color:#7f9a8d;font-weight:800;letter-spacing:.1em}
+.brand-module h3{font-size:19px;margin:13px 0 4px}.brand-module>.small{max-width:620px}
+.brand-copy{padding:12px;border:1px solid rgba(169,238,204,.1);border-radius:12px;background:#091611;margin:10px 0;color:#d8e8e0;font-size:12px;line-height:1.55}
+.brand-copy p{margin:8px 0 0}.brand-module>.btn{margin-top:auto;align-self:flex-start}
+.brand-name-list{display:grid;gap:8px;margin:11px 0}
+.brand-name-option{display:flex;justify-content:space-between;gap:10px;align-items:center;width:100%;padding:12px 13px;border:1px solid rgba(169,238,204,.12);border-radius:11px;background:#091611;color:#dcebe4;text-align:left}
+.brand-name-option:hover,.brand-name-option.selected{border-color:#65dba1;background:#10271e}.brand-name-option span{font-family:var(--font-display);font-size:15px;font-weight:700}.brand-name-option small{color:#7f9a8d}
+.brand-kit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.brand-kit-item{padding:13px;border:1px solid rgba(169,238,204,.1);border-radius:12px;background:#091611}
+.brand-kit-item .kit-label{font-size:9px;color:#70897e;text-transform:uppercase;letter-spacing:.12em}
+.brand-kit-item .kit-value{font-family:var(--font-display);font-weight:700;font-size:16px;margin-top:5px;word-break:break-word}
+.brand-kit-item .kit-help{font-size:10px;color:#819a8e;margin-top:4px;line-height:1.45}
+.brand-identity-banner{padding:18px;border:1px solid rgba(105,221,160,.2);border-radius:16px;background:linear-gradient(120deg,#10291f,#091611);margin-bottom:18px}
+.brand-identity-banner h2{margin:5px 0 4px;font-size:25px}
+.brand-identity-banner p{margin:0;color:#8fa99d;font-size:12px}
+.brand-angle-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.brand-angle-list span{padding:6px 8px;border-radius:999px;border:1px solid rgba(169,238,204,.12);font-size:10px;color:#9db7aa}
+.brand-next{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:20px}
+@media(max-width:900px){.brand-modules{grid-template-columns:1fr}.brand-progress{display:block}.brand-progress-meter{margin-top:15px}.brand-progress-meter>b{text-align:left}.brand-product-strip{grid-template-columns:90px 1fr}.brand-lock{display:none}}
+@media(max-width:650px){.brand-product-strip{grid-template-columns:1fr}.brand-product-media{width:100%;height:180px}.brand-proof-grid,.brand-kit{grid-template-columns:1fr}.brand-next{display:block}.brand-next .actions{margin-top:15px}}
+<style id="forge-quantity-controls">
 .qty-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}
 .qty-box{padding:11px 12px;border:1px solid rgba(169,238,204,.11);border-radius:12px;background:#091611}
 .qty-box.highlight{border-color:rgba(169,238,204,.28);background:#0d2119}
@@ -462,112 +460,178 @@ function reviewQueued(i){
 }
 function brand(){
   const p=state.selectedProduct;
-  const b=state.business||{};
   const profile=state.profile||{};
   const saved=state.brandStudio||{};
-  const name=p?.name||"No product confirmed yet";
-  const e=p?.economics||null;
-  const category=(p?.category||profile.category||"your category").toString();
-  const clean=String(name).replace(/\s+/g," ").trim();
-  const shortName=clean.split(" ").slice(0,4).join(" ");
-  const hasDirection=!!saved.direction;
-  const chosenName=saved.chosenName||"";
-  const modules=[
-    ["positioning","01","Positioning","Make the product mean something beyond its features."],
-    ["naming","02","Brand name","Create a name that can grow beyond one SKU."],
-    ["story","03","Product story","Turn the product into a clear reason to buy."],
-    ["packaging","04","Packaging","Define the physical experience from box to unboxing."],
-    ["launch","05","Launch system","Give marketing one coherent message to repeat."],
-    ["handoff","06","Brand handoff","Prepare the approved direction for Store Launch and AI Marketing."]
-  ];
-  const completed=modules.filter(m=>saved[m[0]]).length+(chosenName?1:0);
-  const progress=Math.min(100,Math.round((completed/7)*100));
+  if(!p){
+    return "<div class='hero'><div><div class='eyebrow'>BRAND STUDIO</div><div class='h1'>Build the business identity after the product is real.</div><div class='sub'>Brand Studio takes one confirmed supplier product and turns it into a customer-facing business identity: company name, product name, social handles, domain direction, story and launch system.</div></div><button class='btn primary' onclick=\"go('products')\">Choose a product first →</button></div>"+
+      "<div class='notice'><b>Nothing to brand yet.</b><div class='small'>First confirm a product in Product Lab. Then Forge will build the brand around that exact product instead of creating a generic branding exercise.</div></div>";
+  }
+  const name=p.name||"Selected product";
+  const category=String(p.category||profile.category||"your category");
+  const clean=String(name).replace(/\\s+/g," ").trim();
+  const baseWords=clean.replace(/[^A-Za-z0-9 ]/g,"").split(" ").filter(Boolean);
+  const productCore=baseWords.slice(0,3).join(" ");
   const direction=saved.direction||{
-    audience:"Define the primary customer from the product's actual use case, price point and Bangladesh launch context.",
-    position:"Position "+shortName+" as a focused, credible offer—not a generic catalogue item.",
-    promise:"Make the main customer benefit obvious within the first few seconds of seeing the product.",
-    personality:"Modern, confident, useful and commercially clear; premium in presentation without pretending to be luxury.",
-    proof:"Use the real product, real specifications, real supplier evidence and real customer feedback as proof."
+    audience:"Define the primary customer from the product's actual use case, price point and launch market.",
+    position:"Own a clear position around "+productCore+": useful, credible and easy to understand at the moment of purchase.",
+    promise:"Make the strongest customer benefit obvious in the first few seconds, then prove it with the real product.",
+    personality:"Modern, confident, practical and premium in presentation without overclaiming.",
+    proof:"Real product photography, verified specifications, supplier evidence, customer feedback and transparent commercial terms."
   };
+  const identity=saved.identity||{};
   const candidates=saved.names||[
-    shortName.replace(/[^A-Za-z0-9 ]/g,"").split(" ").slice(0,2).join(" ")+" Co.",
-    (category.toLowerCase().includes("footwear")?"Stride":"Northstar")+" & Co.",
-    (category.toLowerCase().includes("bag")?"Carry":"Form")+" House"
+    (category.toLowerCase().includes("bag")?"Carry":"Northstar")+" & Co.",
+    (category.toLowerCase().includes("footwear")?"Stride":"Form")+" House",
+    "Novera Goods"
   ];
+  const chosenName=saved.chosenName||"";
+  const productNames=saved.productNames||[
+    productCore+" Essential",
+    productCore+" Signature",
+    productCore+" Everyday"
+  ];
+  const chosenProductName=saved.chosenProductName||"";
+  const social=saved.social||{
+    facebook:chosenName?chosenName.toLowerCase().replace(/[^a-z0-9]+/g,""):"yourbrand",
+    instagram:chosenName?chosenName.toLowerCase().replace(/[^a-z0-9]+/g,""):"yourbrand",
+    domain:chosenName?chosenName.toLowerCase().replace(/[^a-z0-9]+/g,"")+".com":"yourbrand.com"
+  };
   const story=saved.story||{
-    hook:"A practical product selected for a specific customer—not a product chosen first and marketed later.",
-    body:"The brand story should connect the customer's everyday problem, the product's strongest proof point and the reason the offer deserves its price. Keep claims specific and verifiable.",
-    content:"Lead with the product in real use, then show detail, proof, objection handling and the offer."
+    hook:"A focused product chosen for a real customer need—not a generic catalogue item.",
+    body:"Connect the customer's situation, the product's strongest proof point and the reason the offer deserves its price. Keep every claim specific and verifiable.",
+    content:"Use case → product detail → proof → objection handling → offer."
   };
   const packaging=saved.packaging||{
-    front:"Clean brand mark + product name. No clutter.",
-    inside:"Short thank-you message, care/use information and a simple next-purchase prompt.",
-    rule:"Packaging should reinforce the same positioning used on the product page and in advertising."
+    front:"Brand mark + product name + one restrained descriptor.",
+    inside:"Thank-you message + care/use guidance + support contact.",
+    rule:"Packaging should look like the brand, not like a supplier shipment."
   };
   const launch=saved.launch||{
-    message:"One product. One clear reason to choose it.",
-    angles:["Problem → product → proof","Close-up quality / detail","Real-life use case","Customer objection → evidence"],
-    channels:"Meta, TikTok, creator seeding and the own store."
+    message:"Show the product. Explain the reason. Prove the claim.",
+    angles:["Use-case demonstration","Product detail / quality proof","Objection handling","Social proof / creator use"],
+    channels:"Facebook, Instagram, TikTok, creators and the own store."
   };
-  if(!p){
-    return "<div class='hero'><div><div class='eyebrow'>BRAND STUDIO</div><div class='h1'>Build the brand after the product is real.</div><div class='sub'>Brand Studio starts from a confirmed Product Lab selection. Once a product is confirmed, Forge carries its real product record into the brand, store and marketing workflow.</div></div><button class='btn primary' onclick=\"go('products')\">Choose a product first →</button></div>"+
-      "<div class='notice'><b>Nothing to brand yet.</b><div class='small'>Go to Product Lab, review the live supplier recommendations, confirm one product, and return here. Forge will then build the brand around that exact product instead of inventing a generic brand concept.</div></div>";
-  }
-  function moduleCard(key,num,title,desc,content,button){
+  const modules=[
+    ["positioning","01","Positioning","Who is this for, why should they care, and where should the product sit?"],
+    ["naming","02","Company & brand name","Choose the name customers will remember across the business."],
+    ["productNaming","03","Product name","Give the confirmed supplier item a customer-facing product name."],
+    ["digital","04","Facebook, Instagram & domain","Create a consistent digital identity direction."],
+    ["story","05","Product story","Give product pages, sales and ads one consistent narrative."],
+    ["packaging","06","Packaging","Define the physical experience from box to unboxing."],
+    ["launch","07","Launch system","Give marketing one coherent message and repeatable creative angles."]
+  ];
+  const completed=modules.filter(m=>saved[m[0]]).length+(chosenName?1:0)+(chosenProductName?1:0);
+  const progress=Math.min(100,Math.round((completed/9)*100));
+  const escHtml=v=>esc(v);
+  const moduleCard=(key,num,title,desc,content,button)=>{
     const done=!!saved[key];
     return "<article class='brand-module "+(done?"is-done":"")+"'><div class='brand-module-top'><span class='brand-step'>"+num+"</span><span class='status "+(done?"":"amber")+"'>"+(done?"Ready":"Open")+"</span></div><h3>"+title+"</h3><p class='small'>"+desc+"</p>"+content+(button||"")+"</article>";
-  }
-  return "<div class='hero brand-hero'><div><div class='eyebrow'>BRAND STUDIO · PRODUCT-AWARE</div><div class='h1'>Build the brand around the product you've already chosen.</div><div class='sub'>Forge uses the confirmed product, your business profile and the commercial model to create a brand system that can move directly into Store Launch and AI Marketing. No generic mood-board exercise.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Change product</button><button class='btn primary' onclick='generateBrandDirection()'>"+(hasDirection?"Refresh direction":"Generate brand direction")+" →</button></div></div>"+
-    "<div class='brand-product-strip card'><div class='brand-product-media'><img src='"+esc(p.image||"")+"' alt='"+esc(name)+"'></div><div class='brand-product-info'><div class='eyebrow'>CONFIRMED PRODUCT</div><h2>"+esc(name)+"</h2><p class='small'>"+esc(category)+" · SKU "+esc(p.sku||"—")+"</p><div class='brand-commercial'>"+
-      "<div><span>Supplier</span><b>"+moneyUsd(p.priceUsd)+"</b></div>"+
-      "<div><span>Planning sell</span><b>"+(e?BDT(e.selling):"—")+"</b></div>"+
-      "<div><span>Contribution / unit</span><b>"+(e?BDT(e.contribution):"—")+"</b></div>"+
-      "<div><span>Stock checked</span><b>"+formatQty(p.inventory||0)+"</b></div>"+
-    "</div></div><div class='brand-lock'>PRODUCT<br>LOCKED</div></div>"+
-    "<div class='brand-progress card'><div><div class='eyebrow'>BRAND BUILD</div><h2>"+(hasDirection?"Direction generated. Now refine the identity.":"Start with the commercial truth.")+"</h2><p class='small'>"+completed+" of 7 brand decisions prepared. The remaining steps stay editable until you approve the direction.</p></div><div class='brand-progress-meter'><b>"+progress+"%</b><div class='progress'><i style='width:"+progress+"%'></i></div></div></div>"+
-    "<div class='section'><div><h2>01 · Brand foundation</h2><p>Forge first defines why this product should exist as a brand.</p></div></div>"+
-    "<div class='brand-foundation grid'><div class='card span8'><div class='label'>BRAND THESIS</div><div class='brand-thesis'>"+esc(hasDirection?direction.position:"Generate a product-specific positioning direction.")+"</div><div class='brand-proof-grid'><div><span>Audience</span><b>"+esc(direction.audience)+"</b></div><div><span>Promise</span><b>"+esc(direction.promise)+"</b></div><div><span>Personality</span><b>"+esc(direction.personality)+"</b></div><div><span>Proof</span><b>"+esc(direction.proof)+"</b></div></div></div><div class='card span4 brand-coach'><div class='label'>FORGE COACH NOTE</div><h3>Don't brand the supplier listing.</h3><p class='small'>The supplier gives us the product. Forge turns that product into a customer-facing proposition with its own name, promise, story and commercial logic.</p><button class='btn primary' onclick='generateBrandDirection()'>"+(hasDirection?"Improve direction":"Build direction")+" →</button></div></div>"+
-    "<div class='section'><div><h2>02 · Build the identity</h2><p>Complete only what is needed to move the product toward launch.</p></div></div>"+
+  };
+  const kitReady=!!(chosenName&&chosenProductName);
+  return "<div class='hero brand-hero'><div><div class='eyebrow'>BRAND STUDIO · BUSINESS IDENTITY</div><div class='h1'>Turn the chosen product into a real brand.</div><div class='sub'>This is not a mood-board page. Forge helps you make the commercial identity decisions that customers actually see: company name, product name, social presence, website direction, positioning, packaging and launch message.</div></div><div class='actions'><button class='btn' onclick=\"go('products')\">Change product</button><button class='btn primary' onclick='generateBrandDirection()'>"+(saved.direction?"Refresh recommendations":"Build my brand direction")+" →</button></div></div>"+
+    "<div class='brand-product-strip card'><div class='brand-product-media'><img src='"+esc(p.image||"")+"' alt='"+esc(name)+"'></div><div class='brand-product-info'><div class='eyebrow'>CONFIRMED PRODUCT</div><h2>"+esc(name)+"</h2><p class='small'>Supplier listing · SKU "+esc(p.sku||"—")+" · Forge will create the customer-facing name below.</p><div class='brand-commercial'><div><span>Supplier cost</span><b>"+moneyUsd(p.priceUsd)+"</b></div><div><span>Planning sell</span><b>"+(p.economics?BDT(p.economics.selling):"—")+"</b></div><div><span>Contribution / unit</span><b>"+(p.economics?BDT(p.economics.contribution):"—")+"</b></div><div><span>Stock checked</span><b>"+formatQty(p.inventory||0)+"</b></div></div></div><div class='brand-lock'>SOURCE<br>LOCKED</div></div>"+
+    "<div class='brand-progress card'><div><div class='eyebrow'>BRAND BUILD</div><h2>"+(kitReady?"Core identity prepared. Now refine the launch system.":"Let's make the identity decisions in the right order.")+"</h2><p class='small'>"+completed+" of 9 key decisions prepared. Forge keeps the confirmed supplier product as the source of truth.</p></div><div class='brand-progress-meter'><b>"+progress+"%</b><div class='progress'><i style='width:"+progress+"%'></i></div></div></div>"+
+    (kitReady?"<div class='brand-identity-banner'><div class='eyebrow'>YOUR BRAND STARTER KIT</div><h2>"+esc(chosenName)+"</h2><p>"+esc(chosenProductName)+" · Digital identity and launch assets should use this exact naming system.</p><div class='brand-kit'><div class='brand-kit-item'><div class='kit-label'>Facebook Page</div><div class='kit-value'>@"+esc(social.facebook)+"</div><div class='kit-help'>Suggested handle · check availability before claiming.</div></div><div class='brand-kit-item'><div class='kit-label'>Instagram</div><div class='kit-value'>@"+esc(social.instagram)+"</div><div class='kit-help'>Suggested handle · keep it identical across platforms where possible.</div></div><div class='brand-kit-item'><div class='kit-label'>Website domain</div><div class='kit-value'>"+esc(social.domain)+"</div><div class='kit-help'>Suggested domain · availability must be checked before purchase.</div></div><div class='brand-kit-item'><div class='kit-label'>Business role</div><div class='kit-value'>Brand + product</div><div class='kit-help'>The company identity can expand beyond this first SKU.</div></div></div></div>":"")+
+    "<div class='section'><div><h2>01 · Brand foundation</h2><p>First make the commercial logic understandable. Then name it.</p></div></div>"+
+    "<div class='brand-foundation grid'><div class='card span8'><div class='label'>WHAT THIS BRAND SHOULD STAND FOR</div><div class='brand-thesis'>"+escHtml(direction.position)+"</div><div class='brand-proof-grid'><div><span>Who it is for</span><b>"+escHtml(direction.audience)+"</b></div><div><span>Customer promise</span><b>"+escHtml(direction.promise)+"</b></div><div><span>Brand personality</span><b>"+escHtml(direction.personality)+"</b></div><div><span>Proof we can use</span><b>"+escHtml(direction.proof)+"</b></div></div></div><div class='card span4 brand-coach'><div class='label'>FORGE COACH NOTE</div><h3>Do not copy the supplier.</h3><p class='small'>The supplier gives us a product. Your business needs its own company identity, customer-facing product name, promise, content language and commercial reason to exist.</p><button class='btn primary' onclick='generateBrandDirection()'>"+(saved.direction?"Improve direction":"Build direction")+" →</button></div></div>"+
+    "<div class='section'><div><h2>02 · Build the identity</h2><p>These are the concrete decisions you will use on your store, social pages, packaging and ads.</p></div></div>"+
     "<div class='brand-modules'>"+
-      moduleCard("positioning","01","Positioning","Define the customer, promise and market position.","<div class='brand-copy'>"+esc(direction.position)+"</div>","<button class='btn' onclick='generateBrandModule(\"positioning\")'>"+(saved.positioning?"Regenerate":"Generate")+" →</button>")+
-      moduleCard("naming","02","Brand name","Create a scalable name and select one before visual identity.","<div class='brand-name-list'>"+candidates.map((n,i)=>"<button class='brand-name-option "+(chosenName===n?"selected":"")+"' onclick='selectBrandName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenName===n?"Selected":"Use this direction →")+"</small></button>").join("")+"</div>","<button class='btn' onclick='generateBrandModule(\"naming\")'>Generate name directions →</button>")+
-      moduleCard("story","03","Product story","Give sales, product pages and ads one consistent narrative.","<div class='brand-copy'><b>"+esc(story.hook)+"</b><p class='small'>"+esc(story.body)+"</p><p class='small'><b>Content rhythm:</b> "+esc(story.content)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"story\")'>"+(saved.story?"Refine story":"Generate story")+" →</button>")+
-      moduleCard("packaging","04","Packaging","Make the unboxing experience reinforce the same promise.","<div class='brand-copy'><p><b>Front:</b> "+esc(packaging.front)+"</p><p><b>Inside:</b> "+esc(packaging.inside)+"</p><p><b>Rule:</b> "+esc(packaging.rule)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"packaging\")'>"+(saved.packaging?"Refine packaging":"Generate packaging")+" →</button>")+
-      moduleCard("launch","05","Launch system","Give the marketing team repeatable angles rather than random creatives.","<div class='brand-copy'><b>"+esc(launch.message)+"</b><div class='brand-angle-list'>"+launch.angles.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p class='small'>Channels: "+esc(launch.channels)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"launch\")'>"+(saved.launch?"Refine launch system":"Generate launch system")+" →</button>")+
-      moduleCard("handoff","06","Launch handoff","Once the identity is approved, pass the approved direction downstream.","<div class='brand-copy'>"+(saved.handoff?"<b>Ready for Store Launch and AI Marketing.</b><p class='small'>The selected product, brand name and approved direction stay attached to the same business record.</p>":"<b>One approval closes the loop.</b><p class='small'>Approve the core identity after selecting a name. Forge will keep the brand context attached to the product.</p>")+"</div>","<button class='btn primary' onclick='completeBrandHandoff()'>"+(saved.handoff?"Reconfirm handoff":"Approve & hand off")+" →</button>")+
+      moduleCard("positioning","01","Positioning","Define the customer, promise and market position.","<div class='brand-copy'>"+escHtml(direction.position)+"</div>","<button class='btn' onclick='generateBrandModule(\"positioning\")'>"+(saved.positioning?"Refine positioning":"Generate positioning")+" →</button>")+
+      moduleCard("naming","02","Company & brand name","Choose a name that can grow beyond one product.","<div class='brand-name-list'>"+candidates.map((n,i)=>"<button class='brand-name-option "+(chosenName===n?"selected":"")+"' onclick='selectBrandName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenName===n?"Selected":"Use this name →")+"</small></button>").join("")+"</div>","<button class='btn' onclick='generateBrandModule(\"naming\")'>Refresh name ideas →</button>")+
+      moduleCard("productNaming","03","Product name","Replace the supplier listing title with a short, memorable customer-facing name.","<div class='brand-name-list'>"+productNames.map((n,i)=>"<button class='brand-name-option "+(chosenProductName===n?"selected":"")+"' onclick='selectProductName("+i+")'><span>"+esc(n)+"</span><small>"+(chosenProductName===n?"Selected":"Use this product name →")+"</small></button>").join("")+"</div>","<button class='btn' onclick='generateBrandModule(\"productNaming\")'>Generate product names →</button>")+
+      moduleCard("digital","04","Digital identity","Create one consistent Facebook Page, Instagram handle and website domain direction.","<div class='brand-kit'><div class='brand-kit-item'><div class='kit-label'>Facebook</div><div class='kit-value'>@"+esc(social.facebook)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Instagram</div><div class='kit-value'>@"+esc(social.instagram)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Domain</div><div class='kit-value'>"+esc(social.domain)+"</div></div><div class='brand-kit-item'><div class='kit-label'>Status</div><div class='kit-value'>"+(saved.digital?"Prepared":"Suggested")+"</div></div></div>","<button class='btn' onclick='generateBrandModule(\"digital\")'>"+(saved.digital?"Refine digital identity":"Create digital identity")+" →</button>")+
+      moduleCard("story","05","Product story","Give product pages, sales and ads one consistent narrative.","<div class='brand-copy'><b>"+escHtml(story.hook)+"</b><p>"+escHtml(story.body)+"</p><p><b>Content rhythm:</b> "+escHtml(story.content)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"story\")'>"+(saved.story?"Refine story":"Generate story")+" →</button>")+
+      moduleCard("packaging","06","Packaging","Make the physical experience feel like your brand, not a supplier parcel.","<div class='brand-copy'><p><b>Front:</b> "+escHtml(packaging.front)+"</p><p><b>Inside:</b> "+escHtml(packaging.inside)+"</p><p><b>Rule:</b> "+escHtml(packaging.rule)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"packaging\")'>"+(saved.packaging?"Refine packaging":"Generate packaging")+" →</button>")+
+      moduleCard("launch","07","Launch system","Give marketing a repeatable message instead of random creative ideas.","<div class='brand-copy'><b>"+escHtml(launch.message)+"</b><div class='brand-angle-list'>"+launch.angles.map(x=>"<span>"+esc(x)+"</span>").join("")+"</div><p><b>Channels:</b> "+escHtml(launch.channels)+"</p></div>","<button class='btn' onclick='generateBrandModule(\"launch\")'>"+(saved.launch?"Refine launch system":"Generate launch system")+" →</button>")+
     "</div>"+
-    "<div class='brand-next card'><div><div class='eyebrow'>NEXT IN FORGE</div><h2>"+(chosenName?"Brand direction is anchored to "+esc(chosenName)+".":"Choose a brand name to anchor the identity.")+"</h2><p class='small'>The confirmed supplier product remains the commercial source of truth. Brand Studio adds customer-facing identity on top of it.</p></div><div class='actions'><button class='btn' onclick=\"go('plan')\">View business plan</button><button class='btn primary' onclick=\"go('store')\">Continue to Store Launch →</button></div></div>";
+    "<div class='brand-next card'><div><div class='eyebrow'>NEXT STEP</div><h2>"+(kitReady?"Identity is ready to move downstream.":"Choose the company name and product name first.")+"</h2><p class='small'>Once approved, the same identity should flow into Store Launch, product pages, packaging and AI Marketing. Suggested social handles and domains still require availability checks.</p></div><div class='actions'><button class='btn' onclick=\"go('plan')\">View business plan</button><button class='btn primary' onclick='completeBrandHandoff()'>Approve identity →</button></div></div>";
 }
+
 function generateBrandDirection(){
   const p=state.selectedProduct;if(!p)return go("products");
-  state.brandStudio={...(state.brandStudio||{}),direction:{
-    audience:"Primary customers are selected from the product's actual use case, price point, market and the locked business profile.",
-    position:"Own a clear position around "+String(p.name||"this product").split(" ").slice(0,5).join(" ")+": useful, credible and easy to understand at the moment of purchase.",
-    promise:"Make the product's strongest customer benefit immediately understandable, then prove it with real product details and real use.",
-    personality:"Confident, modern, practical and premium in presentation without overclaiming.",
-    proof:"Real product photography, verified specifications, supplier evidence, customer feedback and transparent commercial terms."
-  },positioning:true};
-  persistProfile();render();toast("Product-specific brand direction created.");
+  const base=String(p.name||"Selected Product").replace(/[^A-Za-z0-9 ]/g,"").replace(/\s+/g," ").trim();
+  const words=base.split(" ").filter(Boolean);
+  const core=words.slice(0,3).join(" ");
+  const category=String(p.category||state.profile?.category||"").toLowerCase();
+  const brandCandidates=[
+    category.includes("bag")?"Carry & Co.":category.includes("footwear")?"Stride House":"Northstar & Co.",
+    category.includes("beauty")?"Nura Form":category.includes("home")?"Hearth & Form":"Form House",
+    "Novera Goods"
+  ];
+  const productCandidates=[core+" Essential",core+" Signature",core+" Everyday"];
+  const chosen=state.brandStudio?.chosenName||"";
+  const handleBase=(chosen||brandCandidates[0]).toLowerCase().replace(/[^a-z0-9]+/g,"");
+  state.brandStudio={
+    ...(state.brandStudio||{}),
+    direction:{
+      audience:"Primary customers are selected from the product's actual use case, price point, launch market and the locked business profile.",
+      position:"Own a clear position around "+core+": useful, credible and easy to understand at the moment of purchase.",
+      promise:"Make the strongest customer benefit obvious in the first few seconds, then prove it with the real product.",
+      personality:"Modern, confident, practical and premium in presentation without overclaiming.",
+      proof:"Real product photography, verified specifications, supplier evidence, customer feedback and transparent commercial terms."
+    },
+    names:brandCandidates,
+    productNames:productCandidates,
+    social:{facebook:handleBase,instagram:handleBase,domain:handleBase+".com"},
+    positioning:true,
+    naming:true,
+    productNaming:true,
+    digital:true
+  };
+  persistProfile();render();toast("Brand direction prepared: company name, product name and digital identity are ready to review.");
 }
+
 function generateBrandModule(key){
   const p=state.selectedProduct;if(!p)return go("products");
-  const base=String(p.name||"selected product");
+  const base=String(p.name||"selected product").replace(/[^A-Za-z0-9 ]/g,"").replace(/\s+/g," ").trim();
+  const words=base.split(" ").filter(Boolean);
+  const core=words.slice(0,3).join(" ");
+  const category=String(p.category||state.profile?.category||"").toLowerCase();
   const b=state.brandStudio||{};
-  if(key==="positioning"){b.positioning=true;b.direction=b.direction||{};b.direction.position="Position "+base.split(" ").slice(0,6).join(" ")+" around a specific customer problem and a believable benefit—not around generic category language.";}
-  if(key==="naming"){b.naming=true;b.names=[base.replace(/[^A-Za-z0-9 ]/g,"").split(" ").slice(0,2).join(" ")+" Co.","Northstar "+(base.split(" ")[0]||"Goods"),"Form & Function"];}
-  if(key==="story"){b.story={hook:"A focused product chosen for a real use case.",body:"Start with the customer's situation, show the product solving it, prove the important quality or utility point, then present the offer.",content:"Use-case first → detail → proof → objection handling → offer."};}
-  if(key==="packaging"){b.packaging={front:"Brand mark + product name + one restrained descriptor.",inside:"Thank-you message + care/use guidance + support contact.",rule:"Packaging should look like the brand, not like a supplier shipment."};}
-  if(key==="launch"){b.launch={message:"Show the product. Explain the reason. Prove the claim.",angles:["Use-case demonstration","Product detail / quality proof","Objection handling","Social proof / creator use"],channels:"Meta, TikTok, creator seeding and the own store."};}
+  if(key==="positioning"){b.positioning=true;b.direction=b.direction||{};b.direction.position="Position "+core+" around a specific customer problem and a believable benefit—not around generic category language.";}
+  if(key==="naming"){b.naming=true;b.names=category.includes("bag")?["Carry & Co.","Form House","Novera Goods"]:category.includes("footwear")?["Stride House","Northstar Goods","Form & Sole"]:["Northstar & Co.","Form House","Novera Goods"];}
+  if(key==="productNaming"){b.productNaming=true;b.productNames=[core+" Essential",core+" Signature",core+" Everyday"];}
+  if(key==="digital"){
+    b.digital=true;
+    const n=b.chosenName||b.names?.[0]||"yourbrand";
+    const h=String(n).toLowerCase().replace(/[^a-z0-9]+/g,"");
+    b.social={facebook:h,instagram:h,domain:h+".com"};
+  }
+  if(key==="story"){b.story={hook:"A focused product chosen for a real customer need—not a generic catalogue item.",body:"Connect the customer's situation, the product's strongest proof point and the reason the offer deserves its price. Keep every claim specific and verifiable.",content:"Use case → product detail → proof → objection handling → offer."};}
+  if(key==="packaging"){b.packaging={front:"Brand mark + customer-facing product name + one restrained descriptor.",inside:"Thank-you message + care/use guidance + support contact.",rule:"Packaging should look like the brand, not like a supplier shipment."};}
+  if(key==="launch"){b.launch={message:"Show the product. Explain the reason. Prove the claim.",angles:["Use-case demonstration","Product detail / quality proof","Objection handling","Social proof / creator use"],channels:"Facebook, Instagram, TikTok, creators and the own store."};}
   state.brandStudio=b;persistProfile();render();toast(key.charAt(0).toUpperCase()+key.slice(1)+" module updated.");
 }
+
 function selectBrandName(i){
-  const b=state.brandStudio||{};const names=b.names||[String(state.selectedProduct?.name||"Brand").split(" ").slice(0,2).join(" ")+" Co.","Northstar & Co.","Form House"];
-  b.names=names;b.chosenName=names[i]||names[0];state.brandStudio=b;persistProfile();render();toast("Brand name selected.");
+  const b=state.brandStudio||{};
+  const names=b.names||["Northstar & Co.","Form House","Novera Goods"];
+  b.names=names;
+  b.chosenName=names[i]||names[0];
+  const h=String(b.chosenName).toLowerCase().replace(/[^a-z0-9]+/g,"");
+  b.social={facebook:h,instagram:h,domain:h+".com"};
+  b.digital=true;
+  state.brandStudio=b;
+  persistProfile();render();toast("Company / brand name selected. Digital identity updated to match.");
 }
+function selectProductName(i){
+  const b=state.brandStudio||{};
+  const names=b.productNames||[String(state.selectedProduct?.name||"Product")+" Essential",String(state.selectedProduct?.name||"Product")+" Signature",String(state.selectedProduct?.name||"Product")+" Everyday"];
+  b.productNames=names;
+  b.chosenProductName=names[i]||names[0];
+  state.brandStudio=b;
+  persistProfile();render();toast("Customer-facing product name selected.");
+}
+
 function completeBrandHandoff(){
-  const b=state.brandStudio||{};if(!b.chosenName)return toast("Select a brand name before handoff.");
-  b.handoff=true;state.brandStudio=b;persistProfile();render();toast("Brand Studio approved — ready for Store Launch.");
+  const b=state.brandStudio||{};
+  if(!b.chosenName)return toast("Choose the company / brand name first.");
+  if(!b.chosenProductName)return toast("Choose the customer-facing product name first.");
+  b.handoff=true;
+  state.brandStudio=b;
+  persistProfile();render();toast("Brand identity approved — Store Launch and AI Marketing can now use the same identity.");
 }
+
 function store(){return "<div class='hero'><div><div class='eyebrow'>Store launch</div><div class='h1'>From product economics to checkout.</div><div class='sub'>Pricing, catalog, policies, analytics and support must agree before launch.</div></div><button class='btn primary' onclick=\"toast('Store preview opened')\">Preview store ↗</button></div><div class='card'><div class='row' style='justify-content:space-between'><b>"+(state.business?state.business.name.toLowerCase().replace(/ /g,""):"yourbusiness")+".store</b><span class='status'>72% ready</span></div><div class='progress' style='margin:18px 0'><i style='width:72%'></i></div></div><div class='section'><h2>Launch checklist</h2></div><div class='grid'>"+["Hero product approved","Pricing + margin checked","Product photography","Descriptions + SEO","Payment methods","Delivery / COD rules","Return & exchange policy","Analytics + pixels","WhatsApp / chat","Order notifications","Trust blocks","Launch campaign"].map((x,i)=>"<div class='card span3'><div class='row' style='justify-content:space-between'><b>"+x+"</b><span class='status "+(i>7?"amber":"")+"'>"+(i<8?"Done":"Next")+"</span></div><p class='small'>AI checklist with human approval for money, policy and customer-trust decisions.</p></div>").join("")+"</div>"}
 function marketing(){let budget=Math.round((state.business?.budget||250000)*.15);return "<div class='hero'><div><div class='eyebrow'>AI growth loop</div><div class='h1'>Spend based on contribution, not vanity.</div><div class='sub'>Scale only when acquisition cost and returns still leave healthy contribution.</div></div><button class='btn primary' onclick=\"toast('Growth analysis refreshed')\">Run growth analysis →</button></div><div class='grid'><div class='card span3'><div class='label'>Monthly ad envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Target CAC</div><div class='stat'>৳320</div></div><div class='card span3'><div class='label'>Target ROAS</div><div class='stat'>3.2×</div></div><div class='card span3'><div class='label'>Creative tests</div><div class='stat'>12</div></div></div><div class='section'><h2>Campaign desk</h2></div><div class='card'><table class='table'><tr><th>Campaign</th><th>Channel</th><th>Budget</th><th>ROAS</th><th>Action</th></tr><tr><td>Hero product launch</td><td>Meta</td><td>৳12,000</td><td>3.8×</td><td><span class='status'>Scale 15%</span></td></tr><tr><td>UGC test</td><td>Meta</td><td>৳7,000</td><td>2.4×</td><td><span class='status amber'>Iterate</span></td></tr></table></div><div class='section'><h2>Creative factory</h2></div><div class='grid'>"+["3-second hook","Problem/solution reel","UGC script","Founder story","Offer creative","Retargeting creative"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Generate five variants and test one variable at a time.</p><button class='btn' onclick=\"toast('"+x+" brief generated')\">Generate →</button></div>").join("")+"</div>"}
 function support(){return "<div class='hero'><div><div class='eyebrow'>AI customer support</div><div class='h1'>Fast answers. Safe escalation.</div><div class='sub'>Routine questions can be automated; sensitive cases remain visible to a human.</div></div></div><div class='grid'><div class='card span4'><div class='label'>Conversations today</div><div class='stat'>84</div></div><div class='card span4'><div class='label'>Median response</div><div class='stat'>11 sec</div></div><div class='card span4'><div class='label'>Human escalations</div><div class='stat'>3</div></div></div><div class='section'><h2>Support queue</h2></div><div class='card'>"+[["Do you have size 42?","Catalog availability","Resolved"],["When will my parcel arrive?","Order tracking","Resolved"],["Can I exchange this size?","Policy","Resolved"],["Wrong item received.","Evidence required","Needs you"],["I want a refund for change of mind.","Policy","Needs you"]].map(x=>"<div class='kpi'><span><b>"+x[0]+"</b><div class='small'>"+x[1]+"</div></span><span class='status "+(x[2]==="Needs you"?"amber":"")+"'>"+x[2]+"</span></div>").join("")+"</div><div class='notice' style='margin-top:15px'><b>Safety rule:</b> AI must not invent stock, delivery dates, refunds or policy exceptions.</div>"}

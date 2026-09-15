@@ -30,7 +30,16 @@
 
 
 /* FORGE_CJ_LIVE_SOURCING */
-.cj-live{margin-top:18px;padding:18px;border:1px solid #29483b;border-radius:18px;background:#091610}.cj-search{display:grid;grid-template-columns:1fr 140px auto;gap:9px}.cj-results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.cj-card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0b1914}.cj-card img{width:100%;height:170px;object-fit:contain;background:#13231d}.cj-card-body{padding:13px}.cj-card-body h3{margin:7px 0}.cj-price{font-size:19px;font-weight:850}.cj-empty{padding:18px;border:1px dashed #315546;border-radius:12px;color:var(--muted);text-align:center}@media(max-width:800px){.cj-results{grid-template-columns:1fr 1fr}}@media(max-width:560px){.cj-search{grid-template-columns:1fr}.cj-results{grid-template-columns:1fr}}
+.cj-live{margin-top:22px;padding:22px;border:1px solid #29483b;border-radius:22px;background:linear-gradient(180deg,#0a1913,#08120e);box-shadow:0 20px 60px #0004}
+.cj-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}.cj-head h2{margin:6px 0}.cj-live-note{max-width:420px;text-align:right}
+.cj-search{display:grid;grid-template-columns:minmax(0,1fr) 150px 88px;gap:9px;margin-top:16px}.cj-search .input{min-width:0}
+.cj-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+.cj-card{border:1px solid #254638;border-radius:18px;overflow:hidden;background:#0b1914;display:flex;flex-direction:column;min-width:0;transition:.18s ease}.cj-card:hover{transform:translateY(-2px);border-color:#55b98d;box-shadow:0 18px 45px #0005}
+.cj-image-wrap{height:210px;background:#10231b;position:relative;display:grid;place-items:center}.cj-card img{width:100%;height:100%;object-fit:contain}.cj-live-badge{position:absolute;top:10px;left:10px;background:#b7f2d1;color:#07150f;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900;letter-spacing:.08em}.cj-card-body{padding:15px;display:flex;flex-direction:column;flex:1}.cj-card-body h3{margin:8px 0 5px;font-size:15px;line-height:1.35}.cj-meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.cj-chip{font-size:10px;padding:5px 7px;border:1px solid #29483b;border-radius:999px;color:#9eb6aa}.cj-price-row{display:flex;align-items:end;justify-content:space-between;gap:8px;margin-top:5px}.cj-price{font-size:22px;font-weight:900}.cj-bdt{font-size:12px;color:#9eb6aa}.cj-data{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;padding-top:10px;border-top:1px solid #1d362b}.cj-data div{font-size:11px;color:#8ea79b}.cj-data b{display:block;color:#e8f2ed;font-size:12px;margin-top:2px}.cj-footer{margin-top:auto}.cj-empty{padding:25px;border:1px dashed #315546;border-radius:14px;color:var(--muted);text-align:center}.cj-empty b{color:#dcebe4}.cj-loading{display:grid;place-items:center;min-height:180px}
+.cj-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}.cj-count{font-size:12px;color:#7f9a8d}.cj-fresh{font-size:11px;color:#79cfa6}
+.cj-detail-grid{display:grid;grid-template-columns:180px 1fr;gap:18px}.cj-detail-img{width:180px;height:180px;border-radius:16px;object-fit:contain;background:#10231b}.cj-detail-price{font-size:30px;font-weight:950;margin:5px 0}.cj-detail-bdt{color:#9eb6aa}.cj-order-note{padding:12px;border:1px solid #29483b;border-radius:12px;background:#0b1a14;margin-top:14px;font-size:12px;color:#9eb6aa}
+@media(max-width:950px){.cj-results{grid-template-columns:1fr 1fr}.cj-head{align-items:flex-start;flex-direction:column}.cj-live-note{text-align:left}}
+@media(max-width:560px){.cj-search{grid-template-columns:1fr}.cj-results{grid-template-columns:1fr}.cj-detail-grid{grid-template-columns:1fr}.cj-detail-img{width:100%;height:230px}.cj-live{padding:15px}}
 </style>
 </head>
 <body>
@@ -40,7 +49,7 @@
 const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:null,chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:null,sourcingQueue:saved?.sourcingQueue||[],chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
 function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
@@ -144,11 +153,100 @@ function onboardingLanding(){return "<div class='onboarding'><div class='onboard
 
 /* FORGE_CJ_LIVE_SOURCING */
 const CJ_PROXY="https://pmyfswozvkdpqgnsiibf.supabase.co/functions/v1/cj-products";
+const CJ_USD_BDT=123; // planning FX only; supplier price remains the live USD value.
 let cjState=[];
+let cjLastFetched=null;
+
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\":"&quot;","'":"&#039;"}[m]))}
-async function cjSearch(){const q=(document.getElementById("cjq")?.value||"").trim(),box=document.getElementById("cjresults");if(!q){toast("Enter a product keyword");return}box.innerHTML="<div class='cj-empty'>Searching live supplier catalogue…</div>";try{const r=await fetch(CJ_PROXY+"?keyword="+encodeURIComponent(q)+"&size=12",{headers:{"apikey":"sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW"}});const j=await r.json();if(!r.ok||!j.ok)throw Error(j.error||"Supplier connection is not configured.");cjState=j.products||[];box.innerHTML=cjState.map((p,i)=>"<div class='cj-card'>"+(p.image?"<img src='"+esc(p.image)+"' loading='lazy'>":"")+"<div class='cj-card-body'><span class='tag'>LIVE SUPPLIER</span><h3>"+esc(p.name)+"</h3><div class='cj-price'>$"+Number(p.priceUsd||0).toFixed(2)+"</div><div class='small'>"+esc(p.category||"Category not supplied")+" · SKU "+esc(p.sku||"—")+"</div><button class='btn primary' style='margin-top:10px;width:100%' onclick='selectCj("+i+")'>Use this product →</button></div></div>").join("")||"<div class='cj-empty'>No products found.</div>"}catch(e){box.innerHTML="<div class='cj-empty'><b>Live sourcing is waiting for the secure supplier credential.</b><br><span class='small'>"+esc(e.message)+"</span></div>"}}
-function selectCj(i){const p=cjState[i];if(!p)return;state.selectedProduct={name:p.name,icon:"◈",margin:0,cap:0,risk:"Live",thesis:"Live supplier product selected.",time:0,experience:"Live",cj:p};state.page="products";render();toast("Live supplier product selected")}
-function cjPanel(){return "<div class='cj-live'><div class='eyebrow'>REAL-TIME PRODUCT SOURCING</div><h2 style='margin:6px 0'>Find a product from the supplier catalogue</h2><p class='small'>Search returns supplier images and current supplier pricing. Forge then applies its locked Bangladesh planning model.</p><div class='cj-search'><input id='cjq' class='input' placeholder='e.g. leather loafer, handbag, watch' onkeydown='if(event.key===\"Enter\")cjSearch()'><button class='btn primary' onclick='cjSearch()'>Search live</button><button class='btn' onclick='document.getElementById(\"cjq\").value=\"\"'>Clear</button></div><div id='cjresults'><div class='cj-empty'>Enter a keyword to search.</div></div></div>"}
+function bdtEstimate(usd){return Math.round(Number(usd||0)*CJ_USD_BDT)}
+function moneyUsd(v){return "$"+Number(v||0).toFixed(2)}
+function formatQty(v){return Number(v||0).toLocaleString("en-US")}
+
+async function cjSearch(page=1){
+  const q=(document.getElementById("cjq")?.value||"").trim();
+  const box=document.getElementById("cjresults");
+  if(!q){toast("Enter a product keyword");return}
+  box.innerHTML="<div class='cj-empty cj-loading'>Connecting to the live supplier catalogue…</div>";
+  try{
+    const url=CJ_PROXY+"?keyword="+encodeURIComponent(q)+"&page="+page+"&size=18";
+    const r=await fetch(url,{headers:{"apikey":"sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW","Authorization":"Bearer sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW"}});
+    const j=await r.json();
+    if(!r.ok||!j.ok) throw Error(j.error||"The supplier catalogue could not be reached.");
+    cjState=Array.isArray(j.products)?j.products:[];
+    cjLastFetched=j.fetchedAt||new Date().toISOString();
+    renderCjResults(j);
+  }catch(e){
+    box.innerHTML="<div class='cj-empty'><b>Live sourcing is temporarily unavailable.</b><br><span class='small'>"+esc(e.message)+"</span><br><br><span class='small'>No fake products or placeholder prices are shown when the supplier does not return valid data.</span></div>";
+  }
+}
+
+function renderCjResults(j){
+  const box=document.getElementById("cjresults");
+  if(!cjState.length){
+    box.innerHTML="<div class='cj-empty'><b>No verified supplier products found for this search.</b><br><span class='small'>Try a broader keyword such as “loafer”, “handbag”, “watch”, or “sneaker”.</span></div>";
+    return;
+  }
+  box.innerHTML=cjState.map((p,i)=>{
+    const chips=[
+      p.category,
+      p.freeShipping?"Free shipping":null,
+      p.verifiedInventory>0?"Verified stock":null,
+      p.customization?"Customizable":null
+    ].filter(Boolean);
+    return "<article class='cj-card'>"+
+      "<div class='cj-image-wrap'><span class='cj-live-badge'>LIVE SUPPLIER</span><img src='"+esc(p.image)+"' loading='lazy' alt='"+esc(p.name)+"'></div>"+
+      "<div class='cj-card-body'>"+
+      "<h3>"+esc(p.name)+"</h3>"+
+      "<div class='cj-meta'>"+chips.map(x=>"<span class='cj-chip'>"+esc(x)+"</span>").join("")+"</div>"+
+      "<div class='cj-price-row'><div><div class='cj-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-bdt'>≈ "+BDT(bdtEstimate(p.priceUsd))+" planning estimate</div></div><span class='small'>supplier price</span></div>"+
+      "<div class='cj-data'>"+
+      "<div>Inventory<b>"+formatQty(p.inventory)+"</b></div>"+
+      "<div>Delivery<b>"+esc(p.deliveryDays||"Check at order")+"</b></div>"+
+      "<div>SKU / SPU<b>"+esc(p.sku||"—")+"</b></div>"+
+      "<div>Supplier<b>"+esc(p.supplier||"CJ Dropshipping")+"</b></div>"+
+      "</div>"+
+      "<div class='cj-footer'><button class='btn primary' style='width:100%' onclick='reviewCj("+i+")'>Review product →</button></div>"+
+      "</div></article>";
+  }).join("");
+  const meta=document.getElementById("cjmeta");
+  if(meta) meta.innerHTML="<span class='cj-count'>"+formatQty(j.total||cjState.length)+" matching supplier records</span><span class='cj-fresh'>Live check · "+new Date(cjLastFetched).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})+"</span>";
+}
+
+function reviewCj(i){
+  const p=cjState[i]; if(!p)return;
+  document.getElementById("modalbox").innerHTML=
+    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>LIVE SUPPLIER PRODUCT</div><h2 style='margin:5px 0'>Review before securing</h2></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
+    "<div class='cj-detail-grid' style='margin-top:18px'>"+
+    "<img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'>"+
+    "<div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>≈ "+BDT(bdtEstimate(p.priceUsd))+" planning estimate · supplier price only</div>"+
+    "<div class='cj-data'><div>Category<b>"+esc(p.category)+"</b></div><div>Inventory<b>"+formatQty(p.inventory)+"</b></div><div>SKU / SPU<b>"+esc(p.sku||"—")+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Check at order")+"</b></div></div></div></div>"+
+    "<div class='cj-order-note'>This step does <b>not</b> place an order with CJ. It saves the selected supplier product into Forge's sourcing queue. Final landed cost, variant, shipping method, customer order and payment are confirmed before any supplier order is created.</div>"+
+    "<div class='actions' style='margin-top:16px'><button class='btn primary' onclick='addCjToQueue("+i+")'>Add to sourcing queue →</button><button class='btn' onclick='closeModal()'>Keep browsing</button></div>";
+  document.getElementById("modal").classList.add("open");
+}
+
+function addCjToQueue(i){
+  const p=cjState[i]; if(!p)return;
+  state.sourcingQueue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
+  const item={...p,selectedAt:new Date().toISOString()};
+  const existing=state.sourcingQueue.findIndex(x=>x.id===p.id);
+  if(existing>=0) state.sourcingQueue[existing]=item; else state.sourcingQueue.unshift(item);
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,sourcingQueue:state.sourcingQueue}))}catch(e){}
+  state.selectedProduct=item;
+  closeModal();
+  toast("Product added to your sourcing queue");
+  go("orders");
+}
+
+function cjPanel(){
+  return "<section class='cj-live'>"+
+    "<div class='cj-head'><div><div class='eyebrow'>REAL-TIME PRODUCT SOURCING</div><h2>Find products from the live supplier catalogue</h2><p class='small'>Search CJ Dropshipping directly. Forge shows the supplier's returned image, current supplier price, stock and delivery data—then you decide what enters the sourcing queue.</p></div><div class='cj-live-note'><span class='pill online'>● LIVE SUPPLIER FEED</span><div class='small' style='margin-top:8px'>Supplier price is shown in USD. BDT is only a planning estimate at ৳"+CJ_USD_BDT+"/USD.</div></div></div>"+
+    "<div class='cj-search'><input id='cjq' class='input' placeholder='Search: leather loafer, handbag, watch, sneaker…' onkeydown='if(event.key===\"Enter\")cjSearch()'><button class='btn primary' onclick='cjSearch()'>Search live</button><button class='btn' onclick='document.getElementById(\"cjq\").value=\"\"'>Clear</button></div>"+
+    "<div class='cj-toolbar'><span id='cjmeta' class='cj-count'>Search the supplier catalogue to begin.</span><span class='cj-count'>No placeholder prices</span></div>"+
+    "<div id='cjresults' class='cj-results'><div class='cj-empty' style='grid-column:1/-1'>Enter a product keyword. Forge will only display products returned by the live supplier feed.</div></div>"+
+  "</section>";
+}
+
 const _forgeProducts=products;
 products=function(){const html=_forgeProducts();return html+cjPanel()};
 

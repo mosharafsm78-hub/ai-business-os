@@ -802,7 +802,7 @@ function domainLaunchNotice(domain){
   if(r.status==="likely_available")return "<div class='notice danger'><b>"+esc(domain)+" is not yet registrar-verified.</b><span>Forge requires an exact Cloudflare Registrar result before a domain can be selected or priced.</span></div>";
   return "";
 }
-async async function refreshForgeFxRate(){
+async function refreshForgeFxRate(){
   if(forgeFxLoading)return;
   forgeFxLoading=true;
   try{
@@ -820,7 +820,7 @@ async async function refreshForgeFxRate(){
   }
 }
 
-function checkDomainAvailability(domain){
+async function checkDomainAvailability(domain){
   const clean=String(domain||"").trim().toLowerCase().replace(/^https?:\/\//,"").replace(/\/$/,"");
   if(!clean || !clean.includes("."))return toast("Enter a valid domain, such as yourbrand.com.");
   toast("Checking "+clean+"…");

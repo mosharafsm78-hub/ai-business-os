@@ -312,7 +312,7 @@ const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas
 const BDT=n=>"৳"+Number(n||0).toLocaleString("en-BD");
 const pct=n=>Math.round(Number(n)||0)+"%";
 function nav(){return navItems.map(x=>"<button class='nav "+(state.page===x[0]?"active":"")+"' onclick=\"go('"+x[0]+"')\"><span class='ico'>"+x[1]+"</span>"+x[2]+"</button>").join("")}
-function shell(c){let b=state.business;return "<header class='top'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='topright'><span class='pill online'>● AI is online</span><button class='pill' onclick='openWizard()'>＋ New business</button><div class='avatar'>M</div></div></header><button class='corner-tab' onclick='toggleCorner()'>CATEGORIES</button><aside id='cornerPanel' class='corner-panel'><div class='row' style='justify-content:space-between'><div><div class='eyebrow'>Forge workspace</div><h3>Categories & tools</h3><div class='small'>Tap to open. Tap again to close.</div></div><button class='btn' onclick='toggleCorner()'>✕</button></div><div class='navlabel'>Business workflow</div>"+nav()+"</aside><div class='layout'><aside class='side'><div class='navlabel'>Business workspace</div>"+nav()+"<div class='navlabel' style='margin-top:18px'>Your business</div><div class='business-mini'><div class='row'><div class='bizicon'>◈</div><div><b>"+(b?b.name:"No business yet")+"</b><div class='small'>"+(b?"AI plan · active":"Start your first venture")+"</div></div></div><div class='progress' style='margin-top:12px'><i style='width:'+(b?68:0)+'%'></i></div></div></aside><main class='main'>"+c+"</main></div>"}
+function shell(c){let b=state.business;return "<header class='top'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='topright'><span class='pill online'>● <span id='forgeStatusText'>AI is online</span></span><button class='pill' onclick='openWizard()'>＋ New business</button><div class='avatar'>M</div></div></header><button class='corner-tab' onclick='toggleCorner()'>CATEGORIES</button><aside id='cornerPanel' class='corner-panel'><div class='row' style='justify-content:space-between'><div><div class='eyebrow'>Forge workspace</div><h3>Categories & tools</h3><div class='small'>Tap to open. Tap again to close.</div></div><button class='btn' onclick='toggleCorner()'>✕</button></div><div class='navlabel'>Business workflow</div>"+nav()+"</aside><div class='layout'><aside class='side'><div class='navlabel'>Business workspace</div>"+nav()+"<div class='navlabel' style='margin-top:18px'>Your business</div><div class='business-mini'><div class='row'><div class='bizicon'>◈</div><div><b>"+(b?b.name:"No business yet")+"</b><div class='small'>"+(b?"AI plan · active":"Start your first venture")+"</div></div></div><div class='progress' style='margin-top:12px'><i style='width:'+(b?68:0)+'%'></i></div></div></aside><main class='main'>"+c+"</main></div>"}
 function toggleCorner(){document.getElementById("cornerPanel").classList.toggle("open")}
 function home(){let b=state.business;return "<div class='hero'><div><div class='eyebrow'>AI operating team</div><div class='h1'>Build a business.<br>Not a pile of tasks.</div><div class='sub'>Forge turns your personal profile and business goals into opportunity discovery, product economics, sourcing, brand, store, marketing, support and decisions. Built for practical entrepreneurs—not fantasy spreadsheets.</div></div><div class='actions'><button class='btn primary' onclick='openWizard()'>Start a new business →</button><button class='btn' onclick=\"go('ideas')\">Find an opportunity</button></div></div><div class='hero-banner'><div class='grid'><div class='span7'><div class='eyebrow'>How Forge thinks</div><h2 style='font-size:28px;letter-spacing:-.04em;margin:8px 0'>Fit first. Economics second. Execution always.</h2><div class='small'>Forge considers capital, income, age, market, category, experience, time and risk before ranking an idea. Estimates are conservative planning ranges, not guaranteed results.</div></div><div class='span5'><div class='steps'><div class='step'><b>01 · Profile</b><span>Understand your constraints.</span></div><div class='step'><b>02 · Opportunity</b><span>Rank realistic business models.</span></div><div class='step'><b>03 · Economics</b><span>Model price, cost, CAC and break-even.</span></div><div class='step'><b>04 · Operate</b><span>Turn approvals into actions.</span></div></div></div></div></div><div class='section'><div><h2>"+(b?b.name:"Command center")+"</h2><p>"+(b?"Your plan is personalized to your profile.":"Create a profile to activate your operating system.")+"</p></div><button class='btn' onclick=\"go('advisor')\">Ask your AI →</button></div><div class='grid'><div class='card span3'><div class='label'>Business health</div><div class='stat'>"+(b?"84 / 100":"—")+"</div><div class='up'>"+(b?"↑ 6.8% this week":"Not calculated yet")+"</div></div><div class='card span3'><div class='label'>Capital to deploy</div><div class='stat'>"+(b?BDT(b.budget):"—")+"</div><div class='small'>Includes a protected testing reserve.</div></div><div class='card span3'><div class='label'>Target gross margin</div><div class='stat'>"+(b?b.targetMargin+"%":"—")+"</div><div class='small'>Category economics, not a promise.</div></div><div class='card span3'><div class='label'>AI actions</div><div class='stat'>"+(b?"18":"0")+"</div><div class='up'>"+(b?"6 need approval":"Create your venture")+"</div></div></div><div class='section'><div><h2>Everything is connected</h2><p>Each decision updates the downstream numbers.</p></div></div><div class='grid'>"+[["Business strategy","Capital → customer → offer → channel → operating model."],["Product intelligence","Demand, competition, landed cost, pricing, margin, MOQ and complexity."],["Procurement","Supplier shortlist, purchase quantities, cash commitment, QC and lead time."],["Brand + store","Positioning, product copy, merchandising, policies and conversion assets."],["Growth","Creative testing, CAC, ROAS, contribution margin and budget allocation."],["Customer operations","FAQ, order questions, policy handling and human escalation."]].map(x=>"<div class='card span4'><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div>").join("")+"</div>"}
 function openWizard(){
@@ -1286,7 +1286,71 @@ function printBusinessPlan(){
   const d=planSnapshot();if(!d)return toast("Confirm a product first.");
   const content=document.querySelector(".plan-document")?.innerHTML||"";
   const w=window.open("","_blank","width=1100,height=850");if(!w)return toast("Allow pop-ups to print the business plan.");
-  w.document.write("<!doctype html><html><head><title>"+esc(d.brand)+" — Business Plan</title><style>body{font-family:Arial,sans-serif;color:#17221f;max-width:950px;margin:30px auto;padding:0 25px;line-height:1.55}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid #ddd;break-inside:avoid}.plan-number{font-size:24px;font-weight:900;color:#26805f}.plan-section h2{margin:0 0 9px}.plan-finance,.plan-risk,.plan-roadmap,.plan-two-col{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:13px;background:#f3f7f5;border-radius:9px}.plan-finance span{display:block;font-size:9px;color:#687771;text-transform:uppercase}.plan-finance b{font-size:18px}.small{font-size:13px;color:#52625b}.plan-quote{font-size:19px;font-weight:650;border-left:3px solid #26805f;padding:14px;background:#f4f8f6}.plan-meta{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#64736d}@media print{body{margin:0}}</style></head><body><h1>"+esc(d.brand)+" — Business Plan</h1><p class='small'>Personalized to the confirmed product, capital, market and operating profile.</p>"+content+"</body></html>");
+  w.document.write("<!doctype html><html><head><title>"+esc(d.brand)+" — Business Plan</title><style>body{font-family:Arial,sans-serif;color:#17221f;max-width:950px;margin:30px auto;padding:0 25px;line-height:1.55}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid #ddd;break-inside:avoid}.plan-number{font-size:24px;font-weight:900;color:#26805f}.plan-section h2{margin:0 0 9px}.plan-finance,.plan-risk,.plan-roadmap,.plan-two-col{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:13px;background:#f3f7f5;border-radius:9px}.plan-finance span{display:block;font-size:9px;color:#687771;text-transform:uppercase}.plan-finance b{font-size:18px}.small{font-size:13px;color:#52625b}.plan-quote{font-size:19px;font-weight:650;border-left:3px solid #26805f;padding:14px;background:#f4f8f6}.plan-meta{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#64736d}@media print{body{margin:0}}
+/* FORGE WORLD-CLASS EXPERIENCE LAYER
+   One product language. Distinct page moods. Calm motion. Clear hierarchy. */
+body{
+  --accent:#7de8ad; --accent-soft:rgba(125,232,173,.12); --accent-line:rgba(125,232,173,.22);
+  --accent-glow:rgba(125,232,173,.13);
+  background:
+    radial-gradient(900px 520px at 88% -8%,var(--accent-glow),transparent 64%),
+    radial-gradient(700px 500px at 8% 105%,rgba(27,70,53,.16),transparent 68%),#07110e;
+  transition:background .55s ease;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(520px 280px at 50% 0%,var(--accent-glow),transparent 72%);
+  opacity:.65;transition:background .55s ease,opacity .55s ease;
+}
+body[data-page="advisor"]{--accent:#b8a2ff;--accent-soft:rgba(184,162,255,.11);--accent-line:rgba(184,162,255,.24);--accent-glow:rgba(184,162,255,.14)}
+body[data-page="ideas"]{--accent:#f4c66f;--accent-soft:rgba(244,198,111,.10);--accent-line:rgba(244,198,111,.23);--accent-glow:rgba(244,198,111,.12)}
+body[data-page="products"]{--accent:#6fd7ff;--accent-soft:rgba(111,215,255,.10);--accent-line:rgba(111,215,255,.23);--accent-glow:rgba(111,215,255,.12)}
+body[data-page="plan"]{--accent:#91a9ff;--accent-soft:rgba(145,169,255,.10);--accent-line:rgba(145,169,255,.22);--accent-glow:rgba(145,169,255,.12)}
+body[data-page="orders"]{--accent:#73b9ff;--accent-soft:rgba(115,185,255,.10);--accent-line:rgba(115,185,255,.22);--accent-glow:rgba(115,185,255,.12)}
+body[data-page="brand"]{--accent:#f29bbd;--accent-soft:rgba(242,155,189,.10);--accent-line:rgba(242,155,189,.22);--accent-glow:rgba(242,155,189,.12)}
+body[data-page="store"]{--accent:#7de8ad;--accent-soft:rgba(125,232,173,.11);--accent-line:rgba(125,232,173,.23);--accent-glow:rgba(125,232,173,.14)}
+body[data-page="marketing"]{--accent:#ff9e78;--accent-soft:rgba(255,158,120,.10);--accent-line:rgba(255,158,120,.22);--accent-glow:rgba(255,158,120,.12)}
+body[data-page="support"]{--accent:#73d9d0;--accent-soft:rgba(115,217,208,.10);--accent-line:rgba(115,217,208,.22);--accent-glow:rgba(115,217,208,.12)}
+body[data-page="analytics"]{--accent:#b78cff;--accent-soft:rgba(183,140,255,.10);--accent-line:rgba(183,140,255,.22);--accent-glow:rgba(183,140,255,.12)}
+
+.top{border-bottom-color:var(--accent-line)}
+.mark{box-shadow:0 0 0 1px var(--accent-line),0 0 26px var(--accent-glow)}
+.pill.online{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.nav{position:relative;transition:background .2s ease,color .2s ease,transform .2s ease}
+.nav:hover{transform:translateX(2px);background:var(--accent-soft)}
+.nav.active{background:linear-gradient(90deg,var(--accent-soft),rgba(10,25,19,.45));box-shadow:inset 2px 0 var(--accent)}
+.nav.active .ico{color:var(--accent)}
+.btn.primary,.btn:hover{border-color:var(--accent-line)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,white));color:#06110c;box-shadow:0 10px 28px var(--accent-glow)}
+.card,.cj-card,.store-check,.store-build-banner,.store-automation{
+  border-color:rgba(150,220,188,.10);transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease,background .25s ease
+}
+.card:hover,.cj-card:hover,.store-check:hover{
+  border-color:var(--accent-line);transform:translateY(-2px);box-shadow:0 18px 48px rgba(0,0,0,.20)
+}
+.eyebrow{color:var(--accent)}
+.progress i{background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#fff))}
+.store-build-banner{background:linear-gradient(135deg,var(--accent-soft),rgba(8,22,16,.90))}
+.store-check-number{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line)}
+.section{position:relative}
+.section:after{
+  content:"";display:block;width:42px;height:2px;margin-top:10px;border-radius:2px;
+  background:var(--accent);opacity:.72
+}
+.hero{position:relative}
+.hero:after{
+  content:"";position:absolute;right:3%;top:10%;width:170px;height:170px;border-radius:50%;
+  background:radial-gradient(circle,var(--accent-glow),transparent 68%);pointer-events:none;filter:blur(3px)
+}
+.main>.card,.main>.grid,.main>.section,.main>.store-build-banner,.main>.store-build-grid,.main>.store-checklist{
+  animation:forgeEnter .45s cubic-bezier(.2,.8,.2,1) both
+}
+@keyframes forgeEnter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.store-check:nth-child(2){animation-delay:.035s}.store-check:nth-child(3){animation-delay:.07s}.store-check:nth-child(4){animation-delay:.105s}
+.store-check:nth-child(5){animation-delay:.14s}.store-check:nth-child(6){animation-delay:.175s}
+.forge-context{color:var(--soft);font-size:11px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:760px){.forge-context{display:none}}
+</style></head><body><h1>"+esc(d.brand)+" — Business Plan</h1><p class='small'>Personalized to the confirmed product, capital, market and operating profile.</p>"+content+"</body></html>");
   w.document.close();setTimeout(()=>w.print(),250);
 }
 function analytics(){let b=state.business||{targetMargin:43};return "<div class='hero'><div><div class='eyebrow'>Decision intelligence</div><div class='h1'>Numbers that lead to decisions.</div><div class='sub'>Track demand, unit economics, cash efficiency, customer experience, inventory risk and marketing efficiency.</div></div><button class='btn' onclick=\"toast('Decision model refreshed')\">Refresh model ↻</button></div><div class='grid'><div class='card span8'><div class='label'>Illustrative revenue trajectory</div><div class='chart'>"+[32,41,38,55,63,71,86].map(h=>"<div class='bar' style='height:"+h+"%'></div>").join("")+"</div><div class='small'>Indexed planning view. Connect actual sales data before financial decisions.</div></div><div class='card span4'><div class='label'>AI business verdict</div><h2>Validate before scaling.</h2><p class='small'>Keep the first batch small enough to learn. Scale only when contribution remains positive after acquisition, delivery fees and expected returns.</p></div></div><div class='section'><h2>Scorecard</h2></div><div class='grid'>"+[["Demand",92,"Strong"],["Unit economics",88,"Healthy"],["Cash efficiency",73,"Watch"],["Customer experience",95,"Strong"],["Inventory risk",68,"Watch"],["Marketing efficiency",84,"Healthy"]].map(x=>"<div class='card span4'><div class='row' style='justify-content:space-between'><b>"+x[0]+"</b><span class='status "+(x[2]==="Watch"?"amber":"")+"'>"+x[2]+"</span></div><div class='stat'>"+x[1]+"</div><div class='score'><i style='width:"+x[1]+"%'></i></div></div>").join("")+"</div><div class='section'><h2>Financial guardrails</h2></div><div class='grid'><div class='card span4'><div class='label'>Protected reserve</div><div class='stat'>22%</div></div><div class='card span4'><div class='label'>Target gross margin</div><div class='stat'>"+b.targetMargin+"%</div></div><div class='card span4'><div class='label'>Break-even rule</div><div class='stat'>Contribution &gt; 0</div></div></div>"}
@@ -1453,6 +1517,7 @@ function addCjToQueue(i){
 }
 
 function render(){
+  document.body.dataset.page=state.page||"home";
   let pages={home,advisor,ideas,products,plan,orders,brand:brandStudioPage,store,marketing,support,analytics};
   if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();return}
   const pageFn=pages[state.page]||home;
@@ -1467,6 +1532,24 @@ function render(){
   }
 }
 render();
+function updateForgeContext(){
+  const labels={
+    home:"Command center",
+    advisor:"Decision advisor",
+    ideas:"Opportunity engine",
+    products:"Product Lab",
+    plan:"Business plan",
+    orders:"Order workspace",
+    brand:"Brand Studio",
+    store:"Store Launch",
+    marketing:"AI growth loop",
+    support:"Customer support",
+    analytics:"Business intelligence"
+  };
+  const el=document.getElementById("forgeStatusText");
+  if(el)el.textContent=labels[state.page]||"AI is online";
+}
+updateForgeContext();
 setTimeout(refreshForgeFxRate,50);
 setInterval(refreshForgeFxRate,3600000);
 </script>

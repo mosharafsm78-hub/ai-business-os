@@ -781,7 +781,7 @@ function domainLaunchNotice(domain){
   if(r.status==="taken")return "<div class='notice danger'><b>"+esc(domain)+" is already registered.</b><span>This domain cannot be used for this launch. Choose another domain and check it before selecting.</span></div>";
   if(r.status==="setup_required")return "<div class='notice danger'><b>Registrar connection needs one-time setup.</b><span>Connect the Cloudflare Registrar account to Forge before this domain can be verified or priced.</span></div>";
   if(r.status==="unsupported")return "<div class='notice danger'><b>"+esc(domain)+" cannot be registered through the connected registrar API.</b><span>Choose another supported extension or domain.</span></div>";
-  if(r.status==="likely_available")return "<div class='notice danger'><b>"+esc(domain)+" is not yet registrar-verified.</b><span>Forge only has the RDAP fallback result. The connected Namecheap registrar has not returned an exact availability + price result, so this domain cannot be selected yet.</span></div>";
+  if(r.status==="likely_available")return "<div class='notice danger'><b>"+esc(domain)+" is not yet registrar-verified.</b><span>Forge requires an exact Cloudflare Registrar result before a domain can be selected or priced.</span></div>";
   return "";
 }
 async function checkDomainAvailability(domain){

@@ -737,13 +737,33 @@ function selectBrandName(i){
 }
 const SUPABASE_URL="https://pmyfswozvkdpqgnsiibf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW";
+function domainResult(domain){
+  return (state.brandStudio?.domainChecks||{})[String(domain||"").toLowerCase()]||null;
+}
 function domainCheckLabel(domain){
-  const r=(state.brandStudio?.domainChecks||{})[String(domain||"").toLowerCase()];
+  const r=domainResult(domain);
   if(!r)return "Availability not checked";
   if(r.status==="available")return "Available to register";
   if(r.status==="taken")return "Already registered";
   if(r.status==="likely_available")return "Likely available · confirm at registrar";
   return "Check could not be confirmed";
+}
+function domainLivePriceLabel(result){
+  if(!result)return "Price shown after availability check";
+  if(result.status!=="available")return "Not available for this launch";
+  if(Number(result.priceUsd)>0){
+    const years=Number(result.priceYears||1);
+    return "$"+Number(result.priceUsd).toFixed(2)+" / "+years+" year"+(years===1?"":"s")+" · live";
+  }
+  return result.priceUnavailableReason?"Live price unavailable":"Price pending registrar response";
+}
+function domainLaunchNotice(domain){
+  const r=domainResult(domain);
+  if(!r)return "";
+  if(r.status==="available")return "<div class='notice domain-handoff-success'><b>✓ "+esc(domain)+" is available.</b><span>Forge moved this domain into Store Launch. Review the live registration price there.</span><button class='btn primary' onclick="go('store')">Continue to Store Launch →</button></div>";
+  if(r.status==="taken")return "<div class='notice danger'><b>"+esc(domain)+" is already registered.</b><span>This domain will not be used for your store. Choose another domain and check it before moving to Store Launch.</span></div>";
+  if(r.status==="likely_available")return "<div class='notice'><b>"+esc(domain)+" looks available.</b><span>Forge has not received an exact registrar result, so it will not treat this domain as purchase-ready yet.</span></div>";
+  return "";
 }
 async function checkDomainAvailability(domain){
   const clean=String(domain||"").trim().toLowerCase().replace(/^https?:\/\//,"").replace(/\/$/,"");
@@ -801,17 +821,19 @@ function storeLaunchState(){
   return s;
 }
 function storeLaunchBill(){
-  const s=storeLaunchState();
   const brand=state.brandStudio||{};
-  const domain=brand.social?.domain||"yourbrand.com";
-  const hasCustomDomain=domain&&domain!=="yourbrand.com";
+  const candidate=brand.social?.domain||"";
+  const result=domainResult(candidate);
+  const launchable=result?.status==="available";
+  const domain=launchable?candidate:"";
   return {
     setup:5000,
-    domainEstimate:null,
+    domain,
+    domainResult:launchable?result:null,
+    domainEstimate:launchable?domainLivePriceLabel(result):"Choose and verify an available domain in Brand Studio",
     platform:"Paid separately / depends on selected platform",
     apps:"Only if required · charged at actual cost",
-    domain,
-    hasCustomDomain
+    hasCustomDomain:!!domain
   };
 }
 function startStoreBuildPayment(){
@@ -898,7 +920,7 @@ function store(){
   return "<div class='hero store-launch-hero'><div><div class='eyebrow'>STORE LAUNCH · AUTOMATED BUILD</div><div class='h1'>Pay once. Forge builds the store around your decisions.</div><div class='sub'>You already chose the product, company name, customer-facing product name and digital identity. Store Launch turns those approved decisions into a working storefront instead of asking you to build everything yourself.</div></div><div class='actions'>"+primaryButton+"</div></div>"+
   "<div class='store-build-banner card'><div><div class='eyebrow'>BUILD STATUS</div><h2>"+statusTitle+"</h2><p class='small'>"+statusText+"</p></div><div class='store-build-meter'><b>"+(s.status==="building"?progress+"%":s.status==="ready"?"100%":"NOT STARTED")+"</b>"+(s.status==="building"||s.status==="ready"?"<div class='progress'><i style='width:"+progress+"%'></i></div>":"<div class='progress'><i style='width:0%'></i></div>")+"</div></div>"+
   "<div class='store-build-grid'>"+
-    "<div class='card store-order-card'><div class='eyebrow'>YOUR BUILD</div><h2>"+esc(brandName)+"</h2><div class='store-selected-product'>"+(p?.image?"<img src='"+esc(p.image)+"' alt='"+esc(productName)+"'>":"")+"<div><b>"+esc(productName)+"</b><div class='small'>Confirmed supplier product · one selected hero product</div></div></div><div class='store-build-details'><div><span>Website</span><b>"+esc(domain)+"</b></div><div><span>Brand</span><b>"+esc(brandName)+"</b></div><div><span>Product</span><b>"+esc(productName)+"</b></div><div><span>Estimated completion</span><b>\"+(s.status===\"building\"||s.status===\"ready\"?eta+\" min est.\":\"Shown after payment\")+\"</b></div></div></div>"+
+    "<div class='card store-order-card'><div class='eyebrow'>YOUR BUILD</div><h2>"+esc(brandName)+"</h2><div class='store-selected-product'>"+(p?.image?"<img src='"+esc(p.image)+"' alt='"+esc(productName)+"'>":"")+"<div><b>"+esc(productName)+"</b><div class='small'>Confirmed supplier product · one selected hero product</div></div></div><div class='store-build-details'><div><span>Website</span><b>"+esc(domain)+"</b></div><div><span>Brand</span><b>"+esc(brandName)+"</b></div><div><span>Product</span><b>"+esc(productName)+"</b></div><div><span>Estimated completion</span><b>"+(s.status==="building"||s.status==="ready"?eta+" min est.":"Shown after payment")+"</b></div></div></div>"+
     "<div class='card store-invoice-card'><div class='eyebrow'>LAUNCH INVOICE</div><h2>What you pay</h2><div class='invoice-row'><span>Forge store setup · one time</span><b>৳5,000</b></div><div class='invoice-row'><span>Domain · "+esc(domain)+"</span><b>"+(bill.hasCustomDomain?"Live price / at cost":"Choose domain before purchase")+"</b></div><div class='invoice-row'><span>Platform / hosting</span><b>Depends on platform</b></div><div class='invoice-row'><span>Optional apps / services</span><b>Only if required</b></div><div class='invoice-total'><span>Forge setup payable now</span><b>৳5,000</b></div><p class='small'>The ৳5,000 is the one-time Forge build fee. Domain registration, Shopify/platform subscription and third-party services are separate variable costs and should never be hidden inside the build fee.</p>"+(s.invoiceRef?"<div class='small'>Invoice "+esc(s.invoiceRef)+"</div>":"")+"</div>"+
   "</div>"+
   "<div class='section'><div><h2>What Forge does after payment</h2><p>No repetitive setup work for the customer. AI prepares the store from the approved business decisions.</p></div></div>"+

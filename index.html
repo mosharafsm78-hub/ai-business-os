@@ -760,7 +760,7 @@ const SUPABASE_PUBLISHABLE_KEY="sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW";
 const FX_RATE_URL=SUPABASE_URL+"/functions/v1/fx-rate";
 const SHOPIFY_BASIC_MONTHLY_USD=39;
 const SHOPIFY_BASIC_YEARLY_USD=29;
-let forgeFxRate=123.0585;
+const FORGE_USD_BDT_RATE=130;\nconst FORGE_VAT_RATE=0.15;\nconst FORGE_BILLING_USD_BDT=FORGE_USD_BDT_RATE*(1+FORGE_VAT_RATE);\nlet forgeFxRate=FORGE_BILLING_USD_BDT;
 let forgeFxSource="Google Finance";
 let forgeFxFetchedAt=null;
 let forgeFxLoading=false;
@@ -809,7 +809,7 @@ async function refreshForgeFxRate(){
     const res=await fetch(FX_RATE_URL,{headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Authorization":"Bearer "+SUPABASE_PUBLISHABLE_KEY}});
     const data=await res.json();
     if(!res.ok||!data.ok||!Number(data.rate))throw new Error(data.error||"FX rate unavailable");
-    forgeFxRate=Number(data.rate);
+    // Forge launch pricing uses a fixed BDT 130/USD base plus 15% VAT.\n    // Keep the external FX service available for diagnostics, but never use its market rate for customer billing.\n    forgeFxRate=FORGE_BILLING_USD_BDT;
     forgeFxSource=data.source||"Google Finance";
     forgeFxFetchedAt=data.fetchedAt||new Date().toISOString();
     render();
@@ -1213,7 +1213,7 @@ let cjState=[];
 let cjLastFetched=null;
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\":"&quot;","'":"&#039;"}[m]))}
-function bdtEstimate(usd){return Math.round(Number(usd||0)*forgeFxRate)}
+function bdtEstimate(usd){return Math.round(Number(usd||0)*FORGE_BILLING_USD_BDT)}
 function moneyUsd(v){return "$"+Number(v||0).toFixed(2)}
 function formatQty(v){return Number(v||0).toLocaleString("en-US")}
 

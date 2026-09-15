@@ -158,6 +158,33 @@ h3{font-weight:700;line-height:1.3}
 @media(max-width:900px){.qty-summary{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.qty-summary{grid-template-columns:1fr 1fr}.qty-editor{align-items:flex-start;flex-wrap:wrap}.qty-input{width:100%}}
 </style>
+
+<style id="forge-store-launch-polish">
+.store-build-banner{display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:center;margin-bottom:16px;background:linear-gradient(120deg,rgba(19,52,41,.78),rgba(7,21,16,.86))}
+.store-build-meter b{display:block;text-align:right;font-size:18px;margin-bottom:10px}
+.store-build-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:15px}
+.store-selected-product{display:flex;align-items:center;gap:12px;margin-top:18px;padding:12px;border:1px solid rgba(169,238,204,.12);border-radius:13px;background:#091712}
+.store-selected-product img{width:72px;height:72px;object-fit:contain;background:#f5f5f2;border-radius:10px}
+.store-build-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.store-build-details>div{padding:11px;border:1px solid rgba(169,238,204,.1);border-radius:11px;background:#091510}
+.store-build-details span{display:block;color:#789287;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.store-build-details b{display:block;margin-top:4px;overflow-wrap:anywhere}
+.invoice-row,.invoice-total{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--line)}
+.invoice-row span{color:#9bb3a8;font-size:12px}
+.invoice-total{border-bottom:0;margin-top:5px;padding-top:16px;font-size:14px}
+.invoice-total b{font-size:20px}
+.store-checklist{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.store-check{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:start;padding:16px}
+.store-check-number{width:34px;height:34px;border-radius:10px;background:#10281e;color:#9deabd;display:grid;place-items:center;font-weight:850}
+.store-check p{margin:5px 0 0}
+.store-automation{display:flex;justify-content:space-between;align-items:center;gap:25px;margin-top:16px}
+.store-flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.store-flow span{padding:8px 10px;border:1px solid rgba(169,238,204,.12);border-radius:999px;font-size:11px;font-weight:750}
+.store-flow i{font-style:normal;color:#5e8374}
+.store-platform-note{margin-top:16px}
+@media(max-width:900px){.store-build-banner,.store-build-grid{grid-template-columns:1fr}.store-build-meter b{text-align:left}.store-checklist{grid-template-columns:1fr}.store-automation{display:block}.store-flow{justify-content:flex-start;margin-top:15px}}
+@media(max-width:560px){.store-build-details{grid-template-columns:1fr}.store-check{grid-template-columns:34px 1fr}.store-check .status{grid-column:2;justify-self:start}}
+</style>
 </head>
 <body>
 <div id="app"></div><div id="toast" class="toast"></div><div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
@@ -730,7 +757,120 @@ function completeBrandHandoff(){
   persistProfile();render();toast("Brand identity approved — Store Launch and AI Marketing can now use the same identity.");
 }
 
-function store(){return "<div class='hero'><div><div class='eyebrow'>Store launch</div><div class='h1'>From product economics to checkout.</div><div class='sub'>Pricing, catalog, policies, analytics and support must agree before launch.</div></div><button class='btn primary' onclick=\"toast('Store preview opened')\">Preview store ↗</button></div><div class='card'><div class='row' style='justify-content:space-between'><b>"+(state.business?state.business.name.toLowerCase().replace(/ /g,""):"yourbusiness")+".store</b><span class='status'>72% ready</span></div><div class='progress' style='margin:18px 0'><i style='width:72%'></i></div></div><div class='section'><h2>Launch checklist</h2></div><div class='grid'>"+["Hero product approved","Pricing + margin checked","Product photography","Descriptions + SEO","Payment methods","Delivery / COD rules","Return & exchange policy","Analytics + pixels","WhatsApp / chat","Order notifications","Trust blocks","Launch campaign"].map((x,i)=>"<div class='card span3'><div class='row' style='justify-content:space-between'><b>"+x+"</b><span class='status "+(i>7?"amber":"")+"'>"+(i<8?"Done":"Next")+"</span></div><p class='small'>AI checklist with human approval for money, policy and customer-trust decisions.</p></div>").join("")+"</div>"}
+function storeLaunchState(){
+  const s=state.storeLaunch||{};
+  if(!s.etaMinutes){
+    const seed=String(state.selectedProduct?.id||state.selectedProduct?.name||"forge").split("").reduce((a,ch)=>a+ch.charCodeAt(0),0);
+    s.etaMinutes=18+(seed%28);
+  }
+  return s;
+}
+function storeLaunchBill(){
+  const s=storeLaunchState();
+  const brand=state.brandStudio||{};
+  const domain=brand.social?.domain||"yourbrand.com";
+  const hasCustomDomain=domain&&domain!=="yourbrand.com";
+  return {
+    setup:5000,
+    domainEstimate:null,
+    platform:"Paid separately / depends on selected platform",
+    apps:"Only if required · charged at actual cost",
+    domain,
+    hasCustomDomain
+  };
+}
+function startStoreBuildPayment(){
+  const selected=state.selectedProduct;
+  if(!selected)return toast("Choose and confirm a product before starting Store Launch.");
+  const b=state.brandStudio||{};
+  if(!b.chosenName)return toast("Choose a company / brand name in Brand Studio first.");
+  if(!b.chosenProductName)return toast("Choose a customer-facing product name in Brand Studio first.");
+  const s=storeLaunchState();
+  s.invoiceRef=s.invoiceRef||("STORE-"+new Date().toISOString().replace(/\D/g,"").slice(0,14));
+  s.status="awaiting_payment";
+  s.createdAt=s.createdAt||new Date().toISOString();
+  state.storeLaunch=s;
+  persistProfile();
+  render();
+  toast("Launch invoice prepared. Pay the one-time ৳5,000 setup fee to start the build.");
+}
+function payStoreLaunch(){
+  const selected=state.selectedProduct;
+  if(!selected)return toast("Choose a confirmed product first.");
+  const b=state.brandStudio||{};
+  if(!b.chosenName||!b.chosenProductName)return toast("Finish the core Brand Studio choices first.");
+  const s=storeLaunchState();
+  s.status="building";
+  s.paidAt=new Date().toISOString();
+  s.startedAt=s.paidAt;
+  s.invoiceRef=s.invoiceRef||("STORE-"+new Date().toISOString().replace(/\D/g,"").slice(0,14));
+  state.storeLaunch=s;
+  persistProfile();
+  render();
+  toast("Payment recorded. Forge has started your store build.");
+}
+function refreshStoreBuild(){
+  const s=storeLaunchState();
+  if(s.status==="building"){
+    const age=Math.max(0,Math.round((Date.now()-new Date(s.startedAt||Date.now()).getTime())/60000));
+    if(age>=Number(s.etaMinutes||30)){
+      s.status="ready";
+      s.completedAt=new Date().toISOString();
+      state.storeLaunch=s;
+      persistProfile();
+      toast("Your store build is marked ready for final review.");
+    } else {
+      render();
+      toast("Build is still in progress. Estimated completion: about "+Math.max(1,Number(s.etaMinutes||30)-age)+" minute(s).");
+    }
+  } else render();
+}
+function store(){
+  const p=state.selectedProduct;
+  const brand=state.brandStudio||{};
+  const s=storeLaunchState();
+  const bill=storeLaunchBill();
+  const readyForInvoice=!!(p&&brand.chosenName&&brand.chosenProductName);
+  const age=s.startedAt?Math.max(0,Math.round((Date.now()-new Date(s.startedAt).getTime())/60000)):0;
+  const eta=Number(s.etaMinutes||30);
+  const progress=s.status==="ready"?100:s.status==="building"?Math.min(92,Math.max(8,Math.round(age/eta*100))):0;
+  const remaining=Math.max(1,eta-age);
+  const brandName=brand.chosenName||"Your brand";
+  const productName=brand.chosenProductName||p?.name||"Confirmed product";
+  const domain=bill.domain||"yourbrand.com";
+  const checklist=[
+    ["Store structure","AI builds the homepage, navigation, collection structure and core pages."],
+    ["Product presentation","AI prepares the confirmed product image set, crops, backgrounds and storefront-ready media."],
+    ["Product listing","Customer-facing product name, description, variants, pricing structure and product details."],
+    ["SEO setup","Product title, meta description, URL handle, image naming and on-page search structure."],
+    ["Trust & policy","Shipping, returns, contact, FAQ and essential trust sections prepared from the approved business rules."],
+    ["Commerce setup","Checkout, payment/shipping configuration and order flow prepared for the selected platform."],
+    ["Analytics & tracking","Store analytics, conversion events and required tracking configuration prepared."],
+    ["Final QA","Mobile/desktop review, product-page checks, checkout test and launch-readiness review."]
+  ];
+  let statusTitle="Ready to build your store";
+  let statusText="Once the launch invoice is paid, Forge starts the build automatically.";
+  if(s.status==="awaiting_payment"){statusTitle="Invoice ready · payment required";statusText="Your selections are locked into this build request. Pay the one-time setup fee to start."; }
+  if(s.status==="building"){statusTitle="Your store is being built";statusText="Forge is working through your product, brand, storefront, SEO and launch configuration. Estimated completion: about "+remaining+" minute(s).";}
+  if(s.status==="ready"){statusTitle="Store build complete · review before launch";statusText="The automated build is complete. Preview the store, check the final details and then publish when you are satisfied.";}
+  const primaryButton=!readyForInvoice
+    ? "<button class='btn primary' onclick=\"go('brand')\">Finish Brand Studio →</button>"
+    : s.status==="building"
+      ? "<button class='btn primary' onclick='refreshStoreBuild()'>Check build status ↻</button>"
+      : s.status==="ready"
+        ? "<button class='btn primary' onclick=\"toast('Store preview is being prepared')\">Preview completed store ↗</button>"
+        : "<button class='btn primary' onclick='payStoreLaunch()'>Pay ৳5,000 & start build →</button>";
+  return "<div class='hero store-launch-hero'><div><div class='eyebrow'>STORE LAUNCH · AUTOMATED BUILD</div><div class='h1'>Pay once. Forge builds the store around your decisions.</div><div class='sub'>You already chose the product, company name, customer-facing product name and digital identity. Store Launch turns those approved decisions into a working storefront instead of asking you to build everything yourself.</div></div><div class='actions'>"+primaryButton+"</div></div>"+
+  "<div class='store-build-banner card'><div><div class='eyebrow'>BUILD STATUS</div><h2>"+statusTitle+"</h2><p class='small'>"+statusText+"</p></div><div class='store-build-meter'><b>"+(s.status==="building"?progress+"%":s.status==="ready"?"100%":"NOT STARTED")+"</b>"+(s.status==="building"||s.status==="ready"?"<div class='progress'><i style='width:"+progress+"%'></i></div>":"<div class='progress'><i style='width:0%'></i></div>")+"</div></div>"+
+  "<div class='store-build-grid'>"+
+    "<div class='card store-order-card'><div class='eyebrow'>YOUR BUILD</div><h2>"+esc(brandName)+"</h2><div class='store-selected-product'>"+(p?.image?"<img src='"+esc(p.image)+"' alt='"+esc(productName)+"'>":"")+"<div><b>"+esc(productName)+"</b><div class='small'>Confirmed supplier product · one selected hero product</div></div></div><div class='store-build-details'><div><span>Website</span><b>"+esc(domain)+"</b></div><div><span>Brand</span><b>"+esc(brandName)+"</b></div><div><span>Product</span><b>"+esc(productName)+"</b></div><div><span>Build time</span><b>"+eta+" min est.</b></div></div></div>"+
+    "<div class='card store-invoice-card'><div class='eyebrow'>LAUNCH INVOICE</div><h2>What you pay</h2><div class='invoice-row'><span>Forge store setup · one time</span><b>৳5,000</b></div><div class='invoice-row'><span>Domain · "+esc(domain)+"</span><b>"+(bill.hasCustomDomain?"Live price / at cost":"Choose domain before purchase")+"</b></div><div class='invoice-row'><span>Platform / hosting</span><b>Depends on platform</b></div><div class='invoice-row'><span>Optional apps / services</span><b>Only if required</b></div><div class='invoice-total'><span>Forge setup payable now</span><b>৳5,000</b></div><p class='small'>The ৳5,000 is the one-time Forge build fee. Domain registration, Shopify/platform subscription and third-party services are separate variable costs and should never be hidden inside the build fee.</p>"+(s.invoiceRef?"<div class='small'>Invoice "+esc(s.invoiceRef)+"</div>":"")+"</div>"+
+  "</div>"+
+  "<div class='section'><div><h2>What Forge does after payment</h2><p>No repetitive setup work for the customer. AI prepares the store from the approved business decisions.</p></div></div>"+
+  "<div class='store-checklist'>"+checklist.map((x,i)=>"<div class='store-check card'><div class='store-check-number'>"+String(i+1).padStart(2,"0")+"</div><div><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div><span class='status "+(s.status==="ready"?"":"amber")+"'>"+(s.status==="ready"?"READY":"QUEUED")+"</span></div>").join("")+"</div>"+
+  "<div class='store-automation card'><div><div class='eyebrow'>AUTOMATION RULE</div><h2>One approved identity flows everywhere.</h2><p class='small'>The company name, product name, domain direction, product image, pricing model, product story and SEO language are pulled from your approved Brand Studio and Product Lab decisions. Forge should not invent a different identity during store creation.</p></div><div class='store-flow'><span>Product</span><i>→</i><span>Brand</span><i>→</i><span>Store</span><i>→</i><span>SEO</span><i>→</i><span>QA</span><i>→</i><span>Launch</span></div></div>"+
+  "<div class='notice store-platform-note'><b>How the real store connection works:</b> Forge can automate the storefront build, product setup, media preparation and SEO, but the production integration still needs a connected commerce platform account and secure API authorization. For Shopify, the platform provides online-store hosting, custom-domain support and product/SEO management; a paid plan is required to publish a live store. urlShopify store setup detailsturn2search0</div>";
+}
 function marketing(){let budget=Math.round((state.business?.budget||250000)*.15);return "<div class='hero'><div><div class='eyebrow'>AI growth loop</div><div class='h1'>Spend based on contribution, not vanity.</div><div class='sub'>Scale only when acquisition cost and returns still leave healthy contribution.</div></div><button class='btn primary' onclick=\"toast('Growth analysis refreshed')\">Run growth analysis →</button></div><div class='grid'><div class='card span3'><div class='label'>Monthly ad envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Target CAC</div><div class='stat'>৳320</div></div><div class='card span3'><div class='label'>Target ROAS</div><div class='stat'>3.2×</div></div><div class='card span3'><div class='label'>Creative tests</div><div class='stat'>12</div></div></div><div class='section'><h2>Campaign desk</h2></div><div class='card'><table class='table'><tr><th>Campaign</th><th>Channel</th><th>Budget</th><th>ROAS</th><th>Action</th></tr><tr><td>Hero product launch</td><td>Meta</td><td>৳12,000</td><td>3.8×</td><td><span class='status'>Scale 15%</span></td></tr><tr><td>UGC test</td><td>Meta</td><td>৳7,000</td><td>2.4×</td><td><span class='status amber'>Iterate</span></td></tr></table></div><div class='section'><h2>Creative factory</h2></div><div class='grid'>"+["3-second hook","Problem/solution reel","UGC script","Founder story","Offer creative","Retargeting creative"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Generate five variants and test one variable at a time.</p><button class='btn' onclick=\"toast('"+x+" brief generated')\">Generate →</button></div>").join("")+"</div>"}
 function support(){return "<div class='hero'><div><div class='eyebrow'>AI customer support</div><div class='h1'>Fast answers. Safe escalation.</div><div class='sub'>Routine questions can be automated; sensitive cases remain visible to a human.</div></div></div><div class='grid'><div class='card span4'><div class='label'>Conversations today</div><div class='stat'>84</div></div><div class='card span4'><div class='label'>Median response</div><div class='stat'>11 sec</div></div><div class='card span4'><div class='label'>Human escalations</div><div class='stat'>3</div></div></div><div class='section'><h2>Support queue</h2></div><div class='card'>"+[["Do you have size 42?","Catalog availability","Resolved"],["When will my parcel arrive?","Order tracking","Resolved"],["Can I exchange this size?","Policy","Resolved"],["Wrong item received.","Evidence required","Needs you"],["I want a refund for change of mind.","Policy","Needs you"]].map(x=>"<div class='kpi'><span><b>"+x[0]+"</b><div class='small'>"+x[1]+"</div></span><span class='status "+(x[2]==="Needs you"?"amber":"")+"'>"+x[2]+"</span></div>").join("")+"</div><div class='notice' style='margin-top:15px'><b>Safety rule:</b> AI must not invent stock, delivery dates, refunds or policy exceptions.</div>"}
 function plan(){

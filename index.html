@@ -697,7 +697,12 @@ html,body{background:#fff!important;color:#000!important;background-image:none!i
 @media(max-width:700px){
  #app .card,#app .panel,#app .tile,#app .hero,#app .hero-banner,#app .section{border-radius:14px!important}
 }
-</style></head>
+</style><style id="forge-wizard-validation-v1">
+.wizard-field-error{border-color:#d11!important;box-shadow:0 0 0 2px rgba(209,17,17,.10)!important}
+.wizard-error-msg{display:block;margin-top:6px;font-size:11px;font-weight:700;color:#b00000!important}
+.wizard-required-note{margin-top:12px;padding:10px 12px;border:1px solid #000;border-radius:10px;background:#fff!important;color:#000!important;font-size:12px}
+</style>
+</head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
 /* FORGE STARTUP — never leave the customer on a dead loading screen */
@@ -775,26 +780,58 @@ function openWizard(){
    const continueBtn=document.getElementById("wizardContinueBtn");
    if(backBtn)backBtn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();wizardBack()});
    if(continueBtn)continueBtn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();step<5?wizardNext():finishWizard()});
+   document.getElementById("modalbox")?.querySelectorAll("input,select,textarea").forEach(function(el){
+     el.addEventListener("input",function(){el.classList.remove("wizard-field-error");el.nextElementSibling?.classList.contains("wizard-error-msg")&&el.nextElementSibling.remove()});
+     el.addEventListener("change",function(){el.classList.remove("wizard-field-error");el.nextElementSibling?.classList.contains("wizard-error-msg")&&el.nextElementSibling.remove()});
+   });
  }
  window.wizardBack=()=>{if(step>1){step--;draw()}};
  window.wizardNext=()=>{captureWizard();if(!validateWizard(step))return;step++;draw()};
  window.captureWizard=()=>{["budget","age","income","expenses","reserve","market","city","occupation","experience","skills","workStyle","category","goal","risk","riskCapacity","lossTolerance","time","targetIncome","model"].forEach(k=>{let e=document.getElementById("w"+k);if(e)d[k]=e.type==="number"?Number(e.value):e.value})};
- window.validateWizard=(s)=>{
-   const required=s===1?["budget","income","expenses","reserve"]:s===2?["age","city","occupation","time"]:s===3?["risk","riskCapacity","lossTolerance"]:[];
-   for(const k of required){
-     const v=d[k];
-     const numeric=["budget","income","expenses","reserve","age","time","lossTolerance"].includes(k);
-     if(numeric){
-       if(v===""||v===null||Number.isNaN(Number(v))||Number(v)<0||(k==="age"&&Number(v)<18)||(k==="time"&&Number(v)<=0)){
-         toast("Please complete the required fields");
-         return false;
-       }
-     }else if(!String(v||"").trim()){
-       toast("Please complete the required fields");
-       return false;
-     }
+ window.clearWizardErrors=()=>{
+   document.querySelectorAll(".wizard-field-error").forEach(e=>e.classList.remove("wizard-field-error"));
+   document.querySelectorAll(".wizard-error-msg").forEach(e=>e.remove());
+   document.querySelectorAll(".wizard-required-note").forEach(e=>e.remove());
+ };
+ window.showWizardErrors=(keys)=>{
+   clearWizardErrors();
+   let first=null;
+   keys.forEach(k=>{
+     const el=document.getElementById("w"+k);
+     if(!el)return;
+     el.classList.add("wizard-field-error");
+     const msg=document.createElement("div");
+     msg.className="wizard-error-msg";
+     msg.textContent="Please fill this field before continuing.";
+     el.insertAdjacentElement("afterend",msg);
+     if(!first)first=el;
+   });
+   if(keys.length){
+     const note=document.createElement("div");
+     note.className="wizard-required-note";
+     note.textContent="Please fill in the highlighted required field"+(keys.length>1?"s":"")+" before going to the next step.";
+     document.getElementById("modalbox")?.querySelector(".actions")?.insertAdjacentElement("beforebegin",note);
+     first?.focus();
+     first?.scrollIntoView({behavior:"smooth",block:"center"});
+     toast("Please fill the highlighted required fields");
+     return false;
    }
    return true;
+ };
+ window.validateWizard=(s)=>{
+   const required=s===1?["budget","income","expenses","reserve"]:s===2?["age","city","occupation","time"]:s===3?["risk","riskCapacity","lossTolerance"]:[];
+   const invalid=[];
+   for(const k of required){
+     const el=document.getElementById("w"+k);
+     if(!el)continue;
+     const v=el.value;
+     const numeric=["budget","income","expenses","reserve","age","time","lossTolerance"].includes(k);
+     const bad=numeric
+       ?(v===""||v===null||Number.isNaN(Number(v))||Number(v)<0||(k==="age"&&Number(v)<18)||(k==="time"&&Number(v)<=0))
+       :!String(v||"").trim();
+     if(bad)invalid.push(k);
+   }
+   return showWizardErrors(invalid);
  };
  window.finishWizard=()=>{captureWizard();if(!validateWizard(5))return;state.profile={...d};state.business={name:businessName(d.category),budget:d.budget,market:d.market,category:d.category,age:d.age,income:d.income,goal:d.goal,risk:d.risk,time:d.time,targetMargin:categoryMargin(d.category),planMode:planMode(d)};state.profileLocked=true;state.page="ideas";persistProfile();closeModal();render();toast("Profile locked — Forge is now personalized to you")};
  document.getElementById("modal").classList.add("open");draw();
@@ -806,7 +843,7 @@ function profileSummary(){
 function wizardStep(s,d){
  if(s===1)return "<h3>1 · Money & financial reality</h3><p class='small'>Use real numbers. Forge uses them to protect your personal cash flow and business budget.</p><div class='grid'><div class='span6 field'><label>Business capital you can deploy *</label><input class='input' id='wbudget' type='number' min='0' value='"+(d.budget||"")+"' placeholder='e.g. 200000'></div><div class='span6 field'><label>Monthly personal income *</label><input class='input' id='wincome' type='number' min='0' value='"+(d.income||"")+"' placeholder='e.g. 60000'></div><div class='span6 field'><label>Monthly personal expenses *</label><input class='input' id='wexpenses' type='number' min='0' value='"+(d.expenses||"")+"' placeholder='e.g. 35000'></div><div class='span6 field'><label>Emergency reserve you will NOT invest *</label><input class='input' id='wreserve' type='number' min='0' value='"+(d.reserve||"")+"' placeholder='e.g. 100000'></div></div>";
  if(s===2)return "<h3>2 · Who you are</h3><p class='small'>This determines how much complexity Forge should put on your plate.</p><div class='grid'><div class='span4 field'><label>Age *</label><input class='input' id='wage' type='number' min='18' value='"+(d.age||"")+"' placeholder='28'></div><div class='span4 field'><label>City / location *</label><input class='input' id='wcity' value='"+(d.city||"")+"' placeholder='Dhaka'></div><div class='span4 field'><label>Occupation *</label><input class='input' id='woccupation' value='"+(d.occupation||"")+"' placeholder='Job / student / business'></div><div class='span4 field'><label>Business experience</label><select class='input' id='wexperience'><option>Beginner</option><option>Some experience</option><option>Experienced</option><option>Serial entrepreneur</option></select></div><div class='span4 field'><label>Hours available per week *</label><input class='input' id='wtime' type='number' min='1' value='"+(d.time||"")+"' placeholder='15'></div><div class='span4 field'><label>Work style</label><select class='input' id='wworkStyle'><option>Builder</option><option>Seller</option><option>Operator</option><option>Creator</option><option>Analyst</option><option>Hybrid</option></select></div><div class='span12 field'><label>Skills / interests</label><input class='input' id='wskills' value='"+(d.skills||"")+"' placeholder='e.g. fashion, sales, design, sourcing, food, technology'></div></div>";
- if(s===3)return "<h3>3 · Your risk profile</h3><p class='small'>Forge separates what you <b>want</b> to risk from what you can realistically afford to lose.</p><div class='grid'><div class='span4 field'><label>Risk appetite</label><select class='input' id='wrisk'><option>Conservative</option><option>Balanced</option><option>Growth</option><option>Aggressive</option></select></div><div class='span4 field'><label>Risk capacity</label><select class='input' id='wriskCapacity'><option>Low</option><option>Medium</option><option>High</option></select></div><div class='span4 field'><label>Maximum comfortable loss</label><input class='input' id='wlossTolerance' type='number' min='0' value='"+(d.lossTolerance||"")+"' placeholder='e.g. 50000'></div></div><div class='grid' style='margin-top:4px'><div class='span4 choice'><b>Conservative</b><p class='small'>Protect capital. Prefer low inventory and service/pre-order models.</p></div><div class='span4 choice'><b>Growth</b><p class='small'>Accept controlled losses to find scalable products.</p></div><div class='span4 choice'><b>Aggressive</b><p class='small'>Able to test larger inventory and brand bets when capital supports it.</p></div></div>";
+ if(s===3)return "<h3>3 · Your risk profile</h3><p class='small'>Forge separates what you <b>want</b> to risk from what you can realistically afford to lose.</p><div class='grid'><div class='span4 field'><label>Risk appetite</label><select class='input' id='wrisk'><option>Conservative</option><option>Balanced</option><option>Growth</option><option>Aggressive</option></select></div><div class='span4 field'><label>Risk capacity</label><select class='input' id='wriskCapacity'><option>Low</option><option>Medium</option><option>High</option></select></div><div class='span4 field'><label>Maximum comfortable loss *</label><input class='input' id='wlossTolerance' type='number' min='0' value='"+(d.lossTolerance||"")+"' placeholder='e.g. 50000'></div></div><div class='grid' style='margin-top:4px'><div class='span4 choice'><b>Conservative</b><p class='small'>Protect capital. Prefer low inventory and service/pre-order models.</p></div><div class='span4 choice'><b>Growth</b><p class='small'>Accept controlled losses to find scalable products.</p></div><div class='span4 choice'><b>Aggressive</b><p class='small'>Able to test larger inventory and brand bets when capital supports it.</p></div></div>";
  if(s===4)return "<h3>4 · What should Forge build around?</h3><div class='grid'><div class='span6 field'><label>Preferred category</label><select class='input' id='wcategory'><option>Open to anything</option><option>Fashion & accessories</option><option>Beauty & personal care</option><option>Home & living</option><option>Electronics</option><option>Food & beverage</option><option>Sports & fitness</option><option>Services / digital</option></select></div><div class='span6 field'><label>Primary goal</label><select class='input' id='wgoal'><option>Profit + growth</option><option>Low-risk side income</option><option>Long-term brand</option><option>Fastest revenue</option><option>Replace my salary</option></select></div><div class='span6 field'><label>Preferred business model</label><select class='input' id='wmodel'><option>Open to recommendations</option><option>Online product selling</option><option>Private label</option><option>Reselling</option><option>Service business</option><option>Wholesale / distribution</option></select></div><div class='span6 field'><label>Target additional monthly income</label><input class='input' id='wtargetIncome' type='number' min='0' value='"+(d.targetIncome||"")+"' placeholder='e.g. 50000'></div><div class='span6 field'><label>Primary market</label><select class='input' id='wmarket'><option>Bangladesh</option><option>India</option><option>UAE</option><option>Saudi Arabia</option><option>USA</option></select></div></div>";
  return "<h3>5 · Confirm before Forge unlocks</h3><div class='notice'><b>Your profile becomes locked after you continue.</b><p class='small'>Forge will use this profile to rank opportunities, set conservative planning assumptions, choose product priorities and generate a business plan. Product economics shown later are read-only.</p></div><div class='locked-profile' style='margin-top:15px'>"+profileSummaryFor(d)+"</div><div class='danger notice' style='margin-top:15px'><b>Important:</b> Forge will never treat estimated prices, supplier costs or margins as guaranteed. Real sourcing will verify those assumptions later.</div>";
 }

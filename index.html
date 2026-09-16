@@ -2634,7 +2634,10 @@ function render(){
     if(state.page==="plan"&&state.planStatus==="preparing")setTimeout(()=>{if(state.page==="plan")render()},500);
   }catch(err){
     console.error("Forge render error",state.page,err);
-    app.innerHTML=shell("<div class='forge-error-page'><div class='eyebrow'>WORKSPACE RECOVERY</div><h1>This section could not render.</h1><p class='sub'>Your saved business data is safe. Forge has kept the rest of the workspace available.</p><div class='actions'><button class='btn primary' type='button' onclick="go('home')">Return to Command Center</button><button class='btn' type='button' onclick="go('advisor')">Open Forge Chat</button></div><pre>"+esc(String(err&&err.message||err))+"</pre></div>");
+    const detail=esc(String(err&&err.message||err));
+    app.innerHTML=shell("<div class='forge-error-page'><div class='eyebrow'>WORKSPACE RECOVERY</div><h1>This section could not render.</h1><p class='sub'>Your saved business data is safe. Forge has kept the rest of the workspace available.</p><div class='actions'><button id='forgeRecoveryHome' class='btn primary' type='button'>Return to Command Center</button><button id='forgeRecoveryChat' class='btn' type='button'>Open Forge Chat</button></div><pre>"+detail+"</pre></div>");
+    document.getElementById("forgeRecoveryHome")?.addEventListener("click",()=>go("home"));
+    document.getElementById("forgeRecoveryChat")?.addEventListener("click",()=>go("advisor"));
   }
 }
 

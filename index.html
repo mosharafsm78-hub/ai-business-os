@@ -2363,24 +2363,125 @@ function fcData(){var s=fcSaved(),p=s.profile||{},prod=s.selectedProduct||{},bra
 function fcContext(){var c=fcData(),p=c.p,prod=c.prod,b=c.brand,parts=[];if(c.s.business&&c.s.business.name)parts.push("Business: "+c.s.business.name);if(p.budget)parts.push("Capital: BDT "+Number(p.budget).toLocaleString("en-BD"));if(p.income)parts.push("Income: BDT "+Number(p.income).toLocaleString("en-BD")+"/month");if(p.market)parts.push("Market: "+p.market);if(p.category)parts.push("Category: "+p.category);if(p.risk)parts.push("Risk: "+p.risk);if(p.time)parts.push("Time: "+p.time+"h/week");if(prod.name)parts.push("Product: "+prod.name);if(b.chosenName)parts.push("Brand: "+b.chosenName);return parts.length?parts.join(" · "):"Profile setup is not complete yet."}
 function fcMoney(n){return "BDT "+Number(n||0).toLocaleString("en-BD")}
 function fcAnswer(question){
-var s=String(question||"").trim().toLowerCase(),c=fcData(),p=c.p,prod=c.prod,b=c.brand;
-if(!s)return"Tell me what is confusing you. I can explain your Forge profile, recommendations, product economics, Business Plan, orders, Brand Studio, Store Launch or marketing.";
-if(/what.*next|next step|where.*start|what should i do/.test(s)){if(!p.budget)return"Start with your Forge profile. Your capital, income, expenses, risk and available time are the inputs used for downstream recommendations.";if(!prod.name)return"Your profile is ready. Open Business Finder, review the businesses that fit your profile, then choose a real product in Product Lab.";if(!b.chosenName)return"You have a product connected. Open Brand Studio and choose the company or brand name before moving to Store Launch.";if(!b.chosenProductName)return"Your company name is set. Choose the customer-facing product name in Brand Studio, then review the Business Plan.";return"Your core inputs are connected. Review the Business Plan, then Store Launch and AI Marketing. Ask me about any number before you approve it."}
-if(/why.*recommend|recommend.*why|why this product|why.*product/.test(s)){if(!prod.name)return"No product is confirmed yet. Product Lab matches live supplier products to your locked business profile.";return"Forge matches the product against your business direction, capital, risk capacity, market and available time. The connected supplier price and stock then feed the landed cost, selling price, CAC and contribution model. These are planning estimates, not guarantees."}
-if(/capital|budget|money|afford/.test(s))return"Your current deployable capital is "+fcMoney(p.budget||0)+". Forge keeps your emergency reserve separate and uses the deployable amount, risk profile and product economics when planning an opening quantity.";
-if(/risk|risky|loss/.test(s))return"Your current Forge risk profile is "+(p.risk||"not set")+" with "+(p.riskCapacity||"not set")+" risk capacity. Forge uses this to control how much capital and operational complexity a recommendation requires.";
-if(/price|cost|cac|contribution|margin|break.?even|economics/.test(s)){if(!prod.name)return"Choose a product first and I can explain its economics.";var e=prod.economics||{};return"For "+prod.name+": estimated landed cost is "+fcMoney(e.landed)+", estimated selling price is "+fcMoney(e.selling)+", modeled CAC is "+fcMoney(e.cac)+", and estimated contribution is "+fcMoney(e.contribution)+" per unit. These are planning figures based on the connected supplier record."}
-if(/quantity|how many|units|batch/.test(s)){if(!prod.name)return"Choose a product first. Forge then calculates minimum, suggested and planned quantities from your capital, risk profile, product economics and supplier constraints.";var e2=prod.economics||{},budget=Number(p.budget||0),landed=Number(e2.landed||0),min=10,cat=String(prod.category||p.category||"").toLowerCase();if(cat.includes("bag")||cat.includes("shoe")||cat.includes("footwear")||cat.includes("home"))min=12;if(cat.includes("beauty")||cat.includes("cosmetic"))min=15;return"Forge starts quantity planning with the category/supplier minimum, then considers available capital and risk. For this product the planning minimum is "+min+" units. The fuller suggested quantity is calculated in Orders, and you can edit the quantity before payment."}
-if(/business plan|plan/.test(s))return"The Business Plan turns your locked profile and confirmed product into a practical operating model: customer, positioning, economics, risk controls and a launch roadmap. If a number looks unclear, ask me about that number.";
-if(/product lab|supplier|cj|dropship|stock|loading|wait/.test(s))return"Product Lab connects to the live supplier feed. While it is loading, Forge should clearly say it is connecting and checking supplier data rather than appearing empty. Supplier price and stock are treated as live data and are rechecked before procurement.";
-if(/brand|name|instagram|facebook|domain/.test(s))return"Brand Studio turns the confirmed product into a customer-facing identity: company name, product name, social handles and domain direction. A domain should only be selected after the connected registrar confirms availability and live price.";
-if(/store|shopify|launch/.test(s))return"Store Launch uses the approved product and brand identity to prepare the storefront. The launch invoice should use a confirmed registrar price for the selected domain; guessed domain prices should never be used.";
-if(/marketing|ad|ads|facebook ads|content/.test(s))return"AI Marketing and Content Library are downstream from the product and brand decisions. The same approved product and identity should flow into content, campaigns and acquisition planning so the user does not rebuild the same information.";
-if(/order|procure|payment|shipping|delivery/.test(s)){if(!prod.name)return"There is no confirmed product order yet. Choose a real product in Product Lab first.";return"Orders is the operational record after product confirmation. Forge calculates the quantity, keeps the selected quantity visible, verifies payment before procurement and then moves the order through supplier procurement and delivery."}
-if(/confus|explain|understand|help/.test(s))return"Absolutely. Tell me the exact section, number, message or button you are looking at. I will explain it using your current Forge context instead of giving you a generic definition.";
-return"I can help with that. Ask me about your current profile, a recommendation, product economics, quantity, Business Plan, Brand Studio, Store Launch, orders or marketing, and I will use the information already saved in Forge."}
+var q=String(question||"").trim(),s=q.toLowerCase(),c=fcData(),p=c.p||{},prod=c.prod||{},b=c.brand||{},hist=window.__forgeChatHistory||[];
+var budget=Number(p.budget||0),income=Number(p.income||0),expenses=Number(p.expenses||0),reserve=Number(p.reserve||0);
+var available=Math.max(0,budget-reserve);
+var e=prod.economics||{};
+function money(n){return fcMoney(Math.round(Number(n)||0))}
+function has(re){return re.test(s)}
+function num(){var m=s.match(/(?:\\b|^)(\\d[\\d,]*(?:\\.\\d+)?)(?:\\s*(?:tk|taka|bdt|৳|lakh|lac|k))?/i);if(!m)return 0;var n=Number(String(m[1]).replace(/,/g,""));var u=(m[2]||"").toLowerCase();if(u==="lakh"||u==="lac")n*=100000;else if(u==="k")n*=1000;return n}
+function contextLine(){var bits=[];if(budget)bits.push("deployable capital "+money(available));if(reserve)bits.push("protected reserve "+money(reserve));if(p.category)bits.push(p.category);if(p.risk)bits.push(p.risk+" risk appetite");if(p.time)bits.push(p.time+"h/week");if(prod.name)bits.push("product: "+prod.name);return bits.length?bits.join(" · "):"profile not fully configured"}
+function stage(){
+if(!prod.name)return "profile";
+if(!b.chosenName)return "product";
+if(!b.chosenProductName)return "brand";
+return "plan";
+}
+if(!q)return "Tell me what you are trying to decide. You can ask in normal language—even if it is not one of my preset questions. I can work from your Forge profile, product, economics, brand and launch stage.";
+if(has(/i (do not|don't|dont) need (an? )?emergency|no (emergency|reserve)|use all|all (of )?my (money|budget|capital)|invest (all|the whole)|no reserve/)){
+var invest=num()||available||budget;
+return "Understood. You are saying the money is intended for the business, not that you want Forge to hold a separate emergency reserve. Forge currently has a protected reserve of "+money(reserve)+". If you want the full "+money(budget)+" treated as deployable, change the profile input; I will then recalculate the plan from that value. I won't silently override your locked profile from chat.";
+}
+if(has(/^(hi|hello|hey|yo|bro|good morning|good evening)\\b/))return "Hey. I’m here. Ask me the actual business question in your own words—budget, product, supplier, pricing, quantity, brand, domain, launch, ads, orders, or whether an idea makes sense.";
+if(has(/what (do|can) you know|what.*(know|remember)|my (profile|situation|context)|tell me about my/)){
+return "Here is the context Forge is using right now: "+contextLine()+". "+(p.market?"Primary market: "+p.market+". ":"")+(p.experience?"Experience: "+p.experience+". ":"")+(p.goal?"Goal: "+p.goal+". ":"")+"I use these inputs to make the next answer specific to your situation.";
+}
+if(has(/how much.*invest|how much.*spend|how much.*put|invest.*(budget|capital)|start.*budget|budget.*start/)){
+var n=num();
+if(n){var remain=available-n;return "If you invest "+money(n)+" from the currently deployable amount of "+money(available)+", you would have about "+money(remain)+" left under Forge’s current profile. "+(remain<0?"That is above the currently deployable amount, so the plan would need a larger deployable budget.":"I would then size the first order, acquisition test and cash buffer around the remaining amount rather than treating the whole budget as inventory.") }
+return "Your profile currently shows "+money(available)+" deployable capital. Tell me the amount you are considering investing, and I can show what remains and how that affects first-order quantity, marketing room and cash exposure.";
+}
+if(has(/profit|make money|earn|income target|salary replacement|monthly.*income|revenue target/)){
+var target=Number(p.targetIncome||0);
+if(e.contribution&&target){var units=Math.ceil(target/Number(e.contribution));return "Your target additional monthly income is "+money(target)+". At the current modeled contribution of "+money(e.contribution)+" per unit, that is roughly "+units+" contribution-positive units/month before fixed overhead and taxes. Treat this as a planning calculation, not a guaranteed sales forecast."}
+return "I can model this from your target income and the confirmed product contribution. "+(prod.name?"Your current product is "+prod.name+". ":"")+"If you give me the monthly income target you want, I can convert it into an approximate unit and revenue requirement.";
+}
+if(has(/price|pricing|sell for|selling price|charge/)){
+if(!prod.name)return "There is no confirmed product in Forge yet. Choose a product first, then I can explain the modeled selling price against supplier cost, CAC, fees, packaging and returns.";
+var price=Number(e.selling||0),landed=Number(e.landed||0),cac=Number(e.cac||0),con=Number(e.contribution||0);
+return "For "+prod.name+", Forge currently models a selling price of "+money(price)+", landed cost "+money(landed)+", acquisition cost "+money(cac)+", and contribution of about "+money(con)+" per unit. If you want, ask “why this price?”, “what if I sell at ৳X?”, or “what margin do I need?” and I’ll recalculate the logic.";
+}
+if(has(/what if.*(?:price|sell)|sell.*for.*\\d|price.*\\d/)){
+if(!prod.name)return "Choose a product first so I have a cost basis.";
+var n2=num(),landed2=Number(e.landed||0),cac2=Number(e.cac||0),fee2=Number(e.fee||0),pack2=Number(e.pack||0),ret2=Number(e.returns||0);
+if(!n2)return "Give me the proposed selling price, for example: “What if I sell it for 1,799?”";
+var c2=n2-landed2-cac2-fee2-pack2-ret2;
+return "At a selling price of "+money(n2)+", using the current modeled landed cost, CAC, fee, packaging and returns, the estimated contribution is "+money(c2)+" per unit ("+(n2?Math.round(c2/n2*100):0)+"%). That is a scenario calculation; it does not change your locked plan.";
+}
+if(has(/cost|economics|margin|contribution|break.?even|cac|landed/)){
+if(!prod.name)return "I need a confirmed product to calculate product economics. Product Lab will connect the supplier record first.";
+var gross=Number(e.selling||0)-Number(e.landed||0),cont=Number(e.contribution||0),pct=Number(e.selling||0)?Math.round(cont/Number(e.selling||1)*100):0;
+return "Let’s break it down for "+prod.name+": selling "+money(e.selling)+", landed "+money(e.landed)+", CAC "+money(e.cac)+", other modeled costs "+money(Number(e.fee||0)+Number(e.pack||0)+Number(e.returns||0))+", leaving about "+money(cont)+" contribution/unit ("+pct+"%). Break-even then depends on your fixed monthly overhead. If you tell me that overhead, I can calculate the required monthly units.";
+}
+if(has(/break.?even.*(?:overhead|fixed)|fixed cost|overhead/)){
+if(!prod.name)return "Choose a product first. Then give me your monthly fixed overhead and I’ll calculate the approximate break-even units.";
+var overhead=num();
+if(!overhead)return "What is your monthly fixed overhead? For example: “My fixed cost is ৳40,000.”";
+var cu=Number(e.contribution||0),bu=cu>0?Math.ceil(overhead/cu):0;
+return cu>0?"With "+money(overhead)+" monthly fixed overhead and about "+money(cu)+" contribution per unit, break-even is roughly "+bu+" units/month. This excludes taxes or unusual one-off costs.":"The current product model has no positive contribution, so a unit break-even calculation is not meaningful until the economics improve.";
+}
+if(has(/how many|quantity|units|batch|first order|opening order|moq/)){
+if(!prod.name)return "Product Lab needs to confirm a product before I can size its opening order.";
+var stock=Number(prod.inventory||0),moq=Number(prod.moq||prod.minOrderQty||0),land=Number(e.landed||0),qmax=land?Math.floor(available*.25/land):0;
+var suggested=Math.max(moq||10,Math.min(qmax||moq||10,Math.max(moq||10,Number(prod.batch||20))));
+return "For "+prod.name+", I would calculate the first order from four things: supplier MOQ"+(moq?" ("+moq+" units)":"")+", landed cost "+money(land)+", your deployable capital "+money(available)+", and your risk profile ("+(p.risk||"not set")+"). A conservative planning ceiling is about "+(qmax||suggested)+" units from 25% of deployable capital. Supplier stock"+(stock?" is "+stock.toLocaleString("en-BD")+" units":" is not available in the saved record")+"; stock should be checked again before payment.";
+}
+if(has(/supplier|cj|dropship|product lab|stock|connect|loading|why.*wait/)){
+return "Product Lab is a live supplier-data step, not a static catalog. Forge should show a visible “Connecting to supplier / checking price & stock” state while CJ data is loading. Once connected, supplier image, name, price, stock and product details should feed the economics. If the feed fails, the UI should say so instead of showing an empty product area.";
+}
+if(has(/why.*recommend|recommend.*why|why this|why.*chosen|why.*product/)){
+if(!prod.name)return "No product is confirmed yet, so there is not a product-specific recommendation to explain.";
+var fit=[];if(budget)fit.push("capital");if(p.risk)fit.push("risk");if(p.time)fit.push("available time");if(p.category)fit.push("category");if(p.market)fit.push("market");
+return "Forge selected "+prod.name+" because the recommendation is evaluated against "+fit.join(", ")+" and then checked against supplier economics and availability. The important part is the chain: profile → business fit → product → landed economics → quantity → execution. If you tell me what part looks wrong, I can inspect that specific assumption.";
+}
+if(has(/business idea|what business|what can i sell|which business|start a business|opportunity/)){
+var ops=opportunities().slice(0,3).map(function(x){return x.name+" ("+x.fit+"% profile fit)"}).join(", ");
+return "Based on your current Forge profile, the available opportunity set includes "+ops+". I can explain any one of them, compare the assumptions side-by-side, or help you understand why Forge is surfacing a particular model.";
+}
+if(has(/brand|name|instagram|facebook|domain|handle/)){
+return "Brand Studio is the identity layer after product confirmation. It can work through company name, product name, social handle and domain in sequence. A domain should only be marked available after the connected registrar confirms live availability and price.";
+}
+if(has(/store|shopify|launch|website/)){
+return "Store Launch should consume the approved decisions from the earlier steps rather than ask you to repeat them. The key dependencies are confirmed product, final product name, domain availability/price and launch configuration. Ask me about any one and I’ll walk through it.";
+}
+if(has(/marketing|ads|facebook ads|tiktok|content|customer acquisition/)){
+return "For marketing, Forge should start from the product’s contribution and your acquisition ceiling—not from a generic ad budget. With a confirmed product, I can turn your modeled CAC into a test budget and show how many orders are needed to recover that spend.";
+}
+if(has(/order|procure|payment|delivery|shipping/)){
+return "Orders is where an approved product becomes an operational commitment. The safe sequence is: confirm quantity → verify price/stock → submit payment → verify payment → procure → track shipment → delivery. Chat can explain each step without changing the order automatically.";
+}
+if(has(/risk|loss|safe|danger|risky/)){
+return "Your Forge risk settings are "+(p.risk||"not set")+" appetite, "+(p.riskCapacity||"not set")+" capacity, with a maximum comfortable loss of "+money(p.lossTolerance||0)+". I use those constraints to keep recommendations proportional to your stated tolerance rather than treating every opportunity the same.";
+}
+if(has(/confus|don't understand|dont understand|explain|help|what does this mean|what is this/)){
+return "Yes—let’s make it simple. Tell me what you see or paste the exact text that confused you. I’ll explain that specific thing using your current Forge context, then give you the next action. You do not need to use a preset question.";
+}
+if(has(/next|now what|then what|where do i go|what should i do/)){
+var st=stage();
+if(st==="profile")return "First finish the entrepreneur profile. Forge needs the real constraints before it can personalize recommendations.";
+if(st==="product")return "Next, go to Product Lab and confirm a real supplier product. After that, its price, stock and economics become the basis for the downstream workflow.";
+if(st==="brand")return "Next, finish Brand Studio: company identity and customer-facing product name. Then review the Business Plan before moving into Store Launch.";
+return "Your core product and brand decisions are connected. Next, review the Business Plan, challenge any assumption you dislike here, then move to Store Launch and marketing.";
+}
+var n3=num();
+if(n3){
+var base=available||budget;
+if(has(/invest|put|spend|use/))return "I see "+money(n3)+" in your question. Compared with your current deployable amount of "+money(base)+", that is "+(base?Math.round(n3/base*100):0)+"% of the available capital. Tell me what the money is for—inventory, ads, branding, store or something else—and I’ll model that specific use.";
+}
+var previous=hist.length?hist[hist.length-1]:"";
+return "I understand the question, but I need one more detail to give you a useful business answer. Tell me the goal, amount, product, or decision you are considering. For example: “I have ৳50,000 and want to test one product,” “Can I sell this at ৳1,799?”, or “Why did Forge choose this product?”"+(previous?" I’ll keep your previous message in context too.":"");
+}
 function fcAdd(role,text){var box=document.getElementById("fcMessages");if(!box)return;var d=document.createElement("div");d.className="fc-msg "+(role==="user"?"user":"assistant");d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight}
-function fcSend(q){var input=document.getElementById("fcInput"),t=String(q||input?.value||"").trim();if(!t)return;if(input)input.value="";fcAdd("user",t);var thinking=document.createElement("div");thinking.className="fc-msg assistant";thinking.id="fcThinking";thinking.innerHTML='<span class="fc-thinking"><i></i><i></i><i></i></span> Forge is thinking…';document.getElementById("fcMessages")?.appendChild(thinking);setTimeout(function(){thinking.remove();fcAdd("assistant",fcAnswer(t))},350)}
+function fcSend(q){
+var input=document.getElementById("fcInput"),t=String(q||input?.value||"").trim();if(!t)return;
+if(input)input.value="";
+window.__forgeChatHistory=window.__forgeChatHistory||[];
+fcAdd("user",t);
+window.__forgeChatHistory.push(t);
+if(window.__forgeChatHistory.length>12)window.__forgeChatHistory.shift();
+var thinking=document.createElement("div");thinking.className="fc-msg assistant";thinking.id="fcThinking";thinking.innerHTML='<span class="fc-thinking"><i></i><i></i><i></i></span> Forge is thinking…';document.getElementById("fcMessages")?.appendChild(thinking);
+setTimeout(function(){thinking.remove();var reply=fcAnswer(t);fcAdd("assistant",reply)},260);
+}
 function fcContextRefresh(){var el=document.getElementById("fcContext");if(el)el.textContent="Using your Forge context: "+fcContext()}
 function fcToggle(){var panel=document.getElementById("forgeChatPanel");if(!panel)return;panel.classList.toggle("open");if(panel.classList.contains("open")){fcContextRefresh();setTimeout(function(){document.getElementById("fcInput")?.focus()},60)}}
 function fcInstall(){if(document.getElementById("forgeChatLauncher"))return;var l=document.createElement("button");l.id="forgeChatLauncher";l.type="button";l.innerHTML='<span class="fc-dot"></span> Forge Chat';l.onclick=fcToggle;document.body.appendChild(l);var p=document.createElement("section");p.id="forgeChatPanel";p.innerHTML='<div class="fc-head"><div class="fc-brand"><div class="fc-mark">F</div><div><div class="fc-title">Forge Chat</div><div class="fc-subtitle">Context-aware business assistant</div></div></div><button class="fc-close" type="button">×</button></div><div id="fcContext" class="fc-context"></div><div id="fcMessages" class="fc-messages"><div class="fc-msg assistant"><b>Hi. I’m Forge Chat.</b> Ask me anything about what you see in Forge. I’ll use your saved business context to explain it and suggest the next practical step.</div></div><div class="fc-suggestions"><button class="fc-suggestion" data-q="What should I do next?">What should I do next?</button><button class="fc-suggestion" data-q="Why was this recommended?">Why was this recommended?</button><button class="fc-suggestion" data-q="Explain the economics">Explain the economics</button></div><form class="fc-compose" id="fcForm"><input id="fcInput" class="fc-input" autocomplete="off" placeholder="Ask Forge Chat…"><button class="fc-send" type="submit">Send</button></form>';document.body.appendChild(p);p.querySelector(".fc-close").onclick=fcToggle;p.querySelectorAll(".fc-suggestion").forEach(function(b){b.onclick=function(){fcSend(b.dataset.q)}});p.querySelector("#fcForm").addEventListener("submit",function(e){e.preventDefault();fcSend()})}

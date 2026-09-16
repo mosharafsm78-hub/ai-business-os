@@ -58,6 +58,28 @@
 @media(max-width:900px){.content-studio-hero{grid-template-columns:1fr}.content-studio-grid{grid-template-columns:1fr 1fr}.content-quality{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.content-studio-grid{grid-template-columns:1fr}.content-quality{grid-template-columns:1fr}.content-pack-head{display:block}.content-studio-product{min-height:280px}}
 
+
+/* FORGE AI MARKETING CONNECTION */
+.marketing-hero{border-color:rgba(255,158,120,.22)}
+.meta-connect-card{margin-top:18px;padding:28px;background:linear-gradient(135deg,#101d17,#08120e);border-color:rgba(255,158,120,.25)}
+.meta-connect-card h2{margin:7px 0 5px;font-size:28px}
+.meta-url-row{display:flex;gap:10px;margin-top:12px}
+.meta-url-row input{flex:1;min-width:0;border:1px solid #294238;border-radius:12px;background:#07110d;color:var(--text);padding:14px 15px;outline:none}
+.meta-url-row input:focus{border-color:rgba(255,158,120,.65);box-shadow:0 0 0 3px rgba(255,158,120,.08)}
+.meta-page-found{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:15px;padding:13px;border:1px solid #294238;border-radius:12px;background:#09150f}
+.meta-page-found b{flex:1;min-width:220px;font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.meta-steps{display:grid;gap:10px}
+.meta-step{display:flex;align-items:center;gap:15px;padding:18px;border:1px solid var(--line);border-radius:15px;background:#09150f;opacity:.5}
+.meta-step.active{opacity:1;border-color:rgba(255,158,120,.3);box-shadow:0 0 0 1px rgba(255,158,120,.04)}
+.meta-step.done{opacity:1;border-color:#2d5a45}
+.meta-step-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid #294238;color:var(--muted);font-weight:900}
+.meta-step.done .meta-step-icon{background:#69dda0;color:#06100d;border-color:#69dda0}
+.meta-step.active .meta-step-icon{color:#ffb08f;border-color:#a45d45}
+.meta-step-body{display:flex;flex-direction:column;gap:4px}
+.meta-step-body b{font-size:14px}
+.meta-step-body span{font-size:12px;color:var(--muted);line-height:1.45}
+@media(max-width:650px){.meta-url-row{flex-direction:column}.meta-url-row .btn{width:100%}.meta-connect-card{padding:20px}}
+
 /* FORGE BUSINESS PLAN */
 .plan-identity{display:flex;justify-content:space-between;gap:25px;align-items:center;background:linear-gradient(135deg,#10281f,#09150f);border-color:#315747}.plan-identity h2{font-size:34px;margin:8px 0}.plan-lead{font-size:18px;line-height:1.55;max-width:850px;color:#dcebe4}.plan-meta{display:flex;gap:16px;flex-wrap:wrap;color:#7f988c;font-size:10px;letter-spacing:.09em}.plan-start{min-width:150px;text-align:center;padding:20px;border:1px solid #315747;border-radius:15px;background:#091712}.plan-start span,.plan-start small{display:block;color:#7f988c;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.plan-start b{display:block;font-size:38px;letter-spacing:-.05em;margin:3px 0}.plan-document{margin-top:20px;padding:8px 26px}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:30px 0;border-bottom:1px solid var(--line)}.plan-section:last-child{border-bottom:0}.plan-number{font-size:24px;font-weight:900;color:var(--mint2);padding-top:3px}.plan-section h2{margin:0 0 10px;font-size:23px}.plan-highlight{padding:18px;border:1px solid #28493b;border-radius:14px;background:#0b1a15}.plan-highlight b{font-size:10px;letter-spacing:.12em;color:var(--mint2)}.plan-highlight p{margin:5px 0 16px;font-size:15px;line-height:1.55}.plan-highlight p:last-child{margin-bottom:0}.plan-finance{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:14px;border:1px solid var(--line);border-radius:12px;background:#091611}.plan-finance span{display:block;color:#71877d;font-size:9px;text-transform:uppercase;letter-spacing:.1em}.plan-finance b{display:block;font-size:18px;margin-top:4px}.plan-two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}.plan-bullet{margin-top:9px;color:#b9cbc2;font-size:12px;line-height:1.5}.plan-quote{font-size:20px;line-height:1.5;font-weight:650;color:#e6f3ed;padding:18px;border-left:3px solid var(--mint2);background:#0a1914;border-radius:0 12px 12px 0}.plan-roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.plan-risk{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.plan-roadmap b,.plan-risk b,.plan-two-col b{font-size:11px;letter-spacing:.08em;color:var(--mint2)}
 @media(max-width:800px){.plan-identity{display:block}.plan-start{margin-top:16px}.plan-document{padding:4px 14px}.plan-section{grid-template-columns:1fr;gap:5px}.plan-finance,.plan-two-col,.plan-roadmap,.plan-risk{grid-template-columns:1fr}.plan-number{font-size:12px}}
@@ -1505,7 +1527,81 @@ function store(){
   "<div class='store-checklist'>"+checklist.map((x,i)=>"<div class='store-check card'><div class='store-check-number'>"+String(i+1).padStart(2,"0")+"</div><div><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div><span class='status "+(s.status==="ready"?"":"amber")+"'>"+(s.status==="ready"?"READY":"QUEUED")+"</span></div>").join("")+"</div>"+
   "";
 }
-function marketing(){let budget=Math.round((state.business?.budget||250000)*.15);return "<div class='hero'><div><div class='eyebrow'>AI growth loop</div><div class='h1'>Spend based on contribution, not vanity.</div><div class='sub'>Scale only when acquisition cost and returns still leave healthy contribution.</div></div><button class='btn primary' onclick=\"toast('Growth analysis refreshed')\">Run growth analysis →</button></div><div class='grid'><div class='card span3'><div class='label'>Monthly ad envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Target CAC</div><div class='stat'>৳320</div></div><div class='card span3'><div class='label'>Target ROAS</div><div class='stat'>3.2×</div></div><div class='card span3'><div class='label'>Creative tests</div><div class='stat'>12</div></div></div><div class='section'><h2>Campaign desk</h2></div><div class='card'><table class='table'><tr><th>Campaign</th><th>Channel</th><th>Budget</th><th>ROAS</th><th>Action</th></tr><tr><td>Hero product launch</td><td>Meta</td><td>৳12,000</td><td>3.8×</td><td><span class='status'>Scale 15%</span></td></tr><tr><td>UGC test</td><td>Meta</td><td>৳7,000</td><td>2.4×</td><td><span class='status amber'>Iterate</span></td></tr></table></div><div class='section'><h2>Creative factory</h2></div><div class='grid'>"+["3-second hook","Problem/solution reel","UGC script","Founder story","Offer creative","Retargeting creative"].map(x=>"<div class='asset span4'><b>"+x+"</b><p class='small'>Generate five variants and test one variable at a time.</p><button class='btn' onclick=\"toast('"+x+" brief generated')\">Generate →</button></div>").join("")+"</div>"}
+function marketingConnection(){
+  const m=state.marketingConnection||{};
+  return {
+    pageUrl:m.pageUrl||"",
+    pageName:m.pageName||"",
+    status:m.status||"not_connected",
+    metaConnected:!!m.metaConnected,
+    adAccount:m.adAccount||"",
+    instagram:m.instagram||"",
+    lastSync:m.lastSync||""
+  };
+}
+function saveMarketingPageUrl(){
+  const input=document.getElementById("metaPageUrl");
+  const url=String(input?.value||"").trim();
+  if(!url)return toast("Paste your Facebook Page link first.");
+  if(!/^https?:\/\/(www\.)?facebook\.com\//i.test(url))return toast("Use the Facebook Page link customers see.");
+  state.marketingConnection={...marketingConnection(),pageUrl:url,status:"page_added"};
+  persistProfile();render();
+  toast("Page added. One secure Meta connection is the next step.");
+}
+function beginMetaPermission(){
+  const m=marketingConnection();
+  if(!m.pageUrl)return toast("Add your Facebook Page link first.");
+  state.marketingConnection={...m,status:"permission_ready",permissionStartedAt:new Date().toISOString()};
+  persistProfile();render();
+  toast("Meta connection is ready. The secure permission window will open once the Meta app connection is configured.");
+}
+function disconnectMarketing(){
+  state.marketingConnection={status:"not_connected"};
+  persistProfile();render();toast("Meta connection removed from this Forge business.");
+}
+function marketingStep(status,number,title,desc,action){
+  const done=status==="done",active=status==="active";
+  return "<div class='meta-step "+(done?"done ":"")+(active?"active":"")+"'><div class='meta-step-icon'>"+(done?"✓":number)+"</div><div class='meta-step-body'><b>"+title+"</b><span>"+desc+"</span></div>"+(action||"")+"</div>";
+}
+function marketing(){
+  const m=marketingConnection();
+  const selected=state.selectedProduct;
+  const brand=state.brandStudio?.chosenName||state.business?.name||"Your business";
+  const budget=Math.round((state.business?.budget||250000)*.15);
+  const connected=m.metaConnected;
+  const step1=m.pageUrl?"done":"active";
+  const step2=connected?"done":(m.pageUrl?"active":"locked");
+  const step3=connected?"active":"locked";
+  const step4=connected?"active":"locked";
+
+  if(!connected){
+    return "<div class='hero marketing-hero'><div><div class='eyebrow'>AI MARKETING · HANDS-OFF SETUP</div><div class='h1'>Tell Forge where your Facebook Page is.</div><div class='sub'>You should not have to learn Meta Ads Manager. Add the Page link once. Forge will use that to start the secure connection, then handle the marketing workflow from this page.</div></div></div>"+
+    "<div class='meta-connect-card card'>"+
+      "<div class='eyebrow'>ONE-TIME CONNECTION</div><h2>Connect your Facebook Page</h2><p class='small'>No campaign settings yet. No audience forms. No confusing Meta terminology.</p>"+
+      "<label class='label'>FACEBOOK PAGE LINK</label><div class='meta-url-row'><input id='metaPageUrl' value='"+esc(m.pageUrl)+"' placeholder='https://facebook.com/yourpage'><button class='btn primary' onclick='saveMarketingPageUrl()'>Continue →</button></div>"+
+      (m.pageUrl?"<div class='meta-page-found'><span class='status'>Page link saved</span><b>"+esc(m.pageUrl)+"</b><button class='btn' onclick='beginMetaPermission()'>Give Forge permission →</button></div>":"<div class='small' style='margin-top:10px'>If the customer does not have a Page yet, Forge should send them to the Facebook Page creation flow instead of showing an error.</div>")+
+    "</div>"+
+    "<div class='section'><div class='eyebrow'>WHAT HAPPENS NEXT</div><h2>Four steps. One place.</h2></div>"+
+    "<div class='meta-steps'>"+
+      marketingStep(step1,"01","Facebook Page","Paste the Page link. That's the only information Forge needs from the customer at this stage.","")+
+      marketingStep(step2,"02","Secure Meta permission","One Meta permission screen. Forge requests only what the marketing workspace needs.","")+
+      marketingStep(step3,"03","Forge prepares the plan","Products, Shopify data, economics and available creative assets are analyzed automatically.","")+
+      marketingStep(step4,"04","Launch & optimize","Forge prepares campaigns, reports performance and asks before consequential account changes.","")+
+    "</div>"+
+    "<div class='notice' style='margin-top:18px'><b>Hassle rule:</b> The customer should never be asked to paste tokens, business IDs, pixel IDs, campaign IDs or technical API credentials into Forge.</div>";
+  }
+
+  const product=selected?.name||"No product selected";
+  const e=selected?liveEconomics(selected):null;
+  const selling=e?.selling?BDT(e.selling):"—";
+  const statusText=m.status==="connected"?"Connected and syncing":"Connected";
+  return "<div class='hero marketing-hero'><div><div class='eyebrow'>AI MARKETING · AUTOPILOT WORKSPACE</div><div class='h1'>"+esc(brand)+" marketing, without the Meta headache.</div><div class='sub'>Forge is connected to the business context. The customer stays inside this page while Forge plans, prepares, monitors and explains the marketing.</div></div><div class='actions'><button class='btn primary' onclick='toast(\"AI marketing analysis queued\")'>Run AI analysis →</button><button class='btn' onclick='disconnectMarketing()'>Disconnect Meta</button></div></div>"+
+  "<div class='grid'><div class='card span3'><div class='label'>Meta connection</div><div class='stat' style='font-size:20px'>"+statusText+"</div><div class='small'>"+esc(m.pageUrl)+"</div></div><div class='card span3'><div class='label'>Monthly marketing envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Product in focus</div><div class='stat' style='font-size:18px'>"+esc(product)+"</div></div><div class='card span3'><div class='label'>Current selling price</div><div class='stat'>"+selling+"</div></div></div>"+
+  "<div class='section'><div class='eyebrow'>AI MARKETING CONTROL ROOM</div><h2>Forge decides what needs attention.</h2></div>"+
+  "<div class='grid'><div class='card span8'><div class='label'>TODAY'S AI BRIEF</div><h2 style='margin:7px 0'>No manual campaign setup required.</h2><p class='small'>Forge should combine Shopify sales, product economics, inventory, creative availability and Meta performance before recommending a change. It should never invent results or silently spend money.</p><div class='actions'><button class='btn primary' onclick='toast(\"AI brief generated\")'>Generate today's brief →</button><button class='btn' onclick='toast(\"Campaign draft prepared\")'>Prepare campaign draft</button></div></div><div class='card span4'><div class='label'>AUTOPILOT MODE</div><div class='kpi'><span><b>Approval required</b><div class='small'>Recommended default for new businesses</div></span><span class='status amber'>SAFE</span></div><div class='kpi'><span><b>Auto-optimization</b><div class='small'>Can be enabled later</div></span><button class='btn' onclick='toast(\"Autopilot settings opened\")'>Settings</button></div></div></div>"+
+  "<div class='section'><h2>Campaign desk</h2></div><div class='card'><div class='kpi'><span><b>Product launch campaign</b><div class='small'>Sales objective · connected product · Shopify destination</div></span><span class='status'>Draft</span></div><div class='kpi'><span><b>Creative testing</b><div class='small'>Use available product media first; request AI production only when needed.</div></span><span class='status'>Ready</span></div><div class='kpi'><span><b>Performance monitoring</b><div class='small'>Spend, purchases, CPA, revenue and contribution should feed the Forge decision layer.</div></span><span class='status'>Connected</span></div></div>"+
+  "<div class='notice' style='margin-top:15px'><b>Customer promise:</b> Forge handles the complexity. The customer supplies the Page link and gives permission once; everything else should happen inside AI Marketing.</div>";
+}
 function support(){return "<div class='hero'><div><div class='eyebrow'>AI customer support</div><div class='h1'>Fast answers. Safe escalation.</div><div class='sub'>Routine questions can be automated; sensitive cases remain visible to a human.</div></div></div><div class='grid'><div class='card span4'><div class='label'>Conversations today</div><div class='stat'>84</div></div><div class='card span4'><div class='label'>Median response</div><div class='stat'>11 sec</div></div><div class='card span4'><div class='label'>Human escalations</div><div class='stat'>3</div></div></div><div class='section'><h2>Support queue</h2></div><div class='card'>"+[["Do you have size 42?","Catalog availability","Resolved"],["When will my parcel arrive?","Order tracking","Resolved"],["Can I exchange this size?","Policy","Resolved"],["Wrong item received.","Evidence required","Needs you"],["I want a refund for change of mind.","Policy","Needs you"]].map(x=>"<div class='kpi'><span><b>"+x[0]+"</b><div class='small'>"+x[1]+"</div></span><span class='status "+(x[2]==="Needs you"?"amber":"")+"'>"+x[2]+"</span></div>").join("")+"</div><div class='notice' style='margin-top:15px'><b>Safety rule:</b> AI must not invent stock, delivery dates, refunds or policy exceptions.</div>"}
 function plan(){
   const selected=state.selectedProduct;

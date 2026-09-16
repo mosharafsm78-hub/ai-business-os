@@ -623,7 +623,9 @@ function reviewQueued(i){
     "<div class='order-timeline'><div class='"+(p.paymentStatus==="paid"?"done":"current")+"'><b>01</b><span>Payment</span><small>"+(p.paymentStatus==="paid"?"Verified":"Awaiting payment")+"</small></div><div class='"+(p.orderStatus==="processing"||p.orderStatus==="ordered"?"done":"")+"'><b>02</b><span>Procurement</span><small>"+(p.orderStatus==="ordered"?"Supplier order placed":p.orderStatus==="processing"?"Preparing supplier order":"Waiting for payment")+"</small></div><div class='"+(p.deliveryStatus==="in_transit"||p.deliveryStatus==="delivered"?"done":"")+"'><b>03</b><span>Shipping</span><small>"+(p.deliveryStatus==="delivered"?"Delivered":p.deliveryStatus==="in_transit"?"In transit":"Not started")+"</small></div><div class='"+(p.deliveryStatus==="delivered"?"done":"")+"'><b>04</b><span>Delivery</span><small>"+(p.deliveryStatus==="delivered"?"Completed":"Pending")+"</small></div></div>"+
     "<div class='notice' style='margin-top:18px'><b>How this order works</b><div class='small'>Choose the quantity → make payment → payment is verified → Forge releases procurement → the supplier order is placed → shipment is tracked → delivery is recorded. No supplier catalogue is exposed in this workspace.</div></div>"+
     "<div class='actions' style='margin-top:18px;justify-content:flex-end'>"+(p.paymentStatus==="unpaid"?"<button class='btn delete-order-btn' onclick='deleteQueuedOrder("+i+")'>Delete this order</button>":"")+paymentButton+next+"<button class='btn' onclick='closeModal()'>Close</button></div>";
-  document.getElementById("modal").classList.add("open");
+  modal.classList.add("open");
+  document.body.classList.add("modal-open");
+  requestAnimationFrame(()=>modalBox.querySelector(".cj-modal-close")?.focus?.());
 }
 function brandStudioPage(){
   const p=state.selectedProduct;
@@ -1771,7 +1773,11 @@ function renderCjResults(j){
 function reviewCj(i){
   const p=cjState[i]; if(!p)return;
   const e=liveEconomics(p);
-  document.getElementById("modalbox").innerHTML=
+  // Product Lab can render without the global modal host. Always create it before opening a product review.
+  const modal=ensureForgeModalHost();
+  const modalBox=document.getElementById("modalbox");
+  if(!modalBox)return;
+  modalBox.innerHTML=
     "<div class='cj-decision-head'><div><div class='eyebrow'>Product decision</div><h2>Review this product</h2><div class='small'>Real supplier record · price and stock checked now</div></div><button class='cj-modal-close' onclick='closeModal()' aria-label='Close'>×</button></div>"+
     "<div class='cj-detail-grid' style='margin-top:20px'><div class='cj-detail-media'><span>Live product</span><img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'></div><div><div class='cj-modal-category'>"+esc(p.category||"Product")+"</div><h3 class='cj-modal-product-name'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>Live supplier price · ≈ "+BDT(e.supplier)+"</div><div class='cj-data cj-modal-data'><div>Estimated landed<b>"+BDT(e.landed)+"</b></div><div>Estimated selling<b>"+BDT(e.selling)+"</b></div><div>Marketing / CAC<b>"+BDT(e.cac)+"</b></div><div class='cj-contribution'>Contribution<b>"+BDT(e.contribution)+" ("+e.margin+"%)</b></div><div>Supplier stock<b>"+formatQty(p.inventory)+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Checked before order")+"</b></div></div></div></div>"+
     "<div class='cj-decision-note'><b>What happens next</b><span>This exact supplier product becomes the selected product for Sourcing & Orders. Forge then carries its live economics into the business plan, brand, store and marketing workflow. Final stock, shipping and payable amount are rechecked before purchase.</span></div>"+

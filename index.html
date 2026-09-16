@@ -719,6 +719,39 @@ html,body{background:#fff!important;color:#000!important;background-image:none!i
 .onboarding-card .step-intro b{display:block;font-size:11px;margin-bottom:5px;color:#111}.onboarding-card .step-intro span{display:block;font-size:10px;line-height:1.5;color:#6a7872}
 .onboarding-card .onboarding-trust{margin-top:18px;padding:12px 14px;border-left:3px solid #9eddbb;background:#f4faf6;border-radius:9px;font-size:10px;line-height:1.55;color:#5f7068}
 @media(max-width:760px){.forge-page-guide{grid-template-columns:auto minmax(0,1fr);align-items:start}.forge-page-guide .guide-next{grid-column:2;justify-self:start}.onboarding{padding:18px 12px}.onboarding-card{padding:24px 18px;border-radius:20px}.onboarding-card .step-intro{grid-template-columns:1fr}}
+</style>
+<style id="forge-launch-system-v4">
+:root{--fc-bg:#f4f7f5;--fc-surface:#fff;--fc-surface2:#f8faf9;--fc-ink:#14201a;--fc-muted:#5f6d66;--fc-border:#d9e2dd;--fc-accent:#0e7a4f;--fc-accent-soft:#e9f7ef;--fc-shadow:0 12px 34px rgba(20,45,34,.07)}
+html,body{background:var(--fc-bg)!important;color:var(--fc-ink)!important}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;overflow-x:hidden!important}
+#app{background:var(--fc-bg)!important;color:var(--fc-ink)!important;min-height:100vh}
+.top{height:68px!important;background:rgba(255,255,255,.94)!important;border-bottom:1px solid var(--fc-border)!important;box-shadow:0 1px 12px rgba(20,45,34,.04)!important}
+.brand{color:var(--fc-ink)!important}.brand small{color:#74827b!important}.mark{background:#10271d!important;color:#fff!important;box-shadow:none!important}
+.side{background:#fbfcfb!important;border-right:1px solid var(--fc-border)!important}.main{background:var(--fc-bg)!important}
+.nav{color:#52615a!important;background:transparent!important;border:1px solid transparent!important}.nav:hover{background:#edf7f1!important;color:#173c2c!important}.nav.active{background:#e8f6ee!important;color:#0d6c45!important;box-shadow:inset 3px 0 var(--fc-accent)!important}
+.card,.hero-banner,.notice,.business-mini,.step,.asset,.store-check,.store-build-banner,.store-automation,.plan-cover,.plan-command,.plan-final,.content-collection,.smart-panel,.creative-memory,.billing-summary,.billing-footer,.explain-card,.cj-live,.cj-card,.brand-module,.brand-identity-banner,.meta-connect-card,.meta-step,.plan-document,.plan-section{background:var(--fc-surface)!important;color:var(--fc-ink)!important;border:1px solid var(--fc-border)!important;box-shadow:var(--fc-shadow)!important}
+.card:hover,.store-check:hover,.cj-card:hover{box-shadow:0 16px 38px rgba(20,45,34,.09)!important;border-color:#bfd4c8!important}
+.h1{color:var(--fc-ink)!important}.sub,.small,.muted,p{color:var(--fc-muted)!important}.eyebrow,.label,.navlabel{color:#18784f!important}
+.btn,.pill,.choice{background:#fff!important;color:#16231c!important;border:1px solid #cbd8d1!important;box-shadow:none!important}
+.btn.primary,.primary{background:#10271d!important;color:#fff!important;border-color:#10271d!important}
+.btn.primary:hover,.primary:hover{background:#184c39!important;color:#fff!important}
+input,select,textarea,.input{background:#fff!important;color:#17221d!important;border:1px solid #cbd8d1!important;box-shadow:none!important}
+input:focus,select:focus,textarea:focus{border-color:#49a979!important;box-shadow:0 0 0 3px rgba(73,169,121,.12)!important;outline:none!important}
+.progress{background:#edf2ef!important;border:1px solid #d8e2dd!important}.progress i{background:#0e7a4f!important}
+.status,.tag,.badge,.chip,.pill{background:#edf7f1!important;color:#176d43!important;border:1px solid #d4e9dc!important}
+.forge-workspace-bar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin:4px 0 18px;padding:12px 15px;border:1px solid var(--fc-border);border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(20,45,34,.045)}
+.forge-workspace-main{display:flex;align-items:center;gap:10px;min-width:0}.forge-workspace-main>div{display:flex;flex-direction:column;gap:2px}.forge-workspace-main strong{font-size:13px}.forge-workspace-main span{font-size:10px;color:#68776f}.forge-live-dot{width:8px;height:8px;border-radius:50%;background:#18a466;box-shadow:0 0 0 4px #e4f5ec;flex:0 0 auto}
+.forge-workspace-metrics{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.forge-workspace-metrics span{display:flex;align-items:baseline;gap:5px}.forge-workspace-metrics b{font-size:12px}.forge-workspace-metrics small{font-size:9px;color:#77847e}.forge-locked{padding:6px 9px;border-radius:999px;background:#f1f7f4;color:#176d43!important;font-size:9px!important;font-weight:800}
+.forge-sidebar-note{margin:18px 4px 0;padding:13px;border:1px solid #e0e7e3;border-radius:13px;background:#fff}.forge-sidebar-note b{display:block;font-size:10px;margin-bottom:5px}.forge-sidebar-note span{display:block;font-size:10px;line-height:1.5;color:#6d7a74}
+.forge-error-page{padding:42px 0}.forge-error-page pre{margin-top:18px;padding:14px;background:#fff;border:1px solid #d9e2dd;border-radius:12px;white-space:pre-wrap;color:#6a756f;font-size:11px}
+.forge-wizard{min-height:100vh;padding:26px;background:#f4f7f5}.forge-wizard-shell{max-width:1240px;margin:auto;background:#fff;border:1px solid #d7e1dc;border-radius:24px;box-shadow:0 20px 60px rgba(20,45,34,.08);overflow:hidden}.forge-wizard-top{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid #e3e9e5}.forge-w-draft{font-size:10px;color:#557066;padding:7px 10px;border:1px solid #d8e4de;border-radius:999px;background:#f6faf8}.forge-w-layout{display:grid;grid-template-columns:330px 1fr;min-height:650px}.forge-w-side{padding:34px 28px;background:#f8faf9;border-right:1px solid #e1e8e4}.forge-w-kicker{font-size:9px;font-weight:900;letter-spacing:.14em;color:#18784f}.forge-w-side h1{font-size:31px;line-height:1.05;letter-spacing:-.04em;margin:10px 0}.forge-w-side>p{font-size:12px;line-height:1.6;margin:0}.forge-w-steps{display:grid;gap:9px;margin-top:28px}.forge-w-steps>div{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:11px}.forge-w-steps>div.active{background:#eaf7ef}.forge-w-steps>div.done{color:#176d43}.forge-w-steps>div>span{width:27px;height:27px;border-radius:8px;display:grid;place-items:center;border:1px solid #d4dfda;background:#fff;font-size:9px;font-weight:900;flex:0 0 auto}.forge-w-steps>div.active>span{background:#10271d;color:#fff;border-color:#10271d}.forge-w-steps b{display:block;font-size:11px}.forge-w-steps small{display:block;font-size:9px;line-height:1.45;color:#6b7972;margin-top:2px}.forge-w-trust{margin-top:26px;padding:13px;border-left:3px solid #65bd91;background:#edf8f2;border-radius:0 10px 10px 0}.forge-w-trust b{display:block;font-size:10px;margin-bottom:4px}.forge-w-trust span{display:block;font-size:9px;line-height:1.5;color:#5f7168}.forge-w-content{padding:34px 38px}.forge-w-heading{display:flex;justify-content:space-between;gap:25px;align-items:end;padding-bottom:24px;border-bottom:1px solid #e3e9e5}.forge-w-heading>div:first-child>span{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#18784f;font-weight:900}.forge-w-heading h2{margin:7px 0 5px;font-size:27px;letter-spacing:-.03em}.forge-w-heading p{margin:0;font-size:12px}.forge-w-progress{min-width:170px}.forge-w-progress b{display:block;text-align:right;font-size:12px;margin-bottom:6px}.forge-w-progress i{display:block;height:6px;background:#e7eeea;border-radius:999px;overflow:hidden}.forge-w-progress em{display:block;height:100%;background:#0e7a4f;border-radius:999px}.forge-w-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}.forge-w-field{display:block}.forge-w-field>span{display:block;font-size:10px;font-weight:800;color:#43544c;margin-bottom:7px}.forge-w-field input,.forge-w-field select{width:100%;height:48px;padding:0 13px;border-radius:11px;font-size:13px}.forge-w-field.error input,.forge-w-field.error select{border-color:#b42318!important;box-shadow:0 0 0 3px rgba(180,35,24,.08)!important}.forge-risk-note,.forge-activation-note{margin-top:18px;padding:15px;border:1px solid #dce7e1;border-radius:13px;background:#f8fbf9}.forge-risk-note b,.forge-activation-note strong{display:block;font-size:11px}.forge-risk-note span,.forge-activation-note span{display:block;font-size:10px;color:#66756e;margin-top:4px;line-height:1.5}.forge-review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}.forge-review-grid>div{padding:14px;border:1px solid #e0e7e3;border-radius:12px;background:#fbfcfb}.forge-review-grid small{display:block;font-size:9px;color:#728078;text-transform:uppercase;letter-spacing:.08em}.forge-review-grid b{display:block;margin-top:5px;font-size:13px;color:#18241e!important;overflow-wrap:anywhere}.forge-w-actions{display:flex;justify-content:space-between;gap:10px;margin-top:30px;padding-top:18px;border-top:1px solid #e3e9e5}.forge-w-actions .btn{min-height:44px}.forge-w-error{min-height:20px;margin-top:14px;color:#a61b13;font-size:11px;font-weight:700}.forge-w-footnote{margin-top:12px;text-align:right;font-size:9px;color:#7b8882}
+.forge-landing-card{max-width:1180px}.forge-landing-card .h1{max-width:850px}.forge-landing-card .eyebrow{margin-top:30px}.forge-landing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0 14px}.forge-landing-grid>div{padding:16px;border:1px solid #dde6e1;border-radius:14px;background:#fbfcfb}.forge-landing-grid b{display:block;font-size:11px}.forge-landing-grid span{display:block;font-size:10px;line-height:1.5;color:#6c7a73;margin-top:5px}.forge-starter-note{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:11px;background:#f1f8f4;border:1px solid #d6e9dd;margin:15px 0}.forge-starter-note b{font-size:10px}.forge-starter-note span{font-size:10px;color:#617169}.forge-profile-page{min-height:100vh;padding:40px 20px;background:#f4f7f5;display:grid;place-items:center}.forge-profile-card{width:min(1050px,100%);padding:36px;background:#fff;border:1px solid #d7e1dc;border-radius:24px;box-shadow:0 20px 60px rgba(20,45,34,.08)}
+.modal{z-index:100000!important}.modal.open{display:grid!important}
+#forgeChatLauncher{z-index:10001!important;box-shadow:0 10px 25px rgba(15,39,29,.12)!important}
+#forgeChatPanel{z-index:10000!important;box-shadow:0 20px 60px rgba(15,39,29,.18)!important}
+.cj-wait-stage{display:flex;align-items:center;justify-content:center;gap:16px;min-height:230px;padding:30px;border:1px solid #dce6e1;border-radius:16px;background:#fbfcfb}.cj-wait-spinner{width:38px;height:38px;border:3px solid #dce8e2;border-top-color:#0e7a4f;border-radius:50%;animation:forgeSpin .8s linear infinite;flex:0 0 auto}@keyframes forgeSpin{to{transform:rotate(360deg)}}.cj-wait-stage strong{display:block;font-size:15px}.cj-wait-stage span{display:block;color:#65736c;font-size:11px;margin-top:4px;line-height:1.5}.cj-wait-time{margin-top:9px;font-size:10px;color:#0e7a4f;font-weight:800}
+@media(max-width:900px){.forge-w-layout{grid-template-columns:1fr}.forge-w-side{border-right:0;border-bottom:1px solid #e1e8e4;padding:22px}.forge-w-steps{grid-template-columns:repeat(5,1fr)}.forge-w-steps>div{padding:6px;display:block}.forge-w-steps small{display:none}.forge-w-steps b{font-size:8px;margin-top:5px}.forge-w-content{padding:26px 22px}.forge-workspace-bar{align-items:flex-start;flex-direction:column}.forge-workspace-metrics{width:100%;justify-content:space-between}}
+@media(max-width:620px){.forge-wizard{padding:10px}.forge-wizard-shell{border-radius:17px}.forge-wizard-top{padding:14px 16px}.forge-w-side{padding:20px 16px}.forge-w-side h1{font-size:25px}.forge-w-steps{gap:4px}.forge-w-steps>div{padding:4px}.forge-w-steps>div>span{width:24px;height:24px}.forge-w-content{padding:20px 16px}.forge-w-heading{display:block}.forge-w-progress{margin-top:15px}.forge-w-grid,.forge-review-grid,.forge-landing-grid{grid-template-columns:1fr}.forge-w-actions{flex-direction:column-reverse}.forge-w-actions .btn{width:100%}.forge-starter-note{align-items:flex-start;flex-direction:column}.forge-workspace-metrics{gap:8px;justify-content:flex-start}}
 </style></head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
@@ -2421,6 +2454,179 @@ function render(){
     document.getElementById("app").innerHTML=shell(`<div class="hero"><div><div class="eyebrow">FORGE RECOVERY</div><div class="h1">This workspace hit an error.</div><div class="sub">Your saved business data is safe. Forge could not render this page, so you can retry or return to Orders.</div></div><div class="actions"><button class="btn" onclick=\"go('orders')\">Back to Orders</button><button class="btn primary" onclick=\"go('brand')\">Retry Brand Studio</button></div></div><div class="notice"><b>Technical detail</b><div class="small">${detail}</div></div>`);
   }
 }
+
+/* FORGE LAUNCH SYSTEM V4 — global UX, reliable onboarding, light business UI */
+Object.assign(DEFAULT_PROFILE,{
+  budget:50000,age:28,income:5000,expenses:10000,reserve:0,market:"Bangladesh",
+  city:"Dhaka",occupation:"Entrepreneur",experience:"Beginner",skills:"",
+  workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",
+  risk:"Balanced",riskCapacity:"Medium",lossTolerance:10000,time:10,
+  targetIncome:0,model:"Open to recommendations"
+});
+
+function forgeWorkspaceBar(){
+  const p=state.profile||{}, b=state.business||{};
+  const cap=Number(p.budget||b.budget||0);
+  const reserve=Number(p.reserve||0);
+  const deploy=Math.max(0,cap-reserve);
+  return "<div class='forge-workspace-bar'>"+
+    "<div class='forge-workspace-main'><span class='forge-live-dot'></span><div><strong>"+esc(b.name||"New venture")+"</strong><span>"+esc(p.market||"Bangladesh")+" · "+esc(p.category||"Business setup")+"</span></div></div>"+
+    "<div class='forge-workspace-metrics'>"+
+      "<span><b>"+BDT(deploy)+"</b><small>deployable</small></span>"+
+      "<span><b>"+(p.time||0)+"h</b><small>per week</small></span>"+
+      "<span><b>"+esc(p.risk||"Balanced")+"</b><small>risk profile</small></span>"+
+      "<span class='forge-locked'>✓ Profile locked</span>"+
+    "</div></div>";
+}
+
+function shell(c){
+  const b=state.business;
+  return "<header class='top'><div class='brand'><div class='mark'>F</div><span>FORGE</span><small>AI BUSINESS OS</small></div>"+
+    "<div class='topright'><span class='pill online'>● <span id='forgeStatusText'>AI is online</span></span><button class='pill forge-new-btn' type='button' onclick='openWizard()'>＋ New business</button><div class='avatar'>M</div></div></header>"+
+    "<button class='corner-tab' type='button' onclick='toggleCorner()'>CATEGORIES</button>"+
+    "<aside id='cornerPanel' class='corner-panel'><div class='row' style='justify-content:space-between'><div><div class='eyebrow'>Forge workspace</div><h3>Categories & tools</h3><div class='small'>Everything stays connected to the same business context.</div></div><button class='btn' type='button' onclick='toggleCorner()'>✕</button></div><div class='navlabel'>Business workflow</div>"+nav()+"</aside>"+
+    "<div class='layout'><aside class='side'><div class='navlabel'>Business workspace</div>"+nav()+
+      "<div class='navlabel' style='margin-top:18px'>Your business</div><div class='business-mini'><div class='row'><div class='bizicon'>◈</div><div><b>"+(b?esc(b.name):"New venture")+"</b><div class='small'>"+(b?"Operating workspace active":"Profile not completed")+"</div></div></div><div class='progress' style='margin-top:12px'><i style='width:"+(b?72:8)+"%'></i></div></div>"+
+      "<div class='forge-sidebar-note'><b>Forge principle</b><span>Every downstream decision should trace back to your profile, live data and explicit assumptions.</span></div>"+
+    "</aside><main class='main'>"+forgeWorkspaceBar()+forgePageGuide()+c+"</main></div>";
+}
+
+function forgeWizardData(){
+  try{
+    const raw=JSON.parse(localStorage.getItem("forge_wizard_draft_v1")||"null");
+    return {...DEFAULT_PROFILE,...(raw||{})};
+  }catch(e){return {...DEFAULT_PROFILE}};
+}
+function forgeWizardField(label,key,type="text",placeholder="",options){
+  const d=window.__forgeWizardData||forgeWizardData(),v=d[key]??"";
+  if(options){
+    return "<label class='forge-w-field'><span>"+label+"</span><select id='fw_"+key+"' data-key='"+key+"'>"+
+      options.map(o=>"<option value='"+esc(o)+"' "+(String(v)===String(o)?"selected":"")+">"+esc(o)+"</option>").join("")+"</select></label>";
+  }
+  return "<label class='forge-w-field'><span>"+label+"</span><input id='fw_"+key+"' data-key='"+key+"' type='"+type+"' value='"+esc(v)+"' placeholder='"+esc(placeholder)+"'></label>";
+}
+function forgeWizardView(){
+  const step=window.__forgeWizardStep||1,d=window.__forgeWizardData||forgeWizardData();
+  const titles=[
+    ["Financial foundation","Give Forge the numbers that define your real operating room.","Capital, income, expenses and reserve."],
+    ["Founder profile","Tell Forge who is actually running the business.","Experience, time, location and working style."],
+    ["Risk guardrails","Set the boundaries Forge must respect.","Risk appetite, capacity and comfortable loss."],
+    ["Business direction","Choose what you want Forge to build around.","Category, goal, market and business model."],
+    ["Ready to activate","Review the decision inputs before Forge unlocks the workspace.","You can edit anything before activation."]
+  ];
+  const t=titles[step-1];
+  let body="";
+  if(step===1) body="<div class='forge-w-grid'>"+
+    forgeWizardField("Business capital you can deploy","budget","number","50000")+
+    forgeWizardField("Monthly personal income","income","number","5000")+
+    forgeWizardField("Monthly personal expenses","expenses","number","10000")+
+    forgeWizardField("Emergency reserve you will not invest","reserve","number","0")+"</div>";
+  if(step===2) body="<div class='forge-w-grid'>"+
+    forgeWizardField("Age","age","number","28")+
+    forgeWizardField("City / location","city","text","Dhaka")+
+    forgeWizardField("Occupation","occupation","text","Entrepreneur")+
+    forgeWizardField("Business experience","experience","text","",["Beginner","Some experience","Experienced","Serial entrepreneur"])+
+    forgeWizardField("Hours available per week","time","number","10")+
+    forgeWizardField("Work style","workStyle","text","",["Builder","Seller","Operator","Creator","Analyst","Hybrid"])+
+    "</div>"+forgeWizardField("Skills / interests (optional)","skills","text","e.g. fashion, sales, design, sourcing, technology");
+  if(step===3) body="<div class='forge-w-grid'>"+
+    forgeWizardField("Risk appetite","risk","text","",["Conservative","Balanced","Growth","Aggressive"])+
+    forgeWizardField("Risk capacity","riskCapacity","text","",["Low","Medium","High"])+
+    forgeWizardField("Maximum comfortable loss","lossTolerance","number","10000")+
+    "</div><div class='forge-risk-note'><b>Forge uses this as a hard guardrail.</b><span>Recommendations, opening quantities and testing budgets should stay proportional to this limit.</span></div>";
+  if(step===4) body="<div class='forge-w-grid'>"+
+    forgeWizardField("Preferred category","category","text","",["Open to anything","Fashion & accessories","Beauty & personal care","Home & living","Electronics","Food & beverage","Sports & fitness","Services / digital"])+
+    forgeWizardField("Primary goal","goal","text","",["Profit + growth","Low-risk side income","Long-term brand","Fastest revenue","Replace my salary"])+
+    forgeWizardField("Business model","model","text","",["Open to recommendations","Online product selling","Private label","Reselling","Service business","Wholesale / distribution"])+
+    forgeWizardField("Primary market","market","text","",["Bangladesh","India","UAE","Saudi Arabia","USA"])+
+    forgeWizardField("Target additional monthly income (optional)","targetIncome","number","0")+
+    "</div>";
+  if(step===5) body="<div class='forge-review-grid'>"+
+    [["Capital",BDT(d.budget)],["Income / month",BDT(d.income)],["Expenses / month",BDT(d.expenses)],["Reserve",BDT(d.reserve)],["Location",d.city+", "+d.market],["Experience",d.experience],["Time",d.time+"h/week"],["Risk",d.risk+" · "+d.riskCapacity],["Comfortable loss",BDT(d.lossTolerance)],["Direction",d.category],["Goal",d.goal],["Model",d.model]].map(x=>"<div><small>"+x[0]+"</small><b>"+esc(String(x[1]))+"</b></div>").join("")+
+    "</div><div class='forge-activation-note'><strong>Ready to activate Forge.</strong><span>These inputs become the shared decision context for Business Finder, Product Lab, Business Plan, Brand Studio, Store Launch, Marketing and Forge Chat.</span></div>";
+  return "<div class='forge-wizard'><div class='forge-wizard-shell'>"+
+    "<div class='forge-wizard-top'><div class='brand'><div class='mark'>F</div><span>FORGE</span><small>AI BUSINESS OS</small></div><span class='forge-w-draft'>Auto-saved locally</span></div>"+
+    "<div class='forge-w-layout'><aside class='forge-w-side'><div class='forge-w-kicker'>FORGE ONBOARDING · "+step+" / 5</div><h1>"+t[0]+"</h1><p>"+t[1]+"</p><div class='forge-w-steps'>"+
+      titles.map((x,i)=>"<div class='"+(i+1===step?"active ":"")+(i+1<step?"done":"")+"'><span>"+(i+1<step?"✓":String(i+1).padStart(2,"0"))+"</span><div><b>"+x[0]+"</b><small>"+x[2]+"</small></div></div>").join("")+
+    "</div><div class='forge-w-trust'><b>Why this matters</b><span>Forge is designed to work from your reality, not generic assumptions.</span></div></aside>"+
+    "<section class='forge-w-content'><div class='forge-w-heading'><div><span>Decision input "+String(step).padStart(2,"0")+"</span><h2>"+t[0]+"</h2><p>"+t[1]+"</p></div><div class='forge-w-progress'><b>"+(step*20)+"%</b><i><em style='width:"+(step*20)+"%'></em></i></div></div>"+
+    body+
+    "<div id='forgeWizardError' class='forge-w-error' role='alert' aria-live='polite'></div>"+
+    "<div class='forge-w-actions'>"+(step>1?"<button class='btn' type='button' onclick='forgeWizardBack()'>← Back</button>":"<button class='btn' type='button' onclick='forgeWizardExit()'>Save & exit</button>")+
+    "<button class='btn primary' type='button' onclick='forgeWizardNext()'>"+(step<5?"Continue →":"Activate Forge →")+"</button></div>"+
+    "<div class='forge-w-footnote'>Your draft is saved in this browser. You can change these values before activation.</div></section></div></div></div>";
+}
+function forgeWizardCollect(){
+  const d=window.__forgeWizardData||forgeWizardData();
+  document.querySelectorAll("[data-key]").forEach(el=>{
+    const k=el.dataset.key;
+    d[k]=el.type==="number"?(el.value===""?0:Number(el.value)):el.value;
+  });
+  window.__forgeWizardData=d;
+  localStorage.setItem("forge_wizard_draft_v1",JSON.stringify(d));
+}
+function forgeWizardError(msg){
+  const e=document.getElementById("forgeWizardError");if(e)e.textContent=msg||"Please review the highlighted fields.";
+  document.querySelector(".forge-w-field.error")?.scrollIntoView({behavior:"smooth",block:"center"});
+}
+function forgeWizardValidate(step){
+  const d=window.__forgeWizardData||forgeWizardData(),bad=[];
+  const req=step===1?["budget","income","expenses","reserve"]:step===2?["age","city","occupation","time"]:step===3?["risk","riskCapacity","lossTolerance"]:step===4?["category","goal","model","market"]:[];
+  req.forEach(k=>{const el=document.getElementById("fw_"+k),v=el?.value??d[k];if(el)el.closest(".forge-w-field")?.classList.remove("error");if((["budget","income","expenses","reserve","age","time","lossTolerance"].includes(k)&&(!Number.isFinite(Number(v))||Number(v)<0))||(!["budget","income","expenses","reserve","age","time","lossTolerance"].includes(k)&&!String(v||"").trim())){bad.push(k);el?.closest(".forge-w-field")?.classList.add("error");}});
+  if(step===2 && Number(d.age)<18){bad.push("age");document.getElementById("fw_age")?.closest(".forge-w-field")?.classList.add("error");}
+  if(step===2 && Number(d.time)<=0){bad.push("time");document.getElementById("fw_time")?.closest(".forge-w-field")?.classList.add("error");}
+  if(bad.length){forgeWizardError("Please complete the highlighted fields before continuing.");return false}
+  forgeWizardError("");return true;
+}
+function forgeWizardNext(){
+  forgeWizardCollect();
+  const step=window.__forgeWizardStep||1;
+  if(!forgeWizardValidate(step))return;
+  if(step<5){window.__forgeWizardStep=step+1;document.getElementById("app").innerHTML=forgeWizardView();window.scrollTo({top:0,behavior:"smooth"});return;}
+  const d=window.__forgeWizardData;
+  state.profile={...DEFAULT_PROFILE,...d};
+  state.business={name:businessName(d.category),budget:Number(d.budget||0),market:d.market,category:d.category,age:Number(d.age||0),income:Number(d.income||0),goal:d.goal,risk:d.risk,time:Number(d.time||0),targetMargin:categoryMargin(d.category),planMode:planMode(d)};
+  state.profileLocked=true;state.page="ideas";
+  try{localStorage.removeItem("forge_wizard_draft_v1")}catch(e){}
+  persistProfile();render();toast("Forge is activated — your workspace is now personalized");
+}
+function forgeWizardBack(){forgeWizardCollect();const step=window.__forgeWizardStep||1;if(step>1){window.__forgeWizardStep=step-1;document.getElementById("app").innerHTML=forgeWizardView();window.scrollTo({top:0,behavior:"smooth"})}}
+function forgeWizardExit(){forgeWizardCollect();state.profileLocked=false;state.page="onboarding";document.getElementById("app").innerHTML=onboardingLanding();bindMobileInteractions()}
+function forgeOpenWizard(){
+  if(state.profileLocked){window.__forgeWizardReadOnly=true;document.getElementById("app").innerHTML=forgeLockedProfileView();return;}
+  window.__forgeWizardReadOnly=false;window.__forgeWizardStep=1;window.__forgeWizardData=forgeWizardData();document.getElementById("app").innerHTML=forgeWizardView();window.scrollTo({top:0,behavior:"smooth"});
+}
+function forgeLockedProfileView(){
+  const p=state.profile||{};
+  return "<div class='forge-profile-page'><div class='forge-profile-card'><div class='brand'><div class='mark'>F</div><span>FORGE</span><small>AI BUSINESS OS</small></div><div class='eyebrow'>PROFILE · LOCKED</div><h1>Your Forge decision context.</h1><p class='sub'>These inputs drive the operating system. They are read-only while the business is active.</p><div class='forge-review-grid'>"+
+    [["Capital",BDT(p.budget)],["Income / month",BDT(p.income)],["Expenses / month",BDT(p.expenses)],["Reserve",BDT(p.reserve)],["Location",p.city+", "+p.market],["Experience",p.experience],["Time",p.time+"h/week"],["Risk",p.risk+" · "+p.riskCapacity],["Comfortable loss",BDT(p.lossTolerance)],["Direction",p.category],["Goal",p.goal],["Model",p.model]].map(x=>"<div><small>"+x[0]+"</small><b>"+esc(String(x[1]))+"</b></div>").join("")+
+    "</div><div class='forge-w-actions'><button class='btn' type='button' onclick='render()'>← Back to workspace</button></div></div></div>";
+}
+window.openWizard=forgeOpenWizard;
+
+function onboardingLanding(){
+  return "<div class='onboarding forge-onboarding-v4'><div class='onboarding-card forge-landing-card'><div class='brand'><div class='mark'>F</div><span>FORGE</span><small>AI BUSINESS OS</small></div><div class='eyebrow'>STEP 0 · BEFORE THE DASHBOARD</div><div class='h1'>Your business workspace starts with you.</div><p class='sub'>Forge builds the operating system around your real capital, time, experience, risk and direction. We keep the same context connected across every page.</p><div class='forge-landing-grid'><div><b>01 · Financial reality</b><span>Capital, income, expenses and reserve.</span></div><div><b>02 · Risk guardrails</b><span>Risk appetite, capacity and loss tolerance.</span></div><div><b>03 · Business direction</b><span>Category, goal, market and business model.</span></div></div><div class='forge-starter-note'><b>Starter values are already filled.</b><span>They are only starting points. Edit anything that does not describe you.</span></div><button id='forge-start-profile' type='button' class='btn primary forge-start-profile' onclick='openWizard()'>Start my Forge profile →</button><p class='small'>Nothing is purchased or published during onboarding. Forge only activates the workspace after you confirm the inputs.</p></div></div>";
+}
+
+function render(){
+  window.__forgeRendered=true;
+  document.body.dataset.page=state.page||"home";
+  const app=document.getElementById("app");if(!app)return;
+  if(!state.profileLocked){app.innerHTML=onboardingLanding();bindMobileInteractions();return;}
+  const pages={home,advisor,ideas,products,plan,orders,brand:brandStudioPage,store,content:contentLibrary,marketing,billing,support,analytics};
+  const pageFn=pages[state.page]||home;
+  try{
+    app.innerHTML=shell(pageFn());
+    updateForgeContext();
+    if(state.page==="products")setTimeout(autoCjSearch,0);
+    if(state.page==="plan"&&state.planStatus==="preparing")setTimeout(()=>{if(state.page==="plan")render()},500);
+  }catch(err){
+    console.error("Forge render error",state.page,err);
+    app.innerHTML=shell("<div class='forge-error-page'><div class='eyebrow'>WORKSPACE RECOVERY</div><h1>This section could not render.</h1><p class='sub'>Your saved business data is safe. Forge has kept the rest of the workspace available.</p><div class='actions'><button class='btn primary' type='button' onclick='go("home")'>Return to Command Center</button><button class='btn' type='button' onclick='go("advisor")'>Open Forge Chat</button></div><pre>"+esc(String(err&&err.message||err))+"</pre></div>");
+  }
+}
+
+
 render();
 function updateForgeContext(){
   const labels={

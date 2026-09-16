@@ -2291,6 +2291,14 @@ fcInstall();fcAddNav();fcContextRefresh();new MutationObserver(function(){fcAddN
   }
 
   function forgePlanSelectionBar(){
+    /* The shortlist tray belongs ONLY to Product Lab. Once the user enters
+       Business Plan, the selected products become first-class plan content
+       and the temporary selection UI must disappear. */
+    if(state.page!=="products"){
+      const stale=document.getElementById("forge-plan-selection");
+      if(stale) stale.remove();
+      return;
+    }
     const products=forgePlanProducts();
     let el=document.getElementById("forge-plan-selection");
     if(!products.length){
@@ -2554,8 +2562,12 @@ fcInstall();fcAddNav();fcContextRefresh();new MutationObserver(function(){fcAddN
   const originalGo=window.go;
   if(typeof originalGo==="function"){
     window.go=function(page){
+      if(page!=="products"){
+        const stale=document.getElementById("forge-plan-selection");
+        if(stale) stale.remove();
+      }
       originalGo(page);
-      setTimeout(function(){if(page==="products")forgePlanSelectionBar();},40);
+      setTimeout(function(){forgePlanSelectionBar();},40);
     };
   }
 

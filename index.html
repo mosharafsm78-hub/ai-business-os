@@ -12,6 +12,17 @@
 
 
 
+
+.content-copy-pack{margin-top:28px}
+.content-copy-section{padding:24px;border:1px solid var(--line);border-radius:18px;background:#08130f}
+.content-copy-section h2{margin:6px 0}
+.content-copy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.content-copy-card{padding:16px;border:1px solid #29483b;border-radius:14px;background:#0a1712}
+.content-copy-card>span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8eeab6;font-weight:900}
+.content-copy-card pre{white-space:pre-wrap;font-family:inherit;font-size:12px;line-height:1.6;color:#b9c9c2;margin:10px 0 14px}
+.content-pack-head h2{max-width:760px;line-height:1.12}
+@media(max-width:600px){.content-copy-grid{grid-template-columns:1fr}.content-pack-head h2{font-size:22px}}
+
 /* FORGE_CONTENT_STUDIO_V3 */
 .content-studio-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:18px;align-items:stretch}
 .content-studio-hero .card{padding:28px}
@@ -1218,7 +1229,7 @@ function contentLibrary(){
   const quality=productMediaQuality(p);
   const ready=assets.filter(x=>x.qualityStatus==="ready").length;
   const image=esc(p.image||"");
-  return "<div class='content-studio-hero'><div class='card'><div class='eyebrow'>FORGE CONTENT STUDIO · REAL PRODUCT MODE</div><div class='h1' style='font-size:clamp(38px,5vw,62px)'>Turn one product into a <span style='color:var(--accent)'>real launch pack.</span></div><p class='sub'>"+esc(product)+" is connected to your sourcing record. Forge uses verified product media, product facts and your brand system to create publishable social content without requiring a paid image-generation API.</p><div class='content-quality'><div><span>Media</span><b>"+quality.label+"</b></div><div><span>Source</span><b>"+(p.sourceType==="connected_supplier"?"Supplier":"Shopify")+"</b></div><div><span>Pack</span><b>"+ready+" ready</b></div><div><span>Engine</span><b>Forge Core</b></div></div><div class='content-rule'><b>Quality rule:</b> Forge never turns a weak or missing product source into a finished hero creative. Product imagery stays tied to the real product record.</div></div><div class='content-studio-product'><span class='quality-pill status'>"+quality.label+"</span><img src='"+image+"' alt='"+esc(product)+"' onload='validateContentMedia(this)' onerror='blockContentMedia(this)'><div class='product-source'>Real product media · "+esc(p.supplierName||p.supplier||"connected supplier")+"</div></div></div><div class='content-command-v3 card'><div class='eyebrow'>ONE-CLICK PRODUCTION</div><h2>Build the Facebook launch pack</h2><p>Creates the core posts a new business actually needs: product launch, benefits, price/offer, detail, trust, Facebook cover, Story and Reel cover. The product itself stays authentic.</p><div class='actions'><button class='btn primary' onclick='generateProductLaunchPack()'>Build professional pack →</button><button class='btn' onclick='go(\"brand\")'>Review brand system</button><button class='btn' onclick='go(\"store\")'>Open store connection</button></div></div><div class='content-pack-head'><div><div class='eyebrow'>YOUR PUBLISHABLE ASSETS</div><h2>"+esc(product)+" · Social Launch Pack</h2><p>Professional product-first creatives for Facebook and Instagram. No generic Forge placeholder artwork.</p></div><span class='status'>"+assets.length+" assets</span></div><div id='forgeContentPack' class='content-studio-grid'>"+contentStudioAssetsHtml(assets)+"</div>";
+  return "<div class='content-studio-hero'><div class='card'><div class='eyebrow'>FORGE CONTENT STUDIO · REAL PRODUCT MODE</div><div class='h1' style='font-size:clamp(38px,5vw,62px)'>Turn one product into a <span style='color:var(--accent)'>real launch pack.</span></div><p class='sub'>"+esc(product)+" is connected to your sourcing record. Forge uses verified product media, product facts and your brand system to create publishable social content without requiring a paid image-generation API.</p><div class='content-quality'><div><span>Media</span><b>"+quality.label+"</b></div><div><span>Source</span><b>"+(p.sourceType==="connected_supplier"?"Supplier":"Shopify")+"</b></div><div><span>Pack</span><b>"+ready+" ready</b></div><div><span>Engine</span><b>Forge Core</b></div></div><div class='content-rule'><b>Quality rule:</b> Forge never turns a weak or missing product source into a finished hero creative. Product imagery stays tied to the real product record.</div></div><div class='content-studio-product'><span class='quality-pill status'>"+quality.label+"</span><img src='"+image+"' alt='"+esc(product)+"' onload='validateContentMedia(this)' onerror='blockContentMedia(this)'><div class='product-source'>Real product media · "+esc(p.supplierName||p.supplier||"connected supplier")+"</div></div></div><div class='content-command-v3 card'><div class='eyebrow'>ONE-CLICK PRODUCTION</div><h2>Build the Facebook launch pack</h2><p>Creates the core posts a new business actually needs: product launch, benefits, price/offer, detail, trust, Facebook cover, Story and Reel cover. The product itself stays authentic.</p><div class='actions'><button class='btn primary' onclick='generateProductLaunchPack()'>Build professional pack →</button><button class='btn' onclick='go(\"brand\")'>Review brand system</button><button class='btn' onclick='go(\"store\")'>Open store connection</button></div></div><div class='content-pack-head'><div><div class='eyebrow'>YOUR PUBLISHABLE ASSETS</div><h2>"+esc(product)+" · Social Launch Pack</h2><p>Professional product-first creatives for Facebook and Instagram. No generic Forge placeholder artwork.</p></div><span class='status'>"+assets.length+" assets</span></div><div id='forgeContentPack' class='content-studio-grid'>"+contentStudioAssetsHtml(assets)+"</div><div id='forgeCopyPack' class='content-copy-pack'>"+contentCopyPackHtml()+"</div>";
 }
 
 function blockContentMedia(img){
@@ -1242,7 +1253,6 @@ function productMediaQuality(p){
   return {ready:true,label:"Verified source"};
 }
 function contentStudioAssetsHtml(list){
-  if(state.contentMediaGate?.status==="blocked") return "<div class='content-empty-quality' style='grid-column:1/-1'><b>Finished creatives are on hold.</b><div class='small' style='margin-top:5px'>The current product media did not pass Forge's publishable-content gate.</div></div>";
   const ready=list.filter(x=>x.qualityStatus==="ready");
   if(!ready.length)return "<div class='content-empty-quality' style='grid-column:1/-1'><b>No finished product creative is being shown.</b><div class='small' style='margin-top:5px'>Forge will not downgrade the library with a fake or weak-looking product creative.</div></div>";
   return ready.map((x,i)=>{
@@ -1250,55 +1260,106 @@ function contentStudioAssetsHtml(list){
     return "<article class='content-studio-card card'><div class='content-studio-preview'><img src='"+esc(src)+"' loading='lazy' alt='"+esc(x.name||"Forge creative")+"'><span class='asset-live-tag'>"+esc(x.format||"SOCIAL")+"</span></div><div class='content-studio-body'><div class='content-meta'>"+esc(x.type||"Social Creative")+"</div><h3>"+esc(x.name||"Forge creative")+"</h3><p>"+esc(x.description||"Product-specific creative built from the approved product media.")+"</p><div class='content-studio-actions'><button class='btn primary' onclick='downloadForgeAsset("+i+")'>Download</button><button class='btn' onclick='useForgeAsset("+i+")'>Use →</button></div></div></article>";
   }).join("");
 }
-function generateProductLaunchPack(){
+async function generateProductLaunchPack(){
   const p=state.selectedProduct||{};
   if(!p.name)return toast("Choose a product first.");
-  autoBuildContentDepartment("manual_launch_pack");
-  persistProfile();
+  const button=[...document.querySelectorAll("button")].find(x=>x.textContent.includes("Build professional pack"));
+  if(button){button.disabled=true;button.dataset.original=button.textContent;button.textContent="Collecting supplier media…";}
   const pack=document.getElementById("forgeContentPack");
-  if(pack)pack.innerHTML=contentStudioAssetsHtml(state.contentAssets||[]);
-  toast("Professional product launch pack prepared from the real product media.");
+  if(pack)pack.innerHTML="<div class='content-empty-quality' style='grid-column:1/-1'><b>Collecting the supplier's full media set…</b><div class='small' style='margin-top:6px'>Forge checks the original product record for the gallery and any supplier video before creating the finished social pack.</div></div>";
+  try{
+    const pid=String(p.id||p.sku||"").trim();
+    if(pid){
+      const response=await fetch(CJ_PROXY+"?detailPid="+encodeURIComponent(pid));
+      const detail=await response.json();
+      if(response.ok&&detail.ok&&detail.product){
+        const d=detail.product;
+        p.image=d.image||p.image;
+        p.mediaGallery=Array.isArray(d.images)&&d.images.length?d.images:[p.image].filter(Boolean);
+        p.supplierVideos=Array.isArray(d.videos)?d.videos:[];
+        p.supplierDescription=d.description||p.supplierDescription||"";
+        p.material=d.material||p.material||"";
+        p.mediaSource="CJ product detail";
+        state.selectedProduct=p;
+        const idx=state.sourcingQueue.findIndex(x=>String(x.id||x.sku)===String(p.id||p.sku));
+        if(idx>=0)state.sourcingQueue[idx]={...state.sourcingQueue[idx],...p};
+      }
+    }
+    state.contentMediaGate={status:p.image?"ready":"blocked",source:p.mediaSource||"supplier"};
+    state.contentAssets=[];
+    state.contentAutomation={};
+    autoBuildContentDepartment("manual_launch_pack");
+    persistProfile();
+    if(pack)pack.innerHTML=contentStudioAssetsHtml(state.contentAssets||[]);
+    const copy=document.getElementById("forgeCopyPack");
+    if(copy)copy.innerHTML=contentCopyPackHtml();
+    toast("Forge built the social launch pack from the supplier's actual product media.");
+  }catch(e){
+    if(pack)pack.innerHTML="<div class='content-empty-quality' style='grid-column:1/-1'><b>Supplier media could not be collected.</b><div class='small' style='margin-top:6px'>"+esc(e.message||"Please try again.")+"</div><button class='btn primary' style='margin-top:12px' onclick='generateProductLaunchPack()'>Try again →</button></div>";
+  }finally{
+    if(button){button.disabled=false;button.textContent=button.dataset.original||"Build professional pack →";}
+  }
 }
 function autoBuildContentDepartment(reason){
   const p=state.selectedProduct||{};
   if(!p.name)return;
   const brand=state.brandStudio?.chosenName||state.business?.name||"YOUR BRAND";
   const product=p.name||"YOUR PRODUCT";
-  const image=p.image||"";
-  const key=["forge-content-studio-v3",brand,product,p.id,image].join("|");
-  if(state.contentAutomation?.key===key && Array.isArray(state.contentAssets) && state.contentAssets.length)return;
-  state.contentAutomation={key:key,reason:reason,startedAt:new Date().toISOString(),status:"building",engine:"forge-content-studio-v3"};
+  const gallery=Array.isArray(p.mediaGallery)&&p.mediaGallery.length?p.mediaGallery:[p.image].filter(Boolean);
+  const image=gallery[0]||"";
+  const key=["forge-content-studio-v4",brand,product,p.id,gallery.join("|")].join("|");
+  if(state.contentAutomation?.key===key&&Array.isArray(state.contentAssets)&&state.contentAssets.length)return;
+  state.contentAutomation={key:key,reason:reason,startedAt:new Date().toISOString(),status:"building",engine:"forge-content-studio-v4"};
   state.contentAssets=[];
   const accent=state.brandStudio?.primaryColor||"#69dda0";
   const econ=liveEconomics(p);
   const items=[
-    ["Product Launch Post","Facebook / Instagram","Primary launch creative using the real product image.","product-launch","1:1"],
-    ["Why This Product","Facebook / Instagram","Benefit-led creative based on verified product context.","product-benefits","1:1"],
-    ["Price & Offer","Facebook / Instagram","Conversion creative using the modeled selling price.","product-offer","1:1"],
-    ["Product Detail","Facebook / Instagram","Clean detail-led presentation for product discovery.","product-detail","1:1"],
-    ["Trust & Purchase","Facebook / Instagram","Clear purchase message without invented reviews or claims.","product-trust","1:1"],
-    ["Facebook Launch Cover","Facebook","Wide launch cover using the real product and brand system.","facebook-cover","16:9"],
-    ["Instagram Story","Instagram Story","Vertical product story creative.","product-story","9:16"],
-    ["Reel Cover","Reels","Vertical reel cover built from the real product media.","reel-cover","9:16"]
+    ["Hero Product","Facebook / Instagram","Clean launch creative using the supplier's original product media.","product-hero","1:1",0],
+    ["Product Benefits","Facebook / Instagram","Benefit-led creative built only from verified product context.","product-benefits","1:1",1],
+    ["Offer Creative","Facebook / Instagram","Conversion-focused offer using the current modeled price.","product-offer","1:1",2],
+    ["Product Detail","Facebook / Instagram","Close product presentation using another supplier image when available.","product-detail","1:1",3],
+    ["Facebook Cover","Facebook","Professional wide launch cover for the new business page.","facebook-cover","16:9",0],
+    ["Instagram Story","Instagram Story","Vertical launch creative for the first story sequence.","product-story","9:16",1],
+    ["Reel Cover","Reels","Vertical cover for a product reveal or demo reel.","reel-cover","9:16",2],
+    ["Product Carousel","Facebook / Instagram","Gallery-led product sequence using the actual supplier media.","product-carousel","1:1",4]
   ];
   items.forEach((x,i)=>{
-    const svg=forgeProductSvg(x[0],x[1],brand,product,accent,image,x[3],econ,i);
+    const img=gallery[x[6]%gallery.length]||image;
+    const svg=forgeProductSvg(x[0],x[1],brand,product,accent,img,x[3],econ,i);
     saveForgeAsset(x[0],x[1],x[2],svg);
     const item=state.contentAssets[0];
-    if(item){
-      item.sourceImage=image;
-      item.qualityStatus=image?"ready":"blocked";
-      item.format=x[4];
-      item.productId=p.id||"";
-      item.sourceType=p.sourceType||"connected_supplier";
-    }
+    if(item){item.sourceImage=img;item.qualityStatus=img?"ready":"blocked";item.format=x[5];item.productId=p.id||"";item.sourceType=p.sourceType||"connected_supplier";item.mediaIndex=x[6]%gallery.length;}
   });
   state.contentRequests=state.contentRequests||[];
-  state.contentRequests.unshift({request:"Product launch pack for "+product,createdAt:new Date().toISOString(),status:"generated",reason:reason});
+  state.contentRequests.unshift({request:"Professional social launch pack for "+product,createdAt:new Date().toISOString(),status:"generated",reason:reason});
   state.contentAutomation.status="ready";
   state.contentAutomation.completedAt=new Date().toISOString();
   persistProfile();
 }
+function contentCopyPackHtml(){
+  const p=state.selectedProduct||{};
+  if(!p.name)return "";
+  const product=String(p.name),short=product.length>70?product.slice(0,67).replace(/\s+\S*$/,"")+"…":product;
+  const e=liveEconomics(p),price=e?.selling?BDT(e.selling):"";
+  const captions=[
+    ["Launch","Meet "+short+".\nA focused product launch built around the details customers actually need to know.\n\n"+(price?"Available around "+price+".":"Check the product page for current pricing.")+"\n\nShop now."],
+    ["Benefits","Looking for a practical upgrade? "+short+" is now available.\n\nClear product information. Straightforward value. An easier way to decide."],
+    ["Offer","A new product worth a closer look.\n\n"+short+(price?" · "+price:"")+"\n\nExplore the product and see if it fits your everyday needs."],
+    ["Trust","Real product. Real supplier media. Clear information.\n\n"+short+" is presented using the connected product record so customers can see what they are actually buying."]
+  ];
+  return "<section class='content-copy-section'><div class='eyebrow'>COPY PACK · READY TO PUBLISH</div><h2>Captions that match the creatives</h2><p class='small'>Forge keeps the copy factual and avoids invented reviews, certifications, materials or performance claims.</p><div class='content-copy-grid'>"+captions.map((x,i)=>"<article class='content-copy-card'><span>"+esc(x[0])+"</span><pre>"+esc(x[1])+"</pre><button class='btn' onclick='copyForgeCaption("+i+")'>Copy caption</button></article>").join("")+"</div></section>";
+}
+function copyForgeCaption(i){
+  const p=state.selectedProduct||{},product=String(p.name||""),short=product.length>70?product.slice(0,67).replace(/\s+\S*$/,"")+"…":product,e=liveEconomics(p),price=e?.selling?BDT(e.selling):"";
+  const caps=[
+    "Meet "+short+".\nA focused product launch built around the details customers actually need to know.\n\n"+(price?"Available around "+price+".":"Check the product page for current pricing.")+"\n\nShop now.",
+    "Looking for a practical upgrade? "+short+" is now available.\n\nClear product information. Straightforward value. An easier way to decide.",
+    "A new product worth a closer look.\n\n"+short+(price?" · "+price:"")+"\n\nExplore the product and see if it fits your everyday needs.",
+    "Real product. Real supplier media. Clear information.\n\n"+short+" is presented using the connected product record so customers can see what they are actually buying."
+  ];
+  navigator.clipboard?.writeText(caps[i]||caps[0]);toast("Caption copied.");
+}
+
 function forgeProductSvg(title,type,brand,product,accent,image,kind,e,variant){
   const wide=kind==="facebook-cover";
   const story=kind==="product-story"||kind==="reel-cover";

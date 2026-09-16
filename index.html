@@ -2568,53 +2568,53 @@ function forgeFinancePreview(){
   const el=id=>document.getElementById(id);
   if(el("fwAvailableCapital"))el("fwAvailableCapital").textContent=BDT(available);
   if(el("fwReserveAmount"))el("fwReserveAmount").textContent=BDT(reserve);
-  if(el("fwMonthlyGap"))el("fwMonthlyGap").textContent=(monthlyGap>=0?"+":"-")+BDT(Math.abs(monthlyGap));
+  if(el("fwMonthlyGap"))el("fwMonthlyGap").textContent=BDT(expenses);
   const note=el("fwFinanceNote");
   if(note){
-    if(budget===0)note.innerHTML="<b>Forge is listening.</b><span>Add the amount you can actually deploy. I’ll use it as the ceiling for your early business decisions.</span>";
-    else if(reserve>budget)note.innerHTML="<b>Your reserve is larger than your deployable capital.</b><span>That’s okay to correct here. Forge won’t treat money you want protected as available business capital.</span>";
-    else if(available===0)note.innerHTML="<b>Protected capital is currently 100% of your stated capital.</b><span>Forge will treat your available business capital as ৳0 until you change the numbers.</span>";
-    else note.innerHTML="<b>Forge has your starting room.</b><span>I’ll work from <strong>"+BDT(available)+"</strong> as available business capital and keep <strong>"+BDT(reserve)+"</strong> protected from business deployment.</span>";
+    if(budget===0)note.innerHTML="<b>Forge is listening.</b><span>Tell me how much you can start with. I’ll use that number to keep your first business ideas and launch costs realistic.</span>";
+    else if(reserve>budget)note.innerHTML="<b>Your safe money is more than your starting money.</b><span>That’s okay — just check the numbers. Forge won’t use money you want to keep safe for the business.</span>";
+    else if(available===0)note.innerHTML="<b>Nothing is available to start with yet.</b><span>Forge will treat your business starting budget as ৳0 until you add an amount you can use.</span>";
+    else note.innerHTML="<b>Got it — I understand your starting position.</b><span>You can start with <strong>"+BDT(available)+"</strong>. I’ll keep <strong>"+BDT(reserve)+"</strong> aside and won’t count it as business money.</span>";
   }
 }
 function forgeWizardView(){
   const step=window.__forgeWizardStep||1,d=window.__forgeWizardData||forgeWizardData();
   const titles=[
-    ["Financial foundation","Give Forge the numbers that define your real operating room.","Capital, income, expenses and reserve."],
-    ["Founder profile","Tell Forge who is actually running the business.","Experience, time, location and working style."],
-    ["Risk guardrails","Set the boundaries Forge must respect.","Risk appetite, capacity and comfortable loss."],
-    ["Business direction","Choose what you want Forge to build around.","Category, goal, market and business model."],
-    ["Ready to activate","Review the decision inputs before Forge unlocks the workspace.","You can edit anything before activation."]
+    ["Your money","Tell Forge what money you can work with.","Starting money, monthly needs and savings."],
+    ["About you","Help Forge understand you and your situation.","Your experience, time, location and interests."],
+    ["Your comfort level","Tell Forge how much risk feels comfortable to you.","How much risk and loss you can handle."],
+    ["What you want to build","Tell Forge what kind of business you want.","What to sell, where to sell and how you want to earn."],
+    ["Check everything","Take one last look before Forge starts working.","You can change anything before you activate."]
   ];
   const t=titles[step-1];
   let body="";
-  if(step===1) body="<div class='forge-finance-intro'><div><span class='forge-finance-kicker'>YOUR MONEY, IN PLAIN ENGLISH</span><h3>Let’s understand what you can actually work with.</h3><p>Give Forge a realistic picture of your money. I’ll use it to shape opportunities, product quantities, launch budgets and cash-flow decisions.</p></div><div class='forge-finance-badge'><span>Currency</span><b>৳ BDT</b><small>Bangladeshi Taka</small></div></div>"+
+  if(step===1) body="<div class='forge-finance-intro'><div><span class='forge-finance-kicker'>YOUR MONEY</span><h3>Let’s start with the money you have to work with.</h3><p>Tell Forge what you can comfortably spend. I’ll use this to keep your ideas, products and launch plan within a realistic budget.</p></div><div class='forge-finance-badge'><span>Currency</span><b>৳ BDT</b><small>Bangladeshi Taka</small></div></div>"+
     "<div class='forge-finance-fields'>"+
-    "<label class='forge-money-field'><span>How much are you ready to put into the business?</span><small>The capital you can comfortably deploy — not money you need for daily life.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_budget' data-key='budget' type='number' min='0' value='"+esc(d.budget??"")+"' placeholder='50,000' oninput='forgeFinancePreview()'><em>BDT</em></div></label>"+
-    "<label class='forge-money-field'><span>How much do you need to earn for yourself each month?</span><small>This helps Forge understand the income your business eventually needs to support.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_income' data-key='income' type='number' min='0' value='"+esc(d.income??"")+"' placeholder='5,000' oninput='forgeFinancePreview()'><em>/ month</em></div></label>"+
-    "<label class='forge-money-field'><span>What do your personal expenses look like each month?</span><small>Your everyday financial needs help Forge avoid unrealistic business assumptions.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_expenses' data-key='expenses' type='number' min='0' value='"+esc(d.expenses??"")+"' placeholder='10,000' oninput='forgeFinancePreview()'><em>/ month</em></div></label>"+
-    "<label class='forge-money-field'><span>How much should Forge keep untouched?</span><small>This is your protected safety reserve. Forge will not count it as deployable capital.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_reserve' data-key='reserve' type='number' min='0' value='"+esc(d.reserve??"")+"' placeholder='0' oninput='forgeFinancePreview()'><em>protected</em></div></label>"+
+    "<label class='forge-money-field'><span>How much money can you start your business with?</span><small>Enter the amount you are comfortable using to start.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_budget' data-key='budget' type='number' min='0' value='"+esc(d.budget??"")+"' placeholder='50,000' oninput='forgeFinancePreview()'><em>BDT</em></div></label>"+
+    "<label class='forge-money-field'><span>How much money do you need for yourself each month?</span><small>This helps Forge understand how much your business may need to earn for you.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_income' data-key='income' type='number' min='0' value='"+esc(d.income??"")+"' placeholder='5,000' oninput='forgeFinancePreview()'><em>/ month</em></div></label>"+
+    "<label class='forge-money-field'><span>How much do you spend for yourself each month?</span><small>Include things like food, transport, rent, bills and other personal costs.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_expenses' data-key='expenses' type='number' min='0' value='"+esc(d.expenses??"")+"' placeholder='10,000' oninput='forgeFinancePreview()'><em>/ month</em></div></label>"+
+    "<label class='forge-money-field'><span>How much money do you want to keep aside?</span><small>Keep this money safe for emergencies. Forge won’t use it as your business budget.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_reserve' data-key='reserve' type='number' min='0' value='"+esc(d.reserve??"")+"' placeholder='0' oninput='forgeFinancePreview()'><em>protected</em></div></label>"+
     "</div>"+
-    "<div class='forge-finance-understanding'><div class='forge-understanding-head'><div><span class='forge-finance-kicker'>FORGE'S CURRENT UNDERSTANDING</span><b>This is what I’ll use for your first decisions.</b></div><span class='forge-live-dot'>LIVE</span></div><div class='forge-finance-metrics'><div><small>Available business capital</small><strong id='fwAvailableCapital'>"+BDT(Math.max(0,Number(d.budget||0)-Number(d.reserve||0)))+"</strong><span>capital Forge can work with</span></div><div><small>Protected reserve</small><strong id='fwReserveAmount'>"+BDT(d.reserve)+"</strong><span>kept outside business deployment</span></div><div><small>Monthly income gap</small><strong id='fwMonthlyGap'>"+(Number(d.income||0)-Number(d.expenses||0)>=0?"+":"-")+BDT(Math.abs(Number(d.income||0)-Number(d.expenses||0)))+"</strong><span>income minus personal expenses</span></div></div><div id='fwFinanceNote' class='forge-finance-note'><b>Forge has your starting room.</b><span>I’ll work from <strong>"+BDT(Math.max(0,Number(d.budget||0)-Number(d.reserve||0)))+"</strong> as available business capital and keep <strong>"+BDT(d.reserve)+"</strong> protected from business deployment.</span></div></div>";
+    "<div class='forge-finance-understanding'><div class='forge-understanding-head'><div><span class='forge-finance-kicker'>FORGE'S CURRENT UNDERSTANDING</span><b>This is what I’ll use for your first decisions.</b></div><span class='forge-live-dot'>LIVE</span></div><div class='forge-finance-metrics'><div><small>Available business capital</small><strong id='fwAvailableCapital'>"+BDT(Math.max(0,Number(d.budget||0)-Number(d.reserve||0)))+"</strong><span>capital Forge can work with</span></div><div><small>Protected reserve</small><strong id='fwReserveAmount'>"+BDT(d.reserve)+"</strong><span>kept outside business deployment</span></div><div><small>Personal spending / month</small><strong id='fwMonthlyGap'>"+BDT(d.expenses)+"</strong><span>what you currently spend each month</span></div></div><div id='fwFinanceNote' class='forge-finance-note'><b>Forge has your starting room.</b><span>I’ll work from <strong>"+BDT(Math.max(0,Number(d.budget||0)-Number(d.reserve||0)))+"</strong> as available business capital and keep <strong>"+BDT(d.reserve)+"</strong> protected from business deployment.</span></div></div>";
   if(step===2) body="<div class='forge-w-grid'>"+
-    forgeWizardField("Age","age","number","28")+
-    forgeWizardField("City / location","city","text","Dhaka")+
-    forgeWizardField("Occupation","occupation","text","Entrepreneur")+
-    forgeWizardField("Business experience","experience","text","",["Beginner","Some experience","Experienced","Serial entrepreneur"])+
-    forgeWizardField("Hours available per week","time","number","10")+
-    forgeWizardField("Work style","workStyle","text","",["Builder","Seller","Operator","Creator","Analyst","Hybrid"])+
-    "</div>"+forgeWizardField("Skills / interests (optional)","skills","text","e.g. fashion, sales, design, sourcing, technology");
+    forgeWizardField("How old are you?","age","number","28")+
+    forgeWizardField("Where do you live?","city","text","Dhaka")+
+    forgeWizardField("What do you do now?","occupation","text","Entrepreneur")+
+    forgeWizardField("How much business experience do you have?","experience","text","",["Beginner","Some experience","Experienced","Serial entrepreneur"])+
+    forgeWizardField("How many hours can you give the business each week?","time","number","10")+
+    forgeWizardField("What kind of work do you enjoy?","workStyle","text","",["Builder","Seller","Operator","Creator","Analyst","Hybrid"])+
+    "</div>"+forgeWizardField("What are you good at or interested in? (optional)","skills","text","e.g. fashion, sales, design, sourcing, technology");
   if(step===3) body="<div class='forge-w-grid'>"+
-    forgeWizardField("Risk appetite","risk","text","",["Conservative","Balanced","Growth","Aggressive"])+
-    forgeWizardField("Risk capacity","riskCapacity","text","",["Low","Medium","High"])+
-    forgeWizardField("Maximum comfortable loss","lossTolerance","number","10000")+
-    "</div><div class='forge-risk-note'><b>Forge uses this as a hard guardrail.</b><span>Recommendations, opening quantities and testing budgets should stay proportional to this limit.</span></div>";
+    forgeWizardField("How much risk are you comfortable taking?","risk","text","",["Conservative","Balanced","Growth","Aggressive"])+
+    forgeWizardField("How much financial risk can you realistically handle?","riskCapacity","text","",["Low","Medium","High"])+
+    forgeWizardField("What is the most you are comfortable losing while testing an idea?","lossTolerance","number","10000")+
+    "</div><div class='forge-risk-note'><b>Forge will use this as a safety limit.</b><span>Recommendations, opening quantities and testing budgets should stay proportional to this limit.</span></div>";
   if(step===4) body="<div class='forge-w-grid'>"+
-    forgeWizardField("Preferred category","category","text","",["Open to anything","Fashion & accessories","Beauty & personal care","Home & living","Electronics","Food & beverage","Sports & fitness","Services / digital"])+
-    forgeWizardField("Primary goal","goal","text","",["Profit + growth","Low-risk side income","Long-term brand","Fastest revenue","Replace my salary"])+
-    forgeWizardField("Business model","model","text","",["Open to recommendations","Online product selling","Private label","Reselling","Service business","Wholesale / distribution"])+
-    forgeWizardField("Primary market","market","text","",["Bangladesh","India","UAE","Saudi Arabia","USA"])+
-    forgeWizardField("Target additional monthly income (optional)","targetIncome","number","0")+
+    forgeWizardField("What would you like to sell or work on?","category","text","",["Open to anything","Fashion & accessories","Beauty & personal care","Home & living","Electronics","Food & beverage","Sports & fitness","Services / digital"])+
+    forgeWizardField("What do you want this business to do for you?","goal","text","",["Profit + growth","Low-risk side income","Long-term brand","Fastest revenue","Replace my salary"])+
+    forgeWizardField("How would you like to make money?","model","text","",["Open to recommendations","Online product selling","Private label","Reselling","Service business","Wholesale / distribution"])+
+    forgeWizardField("Where do you want to sell?","market","text","",["Bangladesh","India","UAE","Saudi Arabia","USA"])+
+    forgeWizardField("How much extra money would you like to make each month? (optional)","targetIncome","number","0")+
     "</div>";
   if(step===5) body="<div class='forge-review-grid'>"+
     [["Capital",BDT(d.budget)],["Income / month",BDT(d.income)],["Expenses / month",BDT(d.expenses)],["Reserve",BDT(d.reserve)],["Location",d.city+", "+d.market],["Experience",d.experience],["Time",d.time+"h/week"],["Risk",d.risk+" · "+d.riskCapacity],["Comfortable loss",BDT(d.lossTolerance)],["Direction",d.category],["Goal",d.goal],["Model",d.model]].map(x=>"<div><small>"+x[0]+"</small><b>"+esc(String(x[1]))+"</b></div>").join("")+

@@ -382,7 +382,7 @@ const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
 const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},contentRequests:saved?.contentRequests||[],contentAssets:saved?.contentAssets||[],contentAutomation:saved?.contentAutomation||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
 function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[]}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
@@ -907,7 +907,7 @@ function useManualBrandName(){
   b.selectedDomain="";
   b.social={facebook:handle,instagram:handle,domain:handle+".com"};
   b.digital=true;
-  state.brandStudio=b;persistProfile();render();toast("Your brand name is now the active identity.");
+  state.brandStudio=b;persistProfile();autoBuildContentDepartment("brand_selected");render();toast("Your brand name is now the active identity.");
 }
 function selectBrandName(i){
   const b=state.brandStudio||{};
@@ -920,7 +920,7 @@ function selectBrandName(i){
   b.naming=true;b.digital=true;
   b.digital=true;
   state.brandStudio=b;
-  persistProfile();render();toast("Company / brand name selected. Digital identity updated to match.");
+  persistProfile();autoBuildContentDepartment("brand_selected");render();toast("Company / brand name selected. Digital identity updated to match.");
 }
 const SUPABASE_URL="https://pmyfswozvkdpqgnsiibf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW";
@@ -1168,11 +1168,60 @@ function contentLibrary(){
   ];
   const examples=["Create a complete launch campaign for my first product.","Make a premium Instagram post from my product.","Create Facebook and Instagram launch banners.","Turn my product photo into 3 different creative concepts."];
   return `<div class="hero content-hero"><div><div class="eyebrow">CONTENT LIBRARY · YOUR CREATIVE ENGINE</div><div class="h1">Everything your business needs to <span style="color:var(--accent)">look, sound & sell</span>.</div><div class="sub">Forge remembers your brand, products and business decisions. Tell it what you need and it builds the right assets—organized, reusable and ready to publish.</div></div><div class="content-hero-orb"><div class="orb-ring"></div><div class="orb-core">✦</div></div></div>
+  ${contentAutomationSummaryHtml()}
   <div class="content-command card"><div class="command-label">✦ FORGE CREATIVE ENGINE · FREE CORE GENERATOR</div><div class="command-row"><textarea id="forgeContentPrompt" placeholder="e.g. Create a launch campaign for ${esc(product)}. Make it premium, modern and suitable for young customers."></textarea><button class="btn primary content-create-btn" onclick="createContentRequest()">Create with Forge →</button></div><div class="prompt-chips">${examples.map(x=>`<button class="prompt-chip" onclick="document.getElementById('forgeContentPrompt').value='${esc(x)}'">${esc(x)}</button>`).join("")}</div></div><div class="content-engine-callout"><div><span class="content-engine-badge">FREE CORE GENERATOR</span><b>Generate branded visuals without a paid image API.</b><span>Forge can create lightweight SVG logo, banner and social graphics directly in the browser. No external generator account is required for the core kit.</span></div><button class="btn primary" onclick="generateStarterKit()">Generate starter kit ↗</button></div>
   <div class="content-stats"><div><b>10</b><span>Creative collections</span></div><div><b>∞</b><span>Ideas Forge can create</span></div><div><b>1</b><span>Brand identity</span></div><div><b>24/7</b><span>Creative engine</span></div></div>
   <div class="section"><div class="eyebrow">YOUR CREATIVE DEPARTMENT</div><h2>Build anything your business needs.</h2><p class="small">Start from a collection or simply tell Forge what you want. Nothing is locked into a single format.</p></div>
   <div class="content-grid">${assets.map(a=>`<div class="content-collection card" onclick="openContentCollection('${a[1]}')"><div class="content-icon">${a[2]}</div><div class="content-meta">${a[3]}</div><h3>${a[0]}</h3><p>${a[1]}</p><div class="content-action">Open collection <span>→</span></div></div>`).join("")}</div>
   <div class="content-bottom-grid"><div class="card smart-panel"><div class="eyebrow">FORGE AUTOPILOT</div><h2>Your next content opportunities.</h2><div class="opportunity"><span>⚡</span><div><b>Product launch pack</b><small>${esc(product)} needs a complete launch set.</small></div><button class="btn" onclick="createContentRequest('Create a complete launch content pack')">Build →</button></div><div class="opportunity"><span>◈</span><div><b>Social presence</b><small>Prepare profile and cover assets for every connected platform.</small></div><button class="btn" onclick="createContentRequest('Create my complete social media kit')">Build →</button></div><div class="opportunity"><span>✦</span><div><b>Brand consistency</b><small>Keep every future asset aligned with ${esc(name)}.</small></div><button class="btn" onclick="createContentRequest('Create my complete brand identity kit')">Build →</button></div></div>${contentAssetVaultHtml()}<div class="card creative-memory"><div class="eyebrow">CREATIVE MEMORY</div><h2>Forge knows your rules.</h2><div class="memory-row">✓ Brand identity <span>Synced</span></div><div class="memory-row">✓ Product context <span>Synced</span></div><div class="memory-row">✓ Business plan <span>Synced</span></div><div class="memory-row">✓ Content preferences <span>Learning</span></div><button class="btn" onclick="toast('Creative Memory will keep learning from your approved content.')">Manage preferences →</button></div></div>`;
+}
+function autoBuildContentDepartment(reason){
+  const p=state.selectedProduct||{};
+  const b=state.brandStudio||{};
+  const brand=b.chosenName||state.business?.name||"Your Brand";
+  const product=b.chosenProductName||p.name||"Your Product";
+  const key=[brand,product,p.id,p.image].join("|");
+  if(state.contentAutomation?.key===key && state.contentAssets?.length)return;
+  state.contentAutomation={key,reason,startedAt:new Date().toISOString(),status:"building"};
+  state.contentAssets=[];
+  const accent=b.primaryColor||"#69dda0";
+  const image=p.image||"";
+  const items=[
+    [brand+" · Primary Logo","Brand Identity","Primary logo mark for website, social profiles and packaging."],
+    [brand+" · Favicon","Brand Identity","Compact favicon / app icon."],
+    [brand+" · Brand Banner","Brand Identity","Master brand banner for digital profiles."],
+    [brand+" · Facebook Cover","Social Media","Facebook cover image using the approved identity."],
+    [brand+" · Instagram Profile Kit","Social Media","Instagram-ready profile identity and launch graphic."],
+    [brand+" · TikTok / Shorts Cover","Social Media","Short-form video channel cover graphic."],
+    [brand+" · Website Hero Banner","Website","Homepage hero visual for the first launch."],
+    [product+" · Product Hero","Product","Storefront hero visual based on the confirmed supplier product."],
+    [product+" · Product Feature Card","Product","Feature-focused product presentation graphic."],
+    [product+" · Product Social Post","Social Creative","Square product launch post."],
+    [product+" · Story Creative","Social Creative","Vertical story/reel cover creative."],
+    [brand+" · Launch Announcement","Campaign","Launch announcement banner."],
+    [brand+" · Offer / CTA Graphic","Advertising","Reusable promotional CTA graphic."],
+    [brand+" · WhatsApp / Message Card","Marketing","Customer-message graphic for direct selling."],
+    [brand+" · Email Header","Marketing","Launch email header graphic."]
+  ];
+  items.forEach((x,i)=>{
+    const kind=i===6?"banner":i===7||i===8?"product":i===10?"story":i===9||i===11||i===12||i===13||i===14?"post":"logo";
+    const subtitle=i===7&&image?"Confirmed product · real supplier image":"Ready-to-use "+x[1].toLowerCase()+" asset";
+    const svg=forgeSvg(x[0],subtitle,kind,accent,image);
+    saveForgeAsset(x[0],x[1],x[2],svg);
+    const last=state.contentAssets[0];
+    if(last)last.sourceImage=image;
+  });
+  state.contentRequests=state.contentRequests||[];
+  state.contentRequests.unshift({request:"Automatic content department build for "+product,createdAt:new Date().toISOString(),status:"generated",reason});
+  state.contentAutomation.status="ready";
+  state.contentAutomation.completedAt=new Date().toISOString();
+  persistProfile();
+}
+function contentAutomationSummaryHtml(){
+  const p=state.selectedProduct||{},b=state.brandStudio||{},count=(state.contentAssets||[]).length;
+  const product=b.chosenProductName||p.name||"your confirmed product";
+  if(!p.name)return '<div class="card content-auto-panel"><div class="eyebrow">AUTOPILOT</div><h2>Choose a product and Forge takes over.</h2><p class="small">Once a real product is confirmed, Forge automatically prepares the website, social, product, campaign and marketing asset packs.</p></div>';
+  return '<div class="card content-auto-panel"><div><div class="eyebrow">FORGE AUTOPILOT · '+(count?"READY":"BUILDING")+'</div><h2>Your creative department is already working.</h2><p class="small"><b>'+esc(product)+'</b> is the active product. Forge automatically prepares the launch kit from your locked business, brand and supplier data. No repetitive creative setup is required.</p><div class="auto-pipeline"><span>Product</span><i>→</i><span>Brand</span><i>→</i><span>Website</span><i>→</i><span>Social</span><i>→</i><span>Ads</span><i>→</i><span>Publish</span></div></div><div class="auto-count"><b>'+count+'</b><span>assets prepared</span></div></div>';
 }
 function createContentRequest(prefill){
   const el=document.getElementById("forgeContentPrompt"), request=(prefill||el?.value||"").trim();
@@ -1188,10 +1237,10 @@ function contentAssetVaultHtml(){
   if(!list.length)return '<div class="card content-asset-grid" style="grid-column:1/-1;margin-top:18px"><div style="grid-column:1/-1;text-align:center;padding:25px"><div class="eyebrow">YOUR LIBRARY</div><h2>No generated assets yet.</h2><p class="small">Generate the starter kit and your logo, launch banner and social creatives will appear here.</p><button class="btn primary" onclick="generateStarterKit()">Generate first assets →</button></div></div>';
   return '<div class="section"><div><div class="eyebrow">YOUR LIBRARY</div><h2>Generated assets</h2><p class="small">Download, reuse or approve everything Forge creates for your business.</p></div></div><div class="content-asset-grid">'+list.slice(0,8).map((x,i)=>'<div class="content-asset-card card"><div class="asset-preview">'+(x.type==="Brand Identity"?"✦":x.type==="Social Creative"?"▣":"▰")+'</div><div class="asset-body"><div class="content-meta">'+esc(x.type||"Creative")+'</div><h3>'+esc(x.name||"Forge asset")+'</h3><p>'+esc(x.description||"Forge-generated asset")+'</p><div class="content-asset-actions"><button class="btn primary" onclick="downloadForgeAsset('+i+')">Download</button><button class="btn" onclick="useForgeAsset('+i+')">Use →</button></div></div></div>').join("")+'</div>';
 }
-function forgeSvg(title,subtitle,kind,accent){
+function forgeSvg(title,subtitle,kind,accent,image){
   const w=kind==="banner"?1600:1080,h=kind==="banner"?500:1350,a=String(accent||"#69dda0").replace(/[^#a-zA-Z0-9(),.% -]/g,"");
   const t=esc(title),sub=esc(subtitle),bg="#08130f";
-  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+a+'"/><stop offset="1" stop-color="#b9f3d0"/></linearGradient></defs><rect width="100%" height="100%" fill="'+bg+'"/><circle cx="'+w*.84+'" cy="'+h*.2+'" r="'+Math.min(w,h)*.28+'" fill="'+a+'" opacity=".08"/><rect x="'+w*.06+'" y="'+h*.08+'" width="'+w*.88+'" height="'+h*.84+'" rx="36" fill="none" stroke="'+a+'" opacity=".24"/><rect x="'+w*.08+'" y="'+h*.12+'" width="76" height="76" rx="20" fill="url(#g)"/><text x="'+w*.118+'" y="'+(h*.12+54)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="43" font-weight="900" fill="#061a12">F</text><text x="'+w*.08+'" y="'+h*.48+'" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="banner"?72:76)+'" font-weight="850" fill="#f4f8f5">'+t+'</text><text x="'+w*.08+'" y="'+h*.59+'" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="banner"?30:35)+'" fill="#9fb8ad">'+sub+'</text><rect x="'+w*.08+'" y="'+h*.72+'" width="410" height="58" rx="29" fill="url(#g)"/><text x="'+(w*.08+205)+'" y="'+(h*.72+39)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="800" fill="#061a12">READY TO USE</text><text x="'+w*.08+'" y="'+h*.9+'" font-family="Inter,Arial,sans-serif" font-size="18" letter-spacing="3" fill="#668178">FORGE · FREE CREATIVE ENGINE</text></svg>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+a+'"/><stop offset="1" stop-color="#b9f3d0"/></linearGradient></defs><rect width="100%" height="100%" fill="'+bg+'"/>'+(kind==="product"&&image?'<rect x="'+w*.58+'" y="'+h*.18+'" width="'+w*.30+'" height="'+h*.52+'" rx="42" fill="#10231b"/><image href="'+esc(image)+'" x="'+w*.61+'" y="'+h*.21+'" width="'+w*.24+'" height="'+h*.46+'" preserveAspectRatio="xMidYMid meet"/>':'')+'<circle cx="'+w*.84+'" cy="'+h*.2+'" r="'+Math.min(w,h)*.28+'" fill="'+a+'" opacity=".08"/><rect x="'+w*.06+'" y="'+h*.08+'" width="'+w*.88+'" height="'+h*.84+'" rx="36" fill="none" stroke="'+a+'" opacity=".24"/><rect x="'+w*.08+'" y="'+h*.12+'" width="76" height="76" rx="20" fill="url(#g)"/><text x="'+w*.118+'" y="'+(h*.12+54)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="43" font-weight="900" fill="#061a12">F</text><text x="'+w*.08+'" y="'+h*.48+'" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="banner"?72:76)+'" font-weight="850" fill="#f4f8f5">'+t+'</text><text x="'+w*.08+'" y="'+h*.59+'" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="banner"?30:35)+'" fill="#9fb8ad">'+sub+'</text><rect x="'+w*.08+'" y="'+h*.72+'" width="410" height="58" rx="29" fill="url(#g)"/><text x="'+(w*.08+205)+'" y="'+(h*.72+39)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="800" fill="#061a12">READY TO USE</text><text x="'+w*.08+'" y="'+h*.9+'" font-family="Inter,Arial,sans-serif" font-size="18" letter-spacing="3" fill="#668178">FORGE · FREE CREATIVE ENGINE</text></svg>';
 }
 function saveForgeAsset(name,type,description,svg){
   state.contentAssets=state.contentAssets||[];
@@ -1623,6 +1672,7 @@ function addCjToQueue(i){
   if(existing>=0)state.sourcingQueue[existing]=item;else state.sourcingQueue.unshift(item);
   state.selectedProduct=item;
   state.planStatus="preparing";
+  autoBuildContentDepartment("product_confirmed");
   state.planRequestedAt=new Date().toISOString();
   state.planEtaSeconds=6+Math.abs(String(p.id||p.name||"").split("").reduce((a,ch)=>a+ch.charCodeAt(0),0))%15;
   state.business=state.business||{name:(state.profile?.occupation||"My Business"),budget:Number(state.profile?.budget||0)};

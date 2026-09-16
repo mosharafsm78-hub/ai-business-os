@@ -1258,12 +1258,8 @@ function liveEconomics(p){
 function productLabHeader(){
   const p=state.selectedProduct;
   const direction=state.selectedOpportunityName||state.profile?.category||"your business direction";
-  return "<div class='hero'><div><div class='eyebrow'>Product Lab · personalized sourcing</div><div class='h1'>Products chosen for your business.</div><div class='sub'>Forge is matching real supplier products to <b>"+esc(direction)+"</b>, your locked capital, risk capacity, market and time. You do not browse a supplier marketplace here.</div></div><div class='actions'><button class='btn' data-page='ideas' onclick='go(this.dataset.page)'>Change business direction</button>"+(p?"<button class='btn primary' data-page='orders' onclick='go(this.dataset.page)'>Orders →</button>":"")+"</div></div>";
+  return "<div class='hero cj-hero'><div><div class='eyebrow'>Product Lab</div><div class='h1'>Real products. Real supplier data. A clearer first move.</div><div class='sub'>Forge is matching real supplier products to <b>"+esc(direction)+"</b> and your locked capital, market, time and risk profile. Compare the economics before you commit.</div><div class='cj-hero-points'><span><b>Live</b> supplier pricing</span><span><b>Profile</b> matched</span><span><b>Economics</b> modeled</span></div></div><div class='actions'><button class='btn' data-page='ideas' onclick='go(this.dataset.page)'>Change business direction</button>+(p?"<button class='btn primary' data-page='orders' onclick='go(this.dataset.page)'>View sourcing queue</button>":"")+</div></div>";
 }
-function cjPanel(){
-  return "<section class='cj-live'><div class='cj-head'><div><div class='eyebrow'>PERSONALIZED PRODUCT SOURCING</div><h2>We found these products for you</h2><div class='small'>Real supplier images, names, current supplier prices and stock data. Forge calculates the Bangladesh planning economics underneath.</div></div><div class='cj-live-note'><span class='pill online'>● LIVE PRICE CHECK</span><div class='small' id='cjstatus' style='margin-top:8px'>Selecting products from the connected supplier catalogue…</div></div></div><div class='cj-toolbar'><div class='cj-count' id='cjmeta'>Finding 6 relevant products…</div><div class='cj-fresh' id='cjfresh'>Supplier data checked live</div></div><div id='cjresults' class='cj-results'><div class='cj-empty cj-loading'><b>Finding products for your profile…</b><br><span class='small'>This can take a few seconds.</span></div></div></section>";
-}
-function products(){return productLabHeader()+cjPanel();}
 function goPlan(){go("plan")}
 function goOrders(){go("orders")}
 

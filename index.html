@@ -2065,7 +2065,108 @@ function printBusinessPlan(){
   const d=planSnapshot();if(!d)return toast("Confirm a product first.");
   const content=document.querySelector(".plan-document")?.innerHTML||"";
   const w=window.open("","_blank","width=1100,height=850");if(!w)return toast("Allow pop-ups to print the business plan.");
-  w.document.write("<!doctype html><html><head><title>"+esc(d.brand)+" — Business Plan</title><style>body{font-family:Arial,sans-serif;color:#17221f;max-width:950px;margin:30px auto;padding:0 25px;line-height:1.55}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid #ddd;break-inside:avoid}.plan-number{font-size:24px;font-weight:900;color:#26805f}.plan-section h2{margin:0 0 9px}.plan-finance,.plan-risk,.plan-roadmap,.plan-two-col{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:13px;background:#f3f7f5;border-radius:9px}.plan-finance span{display:block;font-size:9px;color:#687771;text-transform:uppercase}.plan-finance b{font-size:18px}.small{font-size:13px;color:#52625b}.plan-quote{font-size:19px;font-weight:650;border-left:3px solid #26805f;padding:14px;background:#f4f8f6}.plan-meta{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#64736d}@media print{body{margin:0}}</head><body><h1>"+esc(d.brand)+" — Business Plan</h1><p class='small'>Personalized to the confirmed product, capital, market and operating profile.</p>"+content+"</body></html>");
+  w.document.write("<!doctype html><html><head><title>"+esc(d.brand)+" — Business Plan</title><style>body{font-family:Arial,sans-serif;color:#17221f;max-width:950px;margin:30px auto;padding:0 25px;line-height:1.55}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid #ddd;break-inside:avoid}.plan-number{font-size:24px;font-weight:900;color:#26805f}.plan-section h2{margin:0 0 9px}.plan-finance,.plan-risk,.plan-roadmap,.plan-two-col{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:13px;background:#f3f7f5;border-radius:9px}.plan-finance span{display:block;font-size:9px;color:#687771;text-transform:uppercase}.plan-finance b{font-size:18px}.small{font-size:13px;color:#52625b}.plan-quote{font-size:19px;font-weight:650;border-left:3px solid #26805f;padding:14px;background:#f4f8f6}.plan-meta{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#64736d}@media print{body{margin:0}}</head><body><h1>"+esc(d.brand)+" — Business Plan</h1><p class='small'>Personalized to the confirmed product, capital, market and operating profile.</p>"+content+"<style id="forge-cj-live-wait-v1">
+.cj-wait{min-height:260px;display:grid;place-items:center;text-align:center;padding:32px!important}
+.cj-wait-inner{max-width:560px;width:100%}
+.cj-wait-spinner{width:42px;height:42px;border:3px solid #000;border-top-color:#fff;border-radius:50%;animation:forgeSpin .8s linear infinite;margin:0 auto 20px}
+.cj-wait-title{font-size:22px;font-weight:800;margin-bottom:8px}
+.cj-wait-copy{font-size:14px;line-height:1.55;margin-bottom:18px}
+.cj-wait-stage{font-size:12px;font-weight:700;letter-spacing:.04em;border:1px solid #000;padding:11px 14px;margin:8px 0;background:#fff}
+.cj-wait-time{font-size:11px;margin-top:12px;opacity:.65}
+@keyframes forgeSpin{to{transform:rotate(360deg)}}
+</style>
+<script>
+/* FORGE: transparent live supplier connection state */
+(function(){
+  function waitMarkup(title,copy,stage,elapsed){
+    return "<div class='cj-empty cj-loading cj-wait' style='grid-column:1/-1'><div class='cj-wait-inner'>"+
+      "<div class='cj-wait-spinner' aria-hidden='true'></div>"+
+      "<div class='cj-wait-title'>"+esc(title)+"</div>"+
+      "<div class='cj-wait-copy'>"+esc(copy)+"</div>"+
+      "<div class='cj-wait-stage'>"+esc(stage)+"</div>"+
+      "<div class='cj-wait-time'>Connected supplier data is loading · "+Math.floor(elapsed)+"s</div>"+
+      "</div></div>";
+  }
+  async function forgeWaitForSupplier(box,status,meta,fresh,keyword,mode){
+    const started=Date.now();
+    let stopped=false;
+    const tick=()=>{
+      if(stopped)return;
+      const sec=(Date.now()-started)/1000;
+      let stage="Connecting to the live supplier catalogue…";
+      let title="Just a moment…";
+      let copy="Forge is connecting to the supplier system. Your product list will appear automatically when the live data arrives.";
+      if(sec>=2){stage="Reading live product data and prices…";title="Loading real products…";copy="Forge is retrieving supplier names, images, current prices and stock. Nothing is shown until the supplier responds."}
+      if(sec>=5){stage="Checking stock, removing duplicates and validating results…";title="Almost ready…";copy="Forge is checking the returned products so you see genuine supplier records instead of placeholders."}
+      if(sec>=9){stage="Finishing the supplier check…";title="Taking a few more seconds…";copy="The supplier connection is responding slowly. Please keep this page open; Forge is still working."}
+      box.innerHTML=waitMarkup(title,copy,stage,sec);
+      if(status)status.textContent=stage;
+      if(meta)meta.textContent="Live supplier connection in progress · "+Math.floor(sec)+"s";
+    };
+    tick();
+    const timer=setInterval(tick,500);
+    return {started,stop:()=>{stopped=true;clearInterval(timer)}};
+  }
+  window.__forgeSupplierWait=forgeWaitForSupplier;
+
+  window.autoCjSearch=async function(){
+    const box=document.getElementById("cjresults"),status=document.getElementById("cjstatus"),meta=document.getElementById("cjmeta"),fresh=document.getElementById("cjfresh");
+    if(!box)return;
+    const keyword=cjRecommendationKeyword();
+    const wait=await forgeWaitForSupplier(box,status,meta,fresh,keyword,"auto");
+    try{
+      const collected=[],seen=new Set();
+      const confirmed=new Set((state.sourcingQueue||[]).map(x=>String(x.id||x.name||"").trim().toLowerCase()));
+      for(let page=1;page<=3 && collected.length<20;page++){
+        if(status)status.textContent="Checking supplier result page "+page+" of 3…";
+        const j=await fetchCjKeyword(keyword,page);
+        const products=Array.isArray(j.products)?j.products:[];
+        for(const p of products){
+          const idKey=String(p.id||p.productId||p.sku||"").trim().toLowerCase();
+          const nameKey=String(p.name||"").trim().toLowerCase();
+          const uniqueKey=idKey||nameKey;
+          if(!uniqueKey||seen.has(uniqueKey)||confirmed.has(uniqueKey)||confirmed.has(nameKey))continue;
+          seen.add(uniqueKey);collected.push(p);
+          if(collected.length>=20)break;
+        }
+        cjLastFetched=j.fetchedAt||cjLastFetched;
+      }
+      cjState=collected.slice(0,20);
+      cjLastFetched=cjLastFetched||new Date().toISOString();
+      wait.stop();
+      renderCjResults({products:cjState,fetchedAt:cjLastFetched});
+      if(status)status.textContent=cjState.length+" unique live products matched to your profile";
+      if(fresh)fresh.textContent="Checked "+new Date(cjLastFetched).toLocaleTimeString("en-BD",{hour:"2-digit",minute:"2-digit"});
+    }catch(e){
+      wait.stop();cjState=[];
+      box.innerHTML="<div class='cj-empty' style='grid-column:1/-1'><b>Live product matching is temporarily unavailable.</b><br><span class='small'>"+esc(e.message)+"</span><br><br><button class='btn primary' onclick='autoCjSearch()'>Try again</button></div>";
+      if(status)status.textContent="Supplier connection needs another try";
+      if(meta)meta.textContent="No supplier products loaded";
+    }
+  };
+
+  window.cjSearch=async function(page=1){
+    const q=(document.getElementById("cjq")?.value||"").trim();
+    const box=document.getElementById("cjresults"),status=document.getElementById("cjstatus"),meta=document.getElementById("cjmeta"),fresh=document.getElementById("cjfresh");
+    if(!q){toast("Enter a product keyword");return}
+    const wait=await forgeWaitForSupplier(box,status,meta,fresh,q,"manual");
+    try{
+      const url=CJ_PROXY+"?keyword="+encodeURIComponent(q)+"&page="+page+"&size=18";
+      const r=await fetch(url,{headers:{"apikey":"sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW","Authorization":"Bearer sb_publishable_RrciEiRwRPkbU6yO6wt8Zg_BI0tSYEW"}});
+      const j=await r.json();
+      if(!r.ok||!j.ok)throw Error(j.error||"The product network could not be reached.");
+      cjState=Array.isArray(j.products)?j.products:[];cjLastFetched=j.fetchedAt||new Date().toISOString();
+      wait.stop();renderCjResults(j);
+      if(status)status.textContent=cjState.length+" live products loaded";
+      if(fresh)fresh.textContent="Checked "+new Date(cjLastFetched).toLocaleTimeString("en-BD",{hour:"2-digit",minute:"2-digit"});
+    }catch(e){
+      wait.stop();
+      box.innerHTML="<div class='cj-empty'><b>Live sourcing is temporarily unavailable.</b><br><span class='small'>"+esc(e.message)+"</span><br><br><span class='small'>No fake products or placeholder prices are shown when the supplier does not return valid data.</span></div>";
+      if(status)status.textContent="Supplier connection needs another try";
+    }
+  };
+})();
+</script></body></html>");
   w.document.close();setTimeout(()=>w.print(),250);
 }
 function analytics(){let b=state.business||{targetMargin:43};return "<div class='hero'><div><div class='eyebrow'>Decision intelligence</div><div class='h1'>Numbers that lead to decisions.</div><div class='sub'>Track demand, unit economics, cash efficiency, customer experience, inventory risk and marketing efficiency.</div></div><button class='btn' onclick=\"toast('Decision model refreshed')\">Refresh model ↻</button></div><div class='grid'><div class='card span8'><div class='label'>Illustrative revenue trajectory</div><div class='chart'>"+[32,41,38,55,63,71,86].map(h=>"<div class='bar' style='height:"+h+"%'></div>").join("")+"</div><div class='small'>Indexed planning view. Connect actual sales data before financial decisions.</div></div><div class='card span4'><div class='label'>AI business verdict</div><h2>Validate before scaling.</h2><p class='small'>Keep the first batch small enough to learn. Scale only when contribution remains positive after acquisition, delivery fees and expected returns.</p></div></div><div class='section'><h2>Scorecard</h2></div><div class='grid'>"+[["Demand",92,"Strong"],["Unit economics",88,"Healthy"],["Cash efficiency",73,"Watch"],["Customer experience",95,"Strong"],["Inventory risk",68,"Watch"],["Marketing efficiency",84,"Healthy"]].map(x=>"<div class='card span4'><div class='row' style='justify-content:space-between'><b>"+x[0]+"</b><span class='status "+(x[2]==="Watch"?"amber":"")+"'>"+x[2]+"</span></div><div class='stat'>"+x[1]+"</div><div class='score'><i style='width:"+x[1]+"%'></i></div></div>").join("")+"</div><div class='section'><h2>Financial guardrails</h2></div><div class='grid'><div class='card span4'><div class='label'>Protected reserve</div><div class='stat'>22%</div></div><div class='card span4'><div class='label'>Target gross margin</div><div class='stat'>"+b.targetMargin+"%</div></div><div class='card span4'><div class='label'>Break-even rule</div><div class='stat'>Contribution &gt; 0</div></div></div>"}

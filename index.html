@@ -486,10 +486,10 @@ const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bang
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
 const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
 const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},contentRequests:saved?.contentRequests||[],contentAssets:saved?.contentAssets||[],contentAutomation:saved?.contentAutomation||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
-function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[],contentAutomation:state.contentAutomation||[]}))}
+function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[],contentAutomation:state.contentAutomation||[],billing:state.billing||{},marketingConnection:state.marketingConnection||{},marketingActivity:state.marketingActivity||[]}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
-const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["content","✦","Content Library"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
+const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["content","✦","Content Library"],["marketing","◎","AI Marketing"],["billing","▣","Billing & Budget"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
 const BDT=n=>"৳"+Number(n||0).toLocaleString("en-BD");
 const pct=n=>Math.round(Number(n)||0)+"%";
 function nav(){return navItems.map(x=>"<button class='nav "+(state.page===x[0]?"active":"")+"' onclick=\"go('"+x[0]+"')\"><span class='ico'>"+x[1]+"</span>"+x[2]+"</button>").join("")}
@@ -1547,15 +1547,17 @@ function store(){
 }
 function billingData(){
   const b=state.billing||{};
-  const m=marketingConnection();
   const p=state.selectedProduct||{};
-  const qty=Number(b.quantity||state.selectedQuantity||40);
-  const unitCost=Number(b.unitCost||p.cost||p.purchasePrice||0);
-  const marketingPerUnit=Number(b.marketingPerUnit||400);
+  const qty=Math.max(1,Number(b.quantity||p.batch||40));
+  const unitCost=Number(b.unitCost||p.landed||p.cost||p.purchasePrice||0);
+  const marketingPerUnit=Number(b.marketingPerUnit||p.cac||0);
+  const storeBill=typeof storeLaunchBill==="function"?storeLaunchBill():null;
+  const domain=Number(b.domain||storeBill?.domainBdt||0);
+  const shopify=Number(b.shopify||storeBill?.hostingBdt||0);
+  const other=Number(b.other||0);
   const productTotal=unitCost*qty;
   const marketingTotal=marketingPerUnit*qty;
-  const domain=Number(b.domain||0),shopify=Number(b.shopify||0),other=Number(b.other||0);
-  return {qty,unitCost,productTotal,marketingPerUnit,marketingTotal,domain,shopify,other,total:productTotal+marketingTotal+domain+shopify+other};
+  return {qty,unitCost,productTotal,marketingPerUnit,marketingTotal,domain,shopify,other,domainYears:Number(storeBill?.domainYears||0),domainVerified:!!storeBill?.domainResult,shopifyVerified:!!storeBill?.hostingBdt,shopifyMonths:1,total:productTotal+marketingTotal+domain+shopify+other};
 }
 function billingStatusLabel(kind){
   return kind==="verified"?"Verified":kind==="user"?"Provided by you":"AI planning";
@@ -1581,8 +1583,8 @@ function billing(){
       "<div class='billing-breakdown'>"+
         "<div class='billing-line'><div><b>Product purchase</b><span>"+d.qty+" × "+(hasUnit?BDT(d.unitCost):"price unavailable")+"</span></div><strong>"+(hasUnit?BDT(productCost):"—")+"</strong></div>"+
         "<div class='billing-line'><div><b>Marketing budget</b><span>"+d.qty+" × "+BDT(d.marketingPerUnit)+" / purchase</span></div><strong>"+BDT(d.marketingTotal)+"</strong></div>"+
-        "<div class='billing-line'><div><b>Domain</b><span>1-year registration</span></div><strong>"+(d.domain?BDT(d.domain):"—")+"</strong></div>"+
-        "<div class='billing-line'><div><b>Shopify</b><span>Applicable subscription</span></div><strong>"+(d.shopify?BDT(d.shopify):"—")+"</strong></div>"+
+        "<div class='billing-line'><div><b>Domain</b><span>"+(d.domainYears?d.domainYears+"-year registration":"Current price required")+"</span></div><strong>"+(d.domain?BDT(d.domain):"—")+"</strong></div>"+
+        "<div class='billing-line'><div><b>Store platform / hosting</b><span>"+(d.shopifyVerified?"Shopify Basic · 1 month · hosting included":"Current plan price required")+"</span></div><strong>"+(d.shopify?BDT(d.shopify):"—")+"</strong></div>"+
         "<div class='billing-line'><div><b>Other required costs</b><span>Only applicable items</span></div><strong>"+(d.other?BDT(d.other):"—")+"</strong></div>"+
       "</div>"+
       "<div class='billing-note'><b>Planning total</b><span>Marketing is a planning allocation. It is not a guaranteed Meta/TikTok/Google cost.</span></div>"+
@@ -1590,9 +1592,9 @@ function billing(){
     "<aside class='billing-explain'>"+
       "<div class='eyebrow'>WHAT THESE NUMBERS MEAN</div>"+
       "<div class='explain-card'><div class='explain-icon'>01</div><div><h3>Product purchase</h3><p>"+(hasUnit?"Forge uses the supplier purchase price available for <b>"+esc(productName)+"</b>. "+d.qty+" units × "+BDT(d.unitCost)+" gives "+BDT(productCost)+".":"A verified supplier purchase price is not available yet, so Forge will not invent one. Connect/select a supplier price to calculate this line.")+"</p><span class='data-tag "+(hasUnit?"verified":"amber")+"'>"+(hasUnit?"VERIFIED":"NEEDS VERIFICATION")+"</span></div></div>"+
-      "<div class='explain-card'><div class='explain-icon'>02</div><div><h3>Marketing budget</h3><p>Forge is currently using <b>"+BDT(d.marketingPerUnit)+" per expected purchase</b> as the planning assumption, giving "+BDT(d.marketingTotal)+" for "+d.qty+" purchases.</p><p class='warning-copy'><b>Actual cost can move.</b> Meta advertising is an auction, not a fixed per-sale price. Competition, audience, creative, objective, conversion rate, seasonality and campaign performance can make the actual cost lower or higher. Forge should replace this planning figure with live CPA data as soon as the campaign runs.</p><span class='data-tag planning'>AI PLANNING</span></div></div>"+
-      "<div class='explain-card'><div class='explain-icon'>03</div><div><h3>Domain</h3><p>"+(d.domain?"Current verified domain price for a <b>1-year registration</b>.":"The live domain price must be retrieved for the selected domain before Forge labels this cost verified.")+"</p><span class='data-tag "+(d.domain?"verified":"amber")+"'>"+(d.domain?"VERIFIED":"NEEDS LIVE PRICE")+"</span></div></div>"+
-      "<div class='explain-card'><div class='explain-icon'>04</div><div><h3>Shopify</h3><p>"+(d.shopify?"Current applicable Shopify subscription is included.":"Forge will use the applicable Shopify plan price. Shopify hosting should not be double-counted as a separate hosting bill when included with the Shopify plan.")+"</p><span class='data-tag "+(d.shopify?"verified":"amber")+"'>"+(d.shopify?"VERIFIED":"TO VERIFY")+"</span></div></div>"+
+      "<div class='explain-card'><div class='explain-icon'>02</div><div><h3>Marketing budget</h3><p>Forge is using <b>"+(d.marketingPerUnit?BDT(d.marketingPerUnit):"live data required")+" per expected purchase</b> as the current planning assumption, giving "+(d.marketingPerUnit?BDT(d.marketingTotal):"—")+" for "+d.qty+" purchases.</p><p class='warning-copy'><b>Actual cost can move.</b> Meta advertising is an auction, not a fixed per-sale price. Competition, audience, creative, objective, conversion rate, seasonality and campaign performance can make the actual cost lower or higher. Forge should replace this planning figure with live CPA data as soon as the campaign runs.</p><span class='data-tag planning'>AI PLANNING</span></div></div>"+
+      "<div class='explain-card'><div class='explain-icon'>03</div><div><h3>Domain</h3><p>"+(d.domain?"Current verified domain price for a <b>1-year registration</b>.":"The live price for the selected domain is added only after the availability/price check returns a confirmed amount.")+"</p><span class='data-tag "+(d.domain?"verified":"amber")+"'>"+(d.domain?"VERIFIED":"NEEDS LIVE PRICE")+"</span></div></div>"+
+      "<div class='explain-card'><div class='explain-icon'>04</div><div><h3>Shopify</h3><p>"+(d.shopify?"Current applicable Shopify subscription is included. Shopify includes web hosting with the plan, so Forge does not add a separate hosting bill.":"Forge will use the applicable Shopify plan price. Shopify hosting should not be double-counted as a separate hosting bill when included with the Shopify plan.")+"</p><span class='data-tag "+(d.shopify?"verified":"amber")+"'>"+(d.shopify?"VERIFIED":"TO VERIFY")+"</span></div></div>"+
       "<div class='explain-card'><div class='explain-icon'>05</div><div><h3>Other costs</h3><p>Forge only adds costs that actually apply to this business. Every line should state its billing period and what the customer is paying for.</p><span class='data-tag planning'>TRANSPARENT</span></div></div>"+
     "</aside>"+
   "</div>"+
@@ -2103,7 +2105,7 @@ function render(){
   window.__forgeRendered=true;
   try{sessionStorage.removeItem("forge_boot_retry_v1")}catch(e){}
   document.body.dataset.page=state.page||"home";
-  let pages={home,advisor,ideas,products,plan,orders,brand:brandStudioPage,store,content:contentLibrary,marketing,support,analytics};
+  let pages={home,advisor,ideas,products,plan,orders,brand:brandStudioPage,store,content:contentLibrary,marketing,billing,support,analytics};
   if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();bindMobileInteractions();return}
   const pageFn=pages[state.page]||home;
   try{

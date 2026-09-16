@@ -806,6 +806,9 @@ input:focus,select:focus,textarea:focus{border-color:#49a979!important;box-shado
 .forge-reality-item b,.forge-reality-item span{display:block}.forge-reality-item span{margin-top:3px;line-height:1.45}
 .forge-reality-item.attention{border-color:#a33}.forge-reality-item.info{border-color:#777}
 </style>
+<style id="forge-reality-engine-v2">
+.forge-reality-panel{box-shadow:0 8px 24px #0000000d}
+</style>
 </head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
@@ -955,7 +958,7 @@ function openWizard(){
    }
    return showWizardErrors(invalid);
  };
- window.finishWizard=()=>{captureWizard();if(!validateWizard(5))return;state.profile={...d};state.business={name:businessName(d.category),budget:d.budget,market:d.market,category:d.category,age:d.age,income:d.income,goal:d.goal,risk:d.risk,time:d.time,targetMargin:categoryMargin(d.category),planMode:planMode(d)};state.profileLocked=true;state.page="ideas";persistProfile();closeModal();render();toast("Profile locked — Forge is now personalized to you")};
+ window.finishWizard=()=>{captureWizard();if(!validateWizard(5))return;const reality=forgeRealityCheck(d);state.profile={...d,reality};state.business={name:businessName(d.category),budget:Math.max(0,Number(d.budget||0)-Number(d.reserve||0)),market:d.market,category:d.category,age:d.age,income:d.income,goal:d.goal,risk:d.risk,time:d.time,targetMargin:categoryMargin(d.category),planMode:planMode(d),realityMode:reality.mode,realitySeverity:reality.severity,realityFlags:reality.flags};state.profileLocked=true;state.page="ideas";persistProfile();closeModal();render();toast("Profile locked — Forge is now personalized to you")};
  document.getElementById("modal").classList.add("open");draw();
 }
 function profileSummary(){
@@ -982,17 +985,17 @@ function closeModal(){
  document.querySelector(".onboarding")?.classList.remove("wizard-underlay-hidden");
 }
 function opportunities(){
- let p=state.profile,cap=Number(p.budget||0),base=[
- {name:"Social media service",icon:"📱",margin:70,cap:1000,bep:3,risk:"Low",thesis:"Create and manage social content for small businesses without carrying inventory.",time:5,experience:"Beginner",model:"Service"},
- {name:"Tutoring / coaching",icon:"🎓",margin:80,cap:500,bep:2,risk:"Low",thesis:"Turn a skill or subject you know into a simple paid service.",time:4,experience:"Beginner",model:"Service"},
- {name:"Freelance design",icon:"✦",margin:75,cap:1500,bep:3,risk:"Low",thesis:"Sell design work directly to businesses and creators with almost no inventory.",time:6,experience:"Beginner",model:"Service"},
- {name:"Pre-order custom products",icon:"🎁",margin:45,cap:5000,bep:15,risk:"Low",thesis:"Sell first, then source or produce the order so you do not tie up cash in stock.",time:7,experience:"Beginner",model:"Pre-order"},
- {name:"Premium carry goods",icon:"👜",margin:48,cap:180000,bep:80,risk:"Low",thesis:"Everyday bags and organizers with strong gifting potential.",time:8,experience:"Beginner"},
- {name:"Urban footwear",icon:"👟",margin:42,cap:220000,bep:70,risk:"Medium",thesis:"Locally relevant footwear with controlled SKU depth.",time:10,experience:"Some experience"},
- {name:"Home fragrance",icon:"🕯️",margin:52,cap:140000,bep:90,risk:"Low",thesis:"Candles, diffusers and gift sets with manageable first batches.",time:7,experience:"Beginner"},
- {name:"Modern watches",icon:"⌚",margin:44,cap:190000,bep:55,risk:"Medium",thesis:"Affordable premium watches where design and presentation matter.",time:9,experience:"Some experience"},
- {name:"Everyday beauty",icon:"🧴",margin:50,cap:160000,bep:110,risk:"Medium",thesis:"Focused personal care with trust and repeat purchase.",time:10,experience:"Some experience"},
- {name:"Fitness essentials",icon:"🏋️",margin:41,cap:170000,bep:75,risk:"Low",thesis:"Compact fitness accessories suited to content-led selling.",time:8,experience:"Beginner"},
+ let p=state.profile,cap=Math.max(0,Number(p.budget||0)-Number(p.reserve||0)),base=[
+ {name:"Social media service",icon:"📱",margin:70,cap:0,bep:1,risk:"Low",thesis:"Sell a simple social-media service using skills and tools you already have. Forge treats the first test as a service sale, not an inventory launch.",time:5,experience:"Beginner",model:"Service",test:"Get 1 paying customer before spending on tools or ads."},
+ {name:"Tutoring / coaching",icon:"🎓",margin:80,cap:0,bep:1,risk:"Low",thesis:"Turn a skill or subject you already know into a simple paid service.",time:4,experience:"Beginner",model:"Service",test:"Find 1 learner willing to pay before buying equipment or software."},
+ {name:"Freelance design",icon:"✦",margin:75,cap:0,bep:1,risk:"Low",thesis:"Sell design work directly to businesses and creators using skills and tools you already have.",time:6,experience:"Beginner",model:"Service",test:"Offer one clear service and try to secure the first paid project before spending."},
+ {name:"Pre-order custom products",icon:"🎁",margin:45,cap:5,bep:1,risk:"Low",thesis:"Show the product first, collect a real order, then source it. This can test product demand without buying a large stock.",time:7,experience:"Beginner",model:"Pre-order",test:"Get a genuine customer order before committing money to inventory."},
+ {name:"Premium carry goods",icon:"👜",margin:48,cap:180000,bep:80,risk:"Low",thesis:"Everyday bags and organizers with strong gifting potential.",time:8,experience:"Beginner",model:"Inventory"},
+ {name:"Urban footwear",icon:"👟",margin:42,cap:220000,bep:70,risk:"Medium",thesis:"Locally relevant footwear with controlled SKU depth.",time:10,experience:"Some experience",model:"Inventory"},
+ {name:"Home fragrance",icon:"🕯️",margin:52,cap:140000,bep:90,risk:"Low",thesis:"Candles, diffusers and gift sets with manageable first batches.",time:7,experience:"Beginner",model:"Inventory"},
+ {name:"Modern watches",icon:"⌚",margin:44,cap:190000,bep:55,risk:"Medium",thesis:"Affordable premium watches where design and presentation matter.",time:9,experience:"Some experience",model:"Inventory"},
+ {name:"Everyday beauty",icon:"🧴",margin:50,cap:160000,bep:110,risk:"Medium",thesis:"Focused personal care with trust and repeat purchase.",time:10,experience:"Some experience",model:"Inventory"},
+ {name:"Fitness essentials",icon:"🏋️",margin:41,cap:170000,bep:75,risk:"Low",thesis:"Compact fitness accessories suited to content-led selling.",time:8,experience:"Beginner",model:"Inventory"},
  {name:"Private-label brand launch",icon:"🏷️",margin:45,cap:650000,bep:180,risk:"High",thesis:"A differentiated brand with deeper inventory, content and customer acquisition investment.",time:25,experience:"Experienced",model:"Inventory"}
  ];
  let list=base;
@@ -1000,13 +1003,17 @@ function opportunities(){
  const riskScore=(r)=>p.risk==="Conservative"?(r==="Low"?18:r==="Medium"?4:-12):p.risk==="Balanced"?(r==="Low"?10:r==="Medium"?12:r==="High"?5:0):p.risk==="Growth"?(r==="Low"?6:r==="Medium"?15:r==="High"?16:0):(r==="High"?20:r==="Medium"?14:7);
  const expScore=(x)=>p.experience==="Beginner"?(x==="Beginner"?10:x==="Some experience"?2:-8):p.experience==="Experienced"?(x==="Experienced"?10:5):0;
  return list.map(x=>{
-   const capital=x.cap<=cap?18:(cap<=0?-16:(cap/x.cap>=.75?10:cap/x.cap>=.5?5:cap/x.cap>=.25?0:-10));
+   const capital=x.cap<=cap?22:(x.model==="Service"||x.model==="Pre-order"?(cap>=x.cap?22:cap>=1?8:0):(cap<=0?-30:(cap/x.cap>=.75?8:cap/x.cap>=.5?0:cap/x.cap>=.25?-12:-24)));
    const time=p.time>=x.time?10:Math.max(-12,10-Math.round((x.time-p.time)*1.2));
-   const fit=Math.max(20,Math.min(97,50+capital+time+riskScore(x.risk)+expScore(x.experience)));
-   return {...x,fit,cap:x.cap,capitalGap:Math.max(0,x.cap-cap)};
+   let fit=50+capital+time+riskScore(x.risk)+expScore(x.experience);
+   if(cap<x.cap && x.model==="Inventory")fit=Math.min(fit,44);
+   if(cap<x.cap && x.model==="Pre-order")fit=Math.min(fit,68);
+   if(x.model==="Service" && cap<=10)fit=Math.max(fit,72);
+   fit=Math.max(15,Math.min(97,fit));
+   return {...x,fit,cap:x.cap,capitalGap:Math.max(0,x.cap-cap),capitalFit:cap>=x.cap,model:x.model||"Inventory"};
  }).sort((a,b)=>b.fit-a.fit);
 }
-function ideas(){let ps=opportunities(),p=state.profile;return "<div class='hero'><div><div class='eyebrow'>Business finder · personalized</div><div class='h1'>Only show me what fits.</div><div class='sub'>Forge is ranking opportunities against your locked capital, experience, time and risk profile. This is why two entrepreneurs will not see the same priority list.</div></div><button class='btn' onclick='openWizard()'>View locked profile</button></div><div class='notice'><b>Personalization:</b> "+p.risk+" risk appetite · "+p.riskCapacity+" risk capacity · "+p.experience+" · "+p.time+"h/week · "+BDT(p.budget)+" deployable capital. <span class='small'>These values are locked.</span></div><div class='section'><div><h2>Ranked opportunities</h2><p>Fit score combines capital fit, risk fit, time fit and experience fit. Lower-fit businesses are intentionally deprioritized.</p></div></div><div class='grid'>"+ps.map((x,i)=>"<div class='card span4'><div class='row' style='justify-content:space-between'><span class='tag'>#"+(i+1)+" · "+x.fit+"% fit</span><span class='status "+(x.risk==="Medium"||x.risk==="High"?"amber":"")+"'>"+x.risk+" risk</span></div><div class='product-photo'>"+x.icon+"</div><h3>"+x.name+"</h3><div class='small'>"+x.thesis+"</div><div class='metric'><span><div class='label'>Typical start capital</div><b>"+BDT(x.cap)+"</b></span><span><div class='label'>Gross margin target</div><b>"+x.margin+"%</b></span><span><div class='label'>Time need</div><b>"+x.time+"h/wk</b></span></div><div class='notice' style='margin-top:13px'><b>Why this priority?</b><div class='small'>"+(x.cap<=p.budget?"Capital fits":"Capital is tight — about "+BDT(x.cap-p.budget)+" more would be needed")+" · "+(p.time>=x.time?"Time fits":"Time stretch")+" · "+(x.risk==="High"&&p.risk!=="Aggressive"?"High risk deprioritized":"Risk profile compatible")+"</div></div><button class='btn primary' style='width:100%;margin-top:16px' onclick=\"selectOpportunity('"+x.name+"')\">Build this business →</button></div>").join("")+"</div>"}
+function ideas(){let ps=opportunities(),p=state.profile,cap=Math.max(0,Number(p.budget||0)-Number(p.reserve||0)),mode=forgeRealityCheck(p).mode;let modeNote=cap<=10?"You have very little business money available right now. Forge will focus on ways to test demand first — services, pre-orders and commission-based approaches — rather than pretending you can fund a normal inventory launch.":cap<1000?"Your starting budget is limited. Forge will favor low-upfront-cost tests before larger launches.":"Forge will compare each idea with the money you can actually use, not just the amount you entered.";return "<div class='hero'><div><div class='eyebrow'>Business finder · personalized</div><div class='h1'>Only show me what fits.</div><div class='sub'>Forge is matching opportunities to your real budget, time, experience and risk limits.</div></div><button class='btn' onclick='openWizard()'>View locked profile</button></div><div class='notice'><b>"+mode.replace("-"," ").toUpperCase()+" mode:</b> "+modeNote+" <span class='small'>Available business money: "+BDT(cap)+".</span></div><div class='section'><div><h2>Ranked opportunities</h2><p>Fit score combines capital fit, risk fit, time fit and experience fit. Lower-fit businesses are intentionally deprioritized.</p></div></div><div class='grid'>"+ps.map((x,i)=>"<div class='card span4'><div class='row' style='justify-content:space-between'><span class='tag'>#"+(i+1)+" · "+x.fit+"% fit</span><span class='status "+(x.risk==="Medium"||x.risk==="High"?"amber":"")+"'>"+x.risk+" risk</span></div><div class='product-photo'>"+x.icon+"</div><h3>"+x.name+"</h3><div class='small'>"+x.thesis+"</div><div class='metric'><span><div class='label'>Typical start capital</div><b>"+BDT(x.cap)+"</b></span><span><div class='label'>Business model</div><b>"+x.model+"</b></span><span><div class='label'>Time need</div><b>"+x.time+"h/wk</b></span></div><div class='notice' style='margin-top:13px'><b>Why this priority?</b><div class='small'>"+(x.cap<=cap?"Budget fits":x.model==="Service"?"No inventory needed for the first test":x.model==="Pre-order"?"Test demand before buying stock":"About "+BDT(x.cap-cap)+" more would be needed for the estimated launch")+" · "+(p.time>=x.time?"Time fits":"Time stretch")+" · "+(x.risk==="High"&&p.risk!=="Aggressive"?"High risk deprioritized":"Risk profile compatible")+(x.test?" · "+x.test:"")+"</div></div><button class='btn primary' style='width:100%;margin-top:16px' onclick=\"selectOpportunity('"+x.name+"')\">Build this business →</button></div>").join("")+"</div>"}
 function applyFilters(){toast("Your profile is locked. Finder filters are intentionally disabled so recommendations cannot be gamed.")}
 function selectOpportunity(n){state.selectedOpportunityName=n;state.selectedProduct=opportunities().find(x=>x.name===n)||opportunities()[0];state.page="products";persistProfile();render();toast(n+" added to your personalized plan")}
 function productCatalog(){return {

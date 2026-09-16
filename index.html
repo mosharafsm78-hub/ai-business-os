@@ -410,6 +410,223 @@ body[data-page="content"] .eyebrow{color:#f29bc0}body[data-page="content"] .nav.
   .modal:has(.cj-decision-head) .cj-decision-head{padding:18px!important}
   .modal:has(.cj-decision-head) .cj-decision-note,.modal:has(.cj-decision-head) .cj-modal-actions{margin-left:18px!important;margin-right:18px!important}
 }
+
+/* FORGE PRODUCT LAB V2 — editorial ecommerce review */
+.modal:has(.forge-product-review){
+  background:rgba(18,24,21,.58)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+  padding:24px!important;
+}
+.modal:has(.forge-product-review) .modalbox{
+  width:min(1180px,calc(100vw - 48px))!important;
+  max-height:min(900px,calc(100vh - 48px))!important;
+  padding:0!important;
+  overflow:auto!important;
+  background:#fff!important;
+  color:#151a17!important;
+  border:1px solid #e1e6e3!important;
+  border-radius:18px!important;
+  box-shadow:0 36px 100px rgba(0,0,0,.24)!important;
+}
+.forge-review-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:24px!important;
+  padding:20px 30px!important;
+  border-bottom:1px solid #e7ebe8!important;
+}
+.forge-review-head-copy{min-width:0!important}
+.forge-review-kicker{
+  margin-bottom:5px!important;
+  color:#718078!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+}
+.forge-review-head h2{
+  margin:0!important;
+  color:#111714!important;
+  font-size:22px!important;
+  line-height:1.15!important;
+  letter-spacing:-.025em!important;
+}
+.forge-review-head p{
+  margin:5px 0 0!important;
+  color:#7a857f!important;
+  font-size:12px!important;
+}
+.forge-review-close{
+  flex:0 0 auto!important;
+  width:40px!important;height:40px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid #dfe5e1!important;
+  border-radius:10px!important;
+  background:#fff!important;color:#17201c!important;
+  font-size:19px!important;line-height:1!important;
+}
+.forge-review-close:hover{background:#f4f7f5!important}
+.forge-review-main{
+  display:grid!important;
+  grid-template-columns:minmax(420px,1.05fr) minmax(420px,.95fr)!important;
+  gap:0!important;
+  min-height:560px!important;
+}
+.forge-review-gallery{
+  position:relative!important;
+  padding:28px!important;
+  border-right:1px solid #e7ebe8!important;
+  background:#f7f8f6!important;
+}
+.forge-review-image-stage{
+  height:100%!important;min-height:500px!important;
+  display:grid!important;place-items:center!important;
+  position:relative!important;
+  overflow:hidden!important;
+  border:1px solid #e4e9e6!important;
+  border-radius:14px!important;
+  background:#fff!important;
+}
+.forge-review-image{
+  width:100%!important;height:100%!important;
+  min-height:500px!important;
+  object-fit:contain!important;
+  padding:34px!important;
+  background:#fff!important;
+}
+.forge-review-live{
+  position:absolute!important;left:16px!important;top:16px!important;z-index:3!important;
+  display:inline-flex!important;align-items:center!important;gap:7px!important;
+  padding:7px 10px!important;border-radius:999px!important;
+  background:#173f30!important;color:#fff!important;
+  font-size:9px!important;font-weight:800!important;letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  box-shadow:0 6px 18px rgba(23,63,48,.16)!important;
+}
+.forge-review-live i{width:6px!important;height:6px!important;border-radius:50%!important;background:#78dfa8!important}
+.forge-review-rec{
+  position:absolute!important;right:16px!important;top:16px!important;z-index:3!important;
+  width:34px!important;height:34px!important;display:grid!important;place-items:center!important;
+  border:1px solid #e1e7e3!important;border-radius:9px!important;
+  background:rgba(255,255,255,.94)!important;color:#59655f!important;
+  font-size:10px!important;font-weight:800!important;
+}
+.forge-review-details{
+  padding:30px!important;
+  background:#fff!important;
+}
+.forge-review-category{
+  display:inline-flex!important;align-items:center!important;
+  padding:6px 9px!important;
+  border-radius:6px!important;
+  background:#f0f6f2!important;
+  border:1px solid #d8e7de!important;
+  color:#286047!important;
+  font-size:10px!important;font-weight:750!important;
+}
+.forge-review-title{
+  margin:14px 0 14px!important;
+  max-width:560px!important;
+  color:#111714!important;
+  font-size:30px!important;line-height:1.14!important;
+  letter-spacing:-.035em!important;
+}
+.forge-review-price-row{
+  display:flex!important;align-items:flex-end!important;justify-content:space-between!important;
+  gap:16px!important;padding-bottom:20px!important;
+  border-bottom:1px solid #e7ebe8!important;
+}
+.forge-review-price{
+  color:#176044!important;
+  font-size:38px!important;line-height:1!important;font-weight:850!important;
+  letter-spacing:-.04em!important;
+}
+.forge-review-price-note{
+  margin-top:7px!important;color:#7b857f!important;font-size:11px!important;
+}
+.forge-review-source{
+  color:#7a857f!important;font-size:10px!important;text-align:right!important;white-space:nowrap!important;
+}
+.forge-review-section-title{
+  margin:22px 0 10px!important;
+  color:#69746e!important;font-size:10px!important;font-weight:800!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;
+}
+.forge-review-economics{
+  display:grid!important;grid-template-columns:1fr 1fr!important;
+  border-top:1px solid #e7ebe8!important;border-left:1px solid #e7ebe8!important;
+}
+.forge-review-metric{
+  min-height:76px!important;padding:13px 14px!important;
+  border-right:1px solid #e7ebe8!important;border-bottom:1px solid #e7ebe8!important;
+  background:#fff!important;
+}
+.forge-review-metric span{
+  display:block!important;color:#7b857f!important;font-size:10px!important;
+}
+.forge-review-metric b{
+  display:block!important;margin-top:7px!important;color:#171d19!important;
+  font-size:16px!important;font-weight:750!important;
+}
+.forge-review-metric small{
+  display:block!important;margin-top:3px!important;color:#9aa39e!important;font-size:9px!important;
+}
+.forge-review-metric.is-positive{background:#f0f8f3!important}
+.forge-review-metric.is-positive b{color:#176044!important}
+.forge-review-signals{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;
+}
+.forge-review-signal{
+  padding:11px 12px!important;border:1px solid #e3e9e5!important;border-radius:9px!important;
+  background:#fafbfa!important;
+}
+.forge-review-signal span{display:block!important;color:#7b857f!important;font-size:9px!important;text-transform:uppercase!important;letter-spacing:.06em!important}
+.forge-review-signal b{display:block!important;margin-top:4px!important;color:#18201b!important;font-size:12px!important}
+.forge-review-next{
+  margin:0 30px 24px!important;
+  padding:16px 18px!important;
+  display:grid!important;grid-template-columns:auto 1fr!important;gap:12px!important;
+  border:1px solid #dfe9e3!important;border-radius:12px!important;
+  background:#f5f9f6!important;
+}
+.forge-review-next-icon{
+  width:30px!important;height:30px!important;display:grid!important;place-items:center!important;
+  border-radius:8px!important;background:#dceee4!important;color:#176044!important;font-weight:900!important;
+}
+.forge-review-next b{display:block!important;color:#1b2922!important;font-size:12px!important}
+.forge-review-next span{display:block!important;margin-top:4px!important;color:#69766f!important;font-size:11px!important;line-height:1.5!important}
+.forge-review-footer{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:9px!important;
+  padding:18px 30px!important;border-top:1px solid #e7ebe8!important;
+  background:#fff!important;position:sticky!important;bottom:0!important;z-index:5!important;
+}
+.forge-review-footer .btn{
+  min-height:44px!important;padding:0 18px!important;border-radius:9px!important;
+}
+.forge-review-footer .btn.primary{
+  background:#176044!important;color:#fff!important;border-color:#176044!important;
+  box-shadow:0 6px 16px rgba(23,96,68,.15)!important;
+}
+.forge-review-footer .btn:not(.primary){
+  background:#fff!important;color:#27332d!important;border:1px solid #d8e0db!important;
+}
+@media(max-width:850px){
+  .modal:has(.forge-product-review){padding:12px!important}
+  .modal:has(.forge-product-review) .modalbox{width:calc(100vw - 24px)!important;max-height:calc(100vh - 24px)!important}
+  .forge-review-main{grid-template-columns:1fr!important}
+  .forge-review-gallery{border-right:0!important;border-bottom:1px solid #e7ebe8!important}
+  .forge-review-image-stage,.forge-review-image{min-height:340px!important;height:340px!important}
+  .forge-review-title{font-size:25px!important}
+}
+@media(max-width:560px){
+  .forge-review-head,.forge-review-details{padding:18px!important}
+  .forge-review-gallery{padding:18px!important}
+  .forge-review-next{margin:0 18px 18px!important}
+  .forge-review-footer{padding:14px 18px!important}
+  .forge-review-footer .btn{flex:1!important}
+}
 </style></style>
 
 <style id="forge-brand-studio">

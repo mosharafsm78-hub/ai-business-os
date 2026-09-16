@@ -2643,21 +2643,22 @@ function renderCjResults(j){
   }
   box.innerHTML=cjState.map((p,i)=>{
     const e=liveEconomics(p);
-    return "<article class='cj-card'>"+
-      "<div class='cj-image-wrap'><span class='cj-live-badge'>LIVE PRODUCT</span><img src='"+esc(p.image)+"' loading='lazy' alt='"+esc(p.name)+"'></div>"+
+    const featured=i===0;
+    return "<article class='cj-card "+(featured?"featured":"")+"'>"+
+      "<div class='cj-image-wrap'><span class='cj-live-badge'>"+(featured?"Top match":"Live product")+"</span><span class='cj-rec-number'>"+String(i+1).padStart(2,"0")+"</span><img src='"+esc(p.image)+"' loading='lazy' alt='"+esc(p.name)+"'></div>"+
       "<div class='cj-card-body'>"+
-      "<div class='small' style='letter-spacing:.08em;text-transform:uppercase'>Forge recommendation "+(i+1)+"</div>"+
+      "<div class='cj-recommendation'><span>Forge recommendation</span><b>"+(i+1)+"</b></div>"+
       "<h3>"+esc(p.name)+"</h3>"+
       "<div class='cj-meta'><span class='cj-chip'>"+esc(p.category||"Product")+"</span><span class='cj-chip'>"+(Number(p.inventory||0)?"Stock checked":"Stock check at order")+"</span></div>"+
-      "<div class='cj-price-row'><div><div class='cj-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-bdt'>Live supplier price · ≈ "+BDT(e.supplier)+"</div></div><span class='small'>"+new Date(cjLastFetched||Date.now()).toLocaleTimeString("en-BD",{hour:"2-digit",minute:"2-digit"})+"</span></div>"+
-      "<div class='cj-data'>"+
-      "<div>Estimated landed cost<b>"+BDT(e.landed)+"</b><span class='small'>incl. logistics reserve</span></div>"+
-      "<div>Estimated selling price<b>"+BDT(e.selling)+"</b><span class='small'>Forge model</span></div>"+
-      "<div>Marketing / CAC<b>"+BDT(e.cac)+"</b><span class='small'>target acquisition</span></div>"+
-      "<div>Estimated contribution<b>"+BDT(e.contribution)+"</b><span class='small'>"+e.margin+"% after modeled costs</span></div>"+
+      "<div class='cj-price-row'><div><div class='cj-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-bdt'>Live supplier price · ≈ "+BDT(e.supplier)+"</div></div><span class='cj-fresh-time'>"+new Date(cjLastFetched||Date.now()).toLocaleTimeString("en-BD",{hour:"2-digit",minute:"2-digit"})+"</span></div>"+
+      "<div class='cj-economics'>"+
+      "<div><span>Estimated landed</span><b>"+BDT(e.landed)+"</b><small>Logistics included</small></div>"+
+      "<div><span>Estimated selling</span><b>"+BDT(e.selling)+"</b><small>Forge model</small></div>"+
+      "<div><span>Marketing / CAC</span><b>"+BDT(e.cac)+"</b><small>Target acquisition</small></div>"+
+      "<div class='cj-contribution'><span>Contribution</span><b>"+BDT(e.contribution)+"</b><small>"+e.margin+"% after modeled costs</small></div>"+
       "</div>"+
-      "<div class='small' style='margin:12px 0'>Supplier stock: <b>"+formatQty(p.inventory)+"</b> · Delivery: <b>"+esc(p.deliveryDays||"checked before order")+"</b></div>"+
-      "<div class='cj-footer'><button class='btn primary' style='width:100%' onclick='reviewCj("+i+")'>Choose this product →</button></div>"+
+      "<div class='cj-stock'><span>Supplier stock</span><b>"+formatQty(p.inventory)+"</b><i></i><span>Delivery</span><b>"+esc(p.deliveryDays||"Checked before order")+"</b></div>"+
+      "<div class='cj-footer'><button class='btn primary' style='width:100%' onclick='reviewCj("+i+")'>Review this product</button></div>"+
       "</div></article>";
   }).join("");
   const meta=document.getElementById("cjmeta");

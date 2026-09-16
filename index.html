@@ -752,7 +752,38 @@ input:focus,select:focus,textarea:focus{border-color:#49a979!important;box-shado
 .cj-wait-stage{display:flex;align-items:center;justify-content:center;gap:16px;min-height:230px;padding:30px;border:1px solid #dce6e1;border-radius:16px;background:#fbfcfb}.cj-wait-spinner{width:38px;height:38px;border:3px solid #dce8e2;border-top-color:#0e7a4f;border-radius:50%;animation:forgeSpin .8s linear infinite;flex:0 0 auto}@keyframes forgeSpin{to{transform:rotate(360deg)}}.cj-wait-stage strong{display:block;font-size:15px}.cj-wait-stage span{display:block;color:#65736c;font-size:11px;margin-top:4px;line-height:1.5}.cj-wait-time{margin-top:9px;font-size:10px;color:#0e7a4f;font-weight:800}
 @media(max-width:900px){.forge-w-layout{grid-template-columns:1fr}.forge-w-side{border-right:0;border-bottom:1px solid #e1e8e4;padding:22px}.forge-w-steps{grid-template-columns:repeat(5,1fr)}.forge-w-steps>div{padding:6px;display:block}.forge-w-steps small{display:none}.forge-w-steps b{font-size:8px;margin-top:5px}.forge-w-content{padding:26px 22px}.forge-workspace-bar{align-items:flex-start;flex-direction:column}.forge-workspace-metrics{width:100%;justify-content:space-between}}
 @media(max-width:620px){.forge-wizard{padding:10px}.forge-wizard-shell{border-radius:17px}.forge-wizard-top{padding:14px 16px}.forge-w-side{padding:20px 16px}.forge-w-side h1{font-size:25px}.forge-w-steps{gap:4px}.forge-w-steps>div{padding:4px}.forge-w-steps>div>span{width:24px;height:24px}.forge-w-content{padding:20px 16px}.forge-w-heading{display:block}.forge-w-progress{margin-top:15px}.forge-w-grid,.forge-review-grid,.forge-landing-grid{grid-template-columns:1fr}.forge-w-actions{flex-direction:column-reverse}.forge-w-actions .btn{width:100%}.forge-starter-note{align-items:flex-start;flex-direction:column}.forge-workspace-metrics{gap:8px;justify-content:flex-start}}
-</style></head>
+</style><style id="forge-finance-conversation-v1">
+.forge-finance-intro{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-top:28px;padding:22px 22px 20px;border:1px solid #000;border-radius:16px;background:#fafcfb!important}
+.forge-finance-kicker{display:block;font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:900;color:#4b5a53!important}
+.forge-finance-intro h3{margin:7px 0 5px;font-size:22px;letter-spacing:-.025em;color:#000!important}
+.forge-finance-intro p{margin:0;max-width:720px;font-size:12px;line-height:1.6;color:#4f5e57!important}
+.forge-finance-badge{min-width:120px;padding:12px 14px;border:1px solid #000;border-radius:12px;background:#fff!important;text-align:left}
+.forge-finance-badge span,.forge-finance-badge small{display:block;font-size:8px;color:#66756e!important;text-transform:uppercase;letter-spacing:.09em}
+.forge-finance-badge b{display:block;font-size:19px;margin:4px 0 2px;color:#000!important}
+.forge-finance-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.forge-money-field{padding:17px;border:1px solid #000;border-radius:14px;background:#fff!important}
+.forge-money-field>span{display:block;font-size:12px;font-weight:850;color:#000!important;line-height:1.35}
+.forge-money-field>small{display:block;margin:5px 0 11px;font-size:10px;line-height:1.45;color:#66756e!important}
+.forge-money-wrap{height:50px;display:flex;align-items:center;border:1px solid #000;border-radius:11px;overflow:hidden;background:#fff!important}
+.forge-money-wrap>b{width:44px;text-align:center;font-size:20px;font-weight:900;color:#000!important}
+.forge-money-wrap input{height:48px!important;flex:1;border:0!important;border-left:1px solid #000!important;border-radius:0!important;padding:0 10px!important;font-size:16px!important;font-weight:750;background:#fff!important;color:#000!important;outline:0}
+.forge-money-wrap input:focus{box-shadow:inset 0 0 0 2px #000}
+.forge-money-wrap em{font-style:normal;padding:0 12px;font-size:9px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#5d6b64!important}
+.forge-finance-understanding{margin-top:15px;padding:18px;border:1px solid #000;border-radius:15px;background:#000!important;color:#fff!important}
+.forge-finance-understanding *{color:inherit!important;background:transparent!important}
+.forge-understanding-head{display:flex;justify-content:space-between;gap:15px;align-items:center}
+.forge-understanding-head b{display:block;margin-top:5px;font-size:13px}
+.forge-live-dot{padding:5px 8px;border:1px solid #fff;border-radius:999px;font-size:8px;font-weight:900;letter-spacing:.1em}
+.forge-finance-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.forge-finance-metrics>div{padding:13px;border:1px solid #fff;border-radius:11px}
+.forge-finance-metrics small,.forge-finance-metrics span{display:block;font-size:9px;opacity:.72}
+.forge-finance-metrics strong{display:block;margin:5px 0;font-size:20px;letter-spacing:-.03em}
+.forge-finance-note{margin-top:10px;padding:12px 13px;border:1px solid #fff;border-radius:10px;font-size:10px;line-height:1.5}
+.forge-finance-note b{font-size:11px}
+.forge-finance-note span{display:block;margin-top:3px;opacity:.8}
+@media(max-width:760px){.forge-finance-intro{display:block}.forge-finance-badge{margin-top:14px}.forge-finance-fields,.forge-finance-metrics{grid-template-columns:1fr}}
+</style>
+</head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
 /* FORGE STARTUP — never leave the customer on a dead loading screen */
@@ -2517,6 +2548,24 @@ function forgeWizardField(label,key,type="text",placeholder="",options){
   }
   return "<label class='forge-w-field'><span>"+label+"</span><input id='fw_"+key+"' data-key='"+key+"' type='"+type+"' value='"+esc(v)+"' placeholder='"+esc(placeholder)+"'></label>";
 }
+function forgeFinancePreview(){
+  const d=window.__forgeWizardData||forgeWizardData();
+  const read=k=>Number(document.getElementById("fw_"+k)?.value??d[k]??0)||0;
+  const budget=read("budget"),income=read("income"),expenses=read("expenses"),reserve=read("reserve");
+  const available=Math.max(0,budget-reserve);
+  const monthlyGap=income-expenses;
+  const el=id=>document.getElementById(id);
+  if(el("fwAvailableCapital"))el("fwAvailableCapital").textContent=BDT(available);
+  if(el("fwReserveAmount"))el("fwReserveAmount").textContent=BDT(reserve);
+  if(el("fwMonthlyGap"))el("fwMonthlyGap").textContent=(monthlyGap>=0?"+":"-")+BDT(Math.abs(monthlyGap));
+  const note=el("fwFinanceNote");
+  if(note){
+    if(budget===0)note.innerHTML="<b>Forge is listening.</b><span>Add the amount you can actually deploy. I’ll use it as the ceiling for your early business decisions.</span>";
+    else if(reserve>budget)note.innerHTML="<b>Your reserve is larger than your deployable capital.</b><span>That’s okay to correct here. Forge won’t treat money you want protected as available business capital.</span>";
+    else if(available===0)note.innerHTML="<b>Protected capital is currently 100% of your stated capital.</b><span>Forge will treat your available business capital as ৳0 until you change the numbers.</span>";
+    else note.innerHTML="<b>Forge has your starting room.</b><span>I’ll work from <strong>"+BDT(available)+"</strong> as available business capital and keep <strong>"+BDT(reserve)+"</strong> protected from business deployment.</span>";
+  }
+}
 function forgeWizardView(){
   const step=window.__forgeWizardStep||1,d=window.__forgeWizardData||forgeWizardData();
   const titles=[
@@ -2528,11 +2577,14 @@ function forgeWizardView(){
   ];
   const t=titles[step-1];
   let body="";
-  if(step===1) body="<div class='forge-w-grid'>"+
-    forgeWizardField("Business capital you can deploy","budget","number","50000")+
-    forgeWizardField("Monthly personal income","income","number","5000")+
-    forgeWizardField("Monthly personal expenses","expenses","number","10000")+
-    forgeWizardField("Emergency reserve you will not invest","reserve","number","0")+"</div>";
+  if(step===1) body="<div class='forge-finance-intro'><div><span class='forge-finance-kicker'>YOUR MONEY, IN PLAIN ENGLISH</span><h3>Let’s understand what you can actually work with.</h3><p>Give Forge a realistic picture of your money. I’ll use it to shape opportunities, product quantities, launch budgets and cash-flow decisions.</p></div><div class='forge-finance-badge'><span>Currency</span><b>৳ BDT</b><small>Bangladeshi Taka</small></div></div>"+
+    "<div class='forge-finance-fields'>"+
+    "<label class='forge-money-field'><span>How much are you ready to put into the business?</span><small>The capital you can comfortably deploy — not money you need for daily life.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_budget' data-key='budget' type='number' min='0' value='"+esc(d.budget??"")+"' placeholder='50,000' oninput='forgeFinancePreview()'><em>BDT</em></div></label>"+
+    "<label class='forge-money-field'><span>How much do you need to earn for yourself each month?</span><small>This helps Forge understand the income your business eventually needs to support.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_income' data-key='income' type='number' min='0' value='"+esc(d.income??"")+"' placeholder='5,000' oninput='forgeFinancePreview()'><em>/ month</em></div></label>"+
+    "<label class='forge-money-field'><span>What do your personal expenses look like each month?</span><small>Your everyday financial needs help Forge avoid unrealistic business assumptions.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_expenses' data-key='expenses' type='number' min='0' value='"+esc(d.expenses??"")+"' placeholder='10,000' oninput='forgeFinancePreview()'><em>/ month</em></div></label>"+
+    "<label class='forge-money-field'><span>How much should Forge keep untouched?</span><small>This is your protected safety reserve. Forge will not count it as deployable capital.</small><div class='forge-money-wrap'><b>৳</b><input id='fw_reserve' data-key='reserve' type='number' min='0' value='"+esc(d.reserve??"")+"' placeholder='0' oninput='forgeFinancePreview()'><em>protected</em></div></label>"+
+    "</div>"+
+    "<div class='forge-finance-understanding'><div class='forge-understanding-head'><div><span class='forge-finance-kicker'>FORGE'S CURRENT UNDERSTANDING</span><b>This is what I’ll use for your first decisions.</b></div><span class='forge-live-dot'>LIVE</span></div><div class='forge-finance-metrics'><div><small>Available business capital</small><strong id='fwAvailableCapital'>"+BDT(Math.max(0,Number(d.budget||0)-Number(d.reserve||0)))+"</strong><span>capital Forge can work with</span></div><div><small>Protected reserve</small><strong id='fwReserveAmount'>"+BDT(d.reserve)+"</strong><span>kept outside business deployment</span></div><div><small>Monthly income gap</small><strong id='fwMonthlyGap'>"+(Number(d.income||0)-Number(d.expenses||0)>=0?"+":"-")+BDT(Math.abs(Number(d.income||0)-Number(d.expenses||0)))+"</strong><span>income minus personal expenses</span></div></div><div id='fwFinanceNote' class='forge-finance-note'><b>Forge has your starting room.</b><span>I’ll work from <strong>"+BDT(Math.max(0,Number(d.budget||0)-Number(d.reserve||0)))+"</strong> as available business capital and keep <strong>"+BDT(d.reserve)+"</strong> protected from business deployment.</span></div></div>";
   if(step===2) body="<div class='forge-w-grid'>"+
     forgeWizardField("Age","age","number","28")+
     forgeWizardField("City / location","city","text","Dhaka")+

@@ -1,37 +1,26 @@
 
-/* FORGE STARTUP — wait for the application to finish loading; never overwrite a healthy render */
+/* FORGE STARTUP — fail open. Never replace the workspace with a dark recovery wall. */
 (function(){
   window.__forgeRendered=false;
   window.__forgeBootError="";
-  window.__forgeBootStarted=Date.now();
   function captureError(e){
     window.__forgeBootError=(e&&e.message)||String(e||"Forge startup error");
   }
-  window.addEventListener("error",captureError);
+  window.addEventListener("error",function(e){captureError(e.error||e.message)});
   window.addEventListener("unhandledrejection",function(e){captureError(e&&e.reason)});
-  function showRecovery(){
-    if(window.__forgeRendered)return;
-    var app=document.getElementById("app");
-    if(!app)return;
-    var detail=String(window.__forgeBootError||"The workspace did not finish initializing.");
-    var safe=detail.replace(/[<>&]/g,function(c){return c==="&"?"&amp;":c===">"?"&gt;":"&lt;"});
-    app.innerHTML="<div class='onboarding'><div class='onboarding-card'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='eyebrow' style='margin-top:32px'>FORGE RECOVERY</div><div class='h1'>Your workspace is ready to retry.</div><p class='sub'>Forge is taking longer than expected to start. Your saved business data has not been replaced.</p><div class='notice'><b>Workspace protection is active.</b><div class='small'>No business profile or product data was deleted.</div></div><div class='actions' style='margin-top:18px'><button class='btn primary' onclick='location.reload()'>Retry Forge →</button></div><div class='small' style='margin-top:14px;opacity:.55'>Startup detail: "+safe+"</div></div></div>";
-  }
   function boot(){
-    if(window.__forgeRendered)return;
-    try{
-      if(typeof render==="function"){
-        render();
-        if(window.__forgeRendered)return;
-      }
-    }catch(e){captureError(e)}
-    if(Date.now()-window.__forgeBootStarted<15000){
-      setTimeout(boot,250);
-    }else{
-      showRecovery();
-    }
+    if(window.__forgeRendered || typeof render!=="function") return;
+    try{ render(); }catch(e){ captureError(e); }
   }
-  setTimeout(boot,50);
+  function schedule(){
+    boot();
+    if(!window.__forgeRendered) setTimeout(boot,100);
+    if(!window.__forgeRendered) setTimeout(boot,500);
+    if(!window.__forgeRendered) setTimeout(boot,1500);
+    if(!window.__forgeRendered) setTimeout(boot,4000);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",schedule,{once:true});
+  else schedule();
 })();
 
 

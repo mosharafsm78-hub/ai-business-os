@@ -700,21 +700,34 @@ html,body{background:#fff!important;color:#000!important;background-image:none!i
 </style></head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
-/* FORGE STARTUP — mobile-safe, no reload loop */
+/* FORGE STARTUP — never leave the customer on a dead loading screen */
 (function(){
   window.__forgeRendered=false;
   window.__forgeBootError="";
-  window.addEventListener("error",function(e){
-    window.__forgeBootError=(e&&e.message)||"Forge startup error";
-  });
-  setTimeout(function(){
+  function captureError(e){
+    window.__forgeBootError=(e&&e.message)||String(e||"Forge startup error");
+  }
+  window.addEventListener("error",captureError);
+  window.addEventListener("unhandledrejection",function(e){captureError(e&&e.reason)});
+  function showRecovery(){
     if(window.__forgeRendered)return;
     var app=document.getElementById("app");
     if(!app)return;
-    var detail=window.__forgeBootError||"The workspace did not finish initializing.";
-    app.innerHTML="<div class='onboarding'><div class='onboarding-card'><div class='brand'><div class='mark'>F</div>FORGE</div><div class='eyebrow' style='margin-top:32px'>STARTUP CHECK</div><div class='h1'>Forge needs one more try.</div><p class='sub'>The workspace did not finish loading. Your saved business profile is untouched.</p><div class='notice'><b>Nothing was deleted.</b><div class='small'>Tap retry. Forge will restart cleanly on this device.</div></div><div class='actions' style='margin-top:18px'><button class='btn primary' onclick='location.reload()'>Retry Forge →</button></div><div class='small' style='margin-top:14px;opacity:.55'>${esc?'' : ''}</div></div></div>";
+    var detail=String(window.__forgeBootError||"The workspace did not finish initializing.");
+    var safe=detail.replace(/[<>&]/g,function(c){return c==="&"?"&amp;":c===">"?"&gt;":"&lt;"});
+    app.innerHTML="<div class='onboarding'><div class='onboarding-card'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='eyebrow' style='margin-top:32px'>FORGE RECOVERY</div><div class='h1'>Your workspace is ready to retry.</div><p class='sub'>Forge did not finish starting this time. Your saved business data is still stored locally and has not been replaced.</p><div class='notice'><b>Workspace protection is active.</b><div class='small'>No business profile or product data was deleted.</div></div><div class='actions' style='margin-top:18px'><button class='btn primary' onclick='location.reload()'>Retry Forge →</button></div><div class='small' style='margin-top:14px;opacity:.55'>Startup detail: "+safe+"</div></div></div>";
     try{console.error("Forge startup:",detail)}catch(e){}
-  },3500);
+  }
+  setTimeout(function(){
+    if(window.__forgeRendered)return;
+    try{
+      if(typeof render==="function"){
+        render();
+        if(window.__forgeRendered)return;
+      }
+    }catch(e){captureError(e)}
+    showRecovery();
+  },1800);
 })();
 </script>
 <script>

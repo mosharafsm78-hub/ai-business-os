@@ -1197,40 +1197,39 @@ function contentLibrary(){
   <div class="content-bottom-grid"><div class="card smart-panel"><div class="eyebrow">FORGE AUTOPILOT</div><h2>Your next content opportunities.</h2><div class="opportunity"><span>⚡</span><div><b>Product launch pack</b><small>${esc(product)} needs a complete launch set.</small></div><button class="btn" onclick="createContentRequest('Create a complete launch content pack')">Build →</button></div><div class="opportunity"><span>◈</span><div><b>Social presence</b><small>Prepare profile and cover assets for every connected platform.</small></div><button class="btn" onclick="createContentRequest('Create my complete social media kit')">Build →</button></div><div class="opportunity"><span>✦</span><div><b>Brand consistency</b><small>Keep every future asset aligned with ${esc(name)}.</small></div><button class="btn" onclick="createContentRequest('Create my complete brand identity kit')">Build →</button></div></div>${contentAssetVaultHtml()}<div class="card creative-memory"><div class="eyebrow">CREATIVE MEMORY</div><h2>Forge knows your rules.</h2><div class="memory-row">✓ Brand identity <span>Synced</span></div><div class="memory-row">✓ Product context <span>Synced</span></div><div class="memory-row">✓ Business plan <span>Synced</span></div><div class="memory-row">✓ Content preferences <span>Learning</span></div><button class="btn" onclick="toast('Creative Memory will keep learning from your approved content.')">Manage preferences →</button></div></div>`;
 }
 function autoBuildContentDepartment(reason){
-  const p=state.selectedProduct||{};
-  const b=state.brandStudio||{};
+  const p=state.selectedProduct||{}, b=state.brandStudio||{};
   const brand=b.chosenName||state.business?.name||"Your Brand";
   const product=b.chosenProductName||p.name||"Your Product";
-  const key=[brand,product,p.id,p.image].join("|");
+  const image=p.image||"";
+  const engine="forge-content-v2";
+  const key=[engine,brand,product,p.id,image].join("|");
   if(state.contentAutomation?.key===key && state.contentAssets?.length)return;
-  state.contentAutomation={key,reason,startedAt:new Date().toISOString(),status:"building"};
+  state.contentAutomation={key,reason,startedAt:new Date().toISOString(),status:"building",engine};
   state.contentAssets=[];
   const accent=b.primaryColor||"#69dda0";
-  const image=p.image||"";
   const items=[
-    [brand+" · Primary Logo","Brand Identity","Primary logo mark for website, social profiles and packaging."],
-    [brand+" · Favicon","Brand Identity","Compact favicon / app icon."],
-    [brand+" · Brand Banner","Brand Identity","Master brand banner for digital profiles."],
-    [brand+" · Facebook Cover","Social Media","Facebook cover image using the approved identity."],
-    [brand+" · Instagram Profile Kit","Social Media","Instagram-ready profile identity and launch graphic."],
-    [brand+" · TikTok / Shorts Cover","Social Media","Short-form video channel cover graphic."],
-    [brand+" · Website Hero Banner","Website","Homepage hero visual for the first launch."],
-    [product+" · Product Hero","Product","Storefront hero visual based on the confirmed supplier product."],
-    [product+" · Product Feature Card","Product","Feature-focused product presentation graphic."],
-    [product+" · Product Social Post","Social Creative","Square product launch post."],
-    [product+" · Story Creative","Social Creative","Vertical story/reel cover creative."],
-    [brand+" · Launch Announcement","Campaign","Launch announcement banner."],
-    [brand+" · Offer / CTA Graphic","Advertising","Reusable promotional CTA graphic."],
-    [brand+" · WhatsApp / Message Card","Marketing","Customer-message graphic for direct selling."],
-    [brand+" · Email Header","Marketing","Launch email header graphic."]
+    [brand+" · Primary Logo","Brand Identity","Primary logo mark for website, social profiles and packaging.","logo",false],
+    [brand+" · Favicon","Brand Identity","Compact favicon and app icon.","favicon",false],
+    [brand+" · Brand Banner","Brand Identity","Master brand identity banner.","brand-banner",false],
+    [brand+" · Facebook Cover","Social Media","Facebook cover built from the approved brand system.","facebook",false],
+    [brand+" · Instagram Profile Kit","Social Media","Instagram profile identity with a clean brand composition.","instagram",false],
+    [brand+" · TikTok / Shorts Cover","Social Media","Short-form channel cover with brand-first visual hierarchy.","tiktok",true],
+    [brand+" · Website Hero Banner","Website","Homepage hero banner using the selected product.","website-hero",true],
+    [product+" · Product Hero","Product","Storefront hero presentation using the real selected product.","product-hero",true],
+    [product+" · Product Feature Card","Product","Feature-led product presentation with the real product image.","product-feature",true],
+    [product+" · Product Social Post","Social Creative","Square launch post built around the selected product.","product-post",true],
+    [product+" · Story Creative","Social Creative","Vertical story / reel cover using the selected product.","story",true],
+    [brand+" · Launch Announcement","Campaign","Launch announcement creative aligned to the brand.","launch",true],
+    [brand+" · Offer / CTA Graphic","Advertising","Reusable promotional CTA template with the selected product.","offer",true],
+    [brand+" · WhatsApp / Message Card","Marketing","Direct-selling message card with product context.","whatsapp",true],
+    [brand+" · Email Header","Marketing","Launch email header with the selected product.","email",true]
   ];
   items.forEach((x,i)=>{
-    const kind=i===6?"banner":i===7||i===8?"product":i===10?"story":i===0||i===1||i===2?"logo":"post";
-    const subtitle=i===7&&image?"Confirmed product · real supplier image":"Ready-to-use "+x[1].toLowerCase()+" asset";
-    const svg=forgeSvg(x[0],subtitle,kind,accent,image);
-    saveForgeAsset(x[0],x[1],x[2],svg);
+    const [name,type,description,kind,useImage]=x;
+    const svg=forgeSvg(name,product,type==="Product"||type==="Social Creative"?"product":kind,accent,useImage?image:"",i);
+    saveForgeAsset(name,type,description,svg);
     const last=state.contentAssets[0];
-    if(last)last.sourceImage=image;
+    if(last)last.sourceImage=useImage?image:"";
   });
   state.contentRequests=state.contentRequests||[];
   state.contentRequests.unshift({request:"Automatic content department build for "+product,createdAt:new Date().toISOString(),status:"generated",reason});
@@ -1267,19 +1266,27 @@ function contentHandoffHtml(){
 function contentAssetVaultHtml(){
   const list=Array.isArray(state.contentAssets)?state.contentAssets:[];
   if(!list.length)return '<div class="card content-asset-grid" style="grid-column:1/-1;margin-top:18px"><div style="grid-column:1/-1;text-align:center;padding:25px"><div class="eyebrow">YOUR LIBRARY</div><h2>Forge is waiting for a product.</h2><p class="small">Confirm a product in Product Lab and the launch library will be built automatically.</p><button class="btn primary" onclick="go(&quot;products&quot;)">Open Product Lab →</button></div></div>';
-  return '<div class="section"><div><div class="eyebrow">YOUR LIBRARY · AUTOGENERATED</div><h2>Your launch kit</h2><p class="small">These are generated from the selected product and approved brand identity. Nothing here is a generic demo.</p></div></div><div class="content-asset-grid">'+list.slice(0,18).map((x,i)=>{
-    const src=x.sourceImage||("data:image/svg+xml;charset=utf-8,"+encodeURIComponent(x.svg||""));
-    const fit=x.sourceImage?"contain":"cover";
-    return '<article class="content-asset-card card"><div class="asset-preview real-preview"><img src="'+esc(src)+'" style="object-fit:'+fit+'" loading="lazy" alt="'+esc(x.name||"Forge asset")+'"><span class="asset-live-tag">'+(x.sourceImage?"REAL PRODUCT":"FORGE GENERATED")+'</span></div><div class="asset-body"><div class="content-meta">'+esc(x.type||"Creative")+'</div><h3>'+esc(x.name||"Forge asset")+'</h3><p>'+esc(x.description||"Forge-generated asset")+'</p><div class="content-asset-actions"><button class="btn primary" onclick="downloadForgeAsset('+i+')">Download</button><button class="btn" onclick="useForgeAsset('+i+')">Use →</button></div></div></article>';
+  return '<div class="section"><div><div class="eyebrow">YOUR LIBRARY · AUTOGENERATED</div><h2>Your launch kit</h2><p class="small">Every creative is generated from the selected product and approved brand identity. Product imagery appears only where it belongs.</p></div></div><div class="content-asset-grid">'+list.slice(0,18).map((x,i)=>{
+    const src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(x.svg||"");
+    return '<article class="content-asset-card card"><div class="asset-preview real-preview"><img src="'+esc(src)+'" loading="lazy" alt="'+esc(x.name||"Forge asset")+'"><span class="asset-live-tag">'+(x.sourceImage?"REAL PRODUCT CONTEXT":"FORGE TEMPLATE")+'</span></div><div class="asset-body"><div class="content-meta">'+esc(x.type||"Creative")+'</div><h3>'+esc(x.name||"Forge asset")+'</h3><p>'+esc(x.description||"Forge-generated asset")+'</p><div class="content-asset-actions"><button class="btn primary" onclick="downloadForgeAsset('+i+')">Download</button><button class="btn" onclick="useForgeAsset('+i+')">Use →</button></div></div></article>';
   }).join("")+'</div>';
 }
-function forgeSvg(title,subtitle,kind,accent,image){
-  const w=kind==="banner"?1600:1080,h=kind==="banner"?500:1350,a=String(accent||"#69dda0").replace(/[^#a-zA-Z0-9(),.% -]/g,"");
-  const t=esc(title),sub=esc(subtitle),bg="#08130f";
-  const imageLayer=image&&kind!=="logo"
-    ? '<rect x="'+w*.58+'" y="'+h*.14+'" width="'+w*.30+'" height="'+h*.60+'" rx="42" fill="#10231b"/><image href="'+esc(image)+'" x="'+w*.605+'" y="'+h*.17+'" width="'+w*.25+'" height="'+h*.54+'" preserveAspectRatio="xMidYMid meet"/>'
+function forgeSvg(title,subtitle,kind,accent,image,variant=0){
+  const isBanner=["facebook","tiktok","website-hero","launch","email","brand-banner"].includes(kind);
+  const isStory=kind==="story", isSquare=!isBanner&&!isStory&&kind!=="logo"&&kind!=="favicon";
+  const w=isBanner?1600:isStory?1080:1200, h=isBanner?620:isStory?1350:1200;
+  const a=String(accent||"#69dda0").replace(/[^#a-zA-Z0-9(),.% -]/g,""), bg=["#07120e","#0b1713","#10131c","#14101b","#0c1720"][variant%5];
+  const safeTitle=esc(title), safeSub=esc(subtitle);
+  const img=image&&["tiktok","website-hero","product-hero","product-feature","product-post","story","launch","offer","whatsapp","email"].includes(kind)
+    ? '<rect x="'+(w*.57)+'" y="'+(h*.13)+'" width="'+(w*.34)+'" height="'+(h*.66)+'" rx="44" fill="#14261f"/><image href="'+esc(image)+'" x="'+(w*.60)+'" y="'+(h*.17)+'" width="'+(w*.28)+'" height="'+(h*.58)+'" preserveAspectRatio="xMidYMid meet"/>'
     : '';
-  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+a+'"/><stop offset="1" stop-color="#b9f3d0"/></linearGradient></defs><rect width="100%" height="100%" fill="'+bg+'"/>'+imageLayer+'<circle cx="'+w*.84+'" cy="'+h*.2+'" r="'+Math.min(w,h)*.28+'" fill="'+a+'" opacity=".08"/><rect x="'+w*.06+'" y="'+h*.08+'" width="'+w*.88+'" height="'+h*.84+'" rx="36" fill="none" stroke="'+a+'" opacity=".24"/><rect x="'+w*.08+'" y="'+h*.12+'" width="76" height="76" rx="20" fill="url(#g)"/><text x="'+w*.118+'" y="'+(h*.12+54)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="43" font-weight="900" fill="#061a12">F</text><text x="'+w*.08+'" y="'+h*.48+'" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="banner"?72:76)+'" font-weight="850" fill="#f4f8f5">'+t+'</text><text x="'+w*.08+'" y="'+h*.59+'" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="banner"?30:35)+'" fill="#9fb8ad">'+sub+'</text><rect x="'+w*.08+'" y="'+h*.72+'" width="410" height="58" rx="29" fill="url(#g)"/><text x="'+(w*.08+205)+'" y="'+(h*.72+39)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="800" fill="#061a12">READY TO USE</text><text x="'+w*.08+'" y="'+h*.9+'" font-family="Inter,Arial,sans-serif" font-size="18" letter-spacing="3" fill="#668178">FORGE · FREE CREATIVE ENGINE</text></svg>';
+  const logo=(kind==="logo"||kind==="favicon")?'<rect x="'+(w*.08)+'" y="'+(h*.10)+'" width="'+(kind==="favicon"?110:150)+'" height="'+(kind==="favicon"?110:150)+'" rx="34" fill="'+a+'"/><text x="'+(w*.08+(kind==="favicon"?55:75))+'" y="'+(h*.10+(kind==="favicon"?76:104))+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="favicon"?58:78)+'" font-weight="900" fill="#061a12">F</text>':'';
+  const accentShape=variant%2===0
+    ? '<circle cx="'+(w*.90)+'" cy="'+(h*.10)+'" r="'+Math.min(w,h)*.30+'" fill="'+a+'" opacity=".10"/>'
+    : '<rect x="'+(w*.72)+'" y="'+(h*.06)+'" width="'+(w*.34)+'" height="'+(h*.34)+'" rx="90" fill="'+a+'" opacity=".08"/>';
+  const titleSize=isBanner?58:isStory?66:64;
+  const titleY=isBanner?.64:isStory?.55:.70;
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="g'+variant+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+a+'"/><stop offset="1" stop-color="#c8f6da"/></linearGradient></defs><rect width="100%" height="100%" fill="'+bg+'"/>'+accentShape+img+logo+'<rect x="'+(w*.06)+'" y="'+(h*.06)+'" width="'+(w*.88)+'" height="'+(h*.88)+'" rx="42" fill="none" stroke="'+a+'" opacity=".20"/><text x="'+(w*.08)+'" y="'+(h*.37)+'" font-family="Inter,Arial,sans-serif" font-size="18" font-weight="800" letter-spacing="4" fill="'+a+'">FORGE · '+esc(kind.toUpperCase())+'</text><text x="'+(w*.08)+'" y="'+(h*titleY)+'" font-family="Inter,Arial,sans-serif" font-size="'+titleSize+'" font-weight="850" fill="#f4f8f5">'+safeTitle+'</text><text x="'+(w*.08)+'" y="'+(h*(titleY+.10))+'" font-family="Inter,Arial,sans-serif" font-size="'+(isBanner?28:31)+'" fill="#9fb8ad">'+safeSub+'</text><rect x="'+(w*.08)+'" y="'+(h*.78)+'" width="'+(isBanner?360:390)+'" height="56" rx="28" fill="url(#g'+variant+')"/><text x="'+(w*.08+(isBanner?180:195))+'" y="'+(h*.78+37)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="850" fill="#061a12">READY TO USE</text><text x="'+(w*.08)+'" y="'+(h*.91)+'" font-family="Inter,Arial,sans-serif" font-size="16" letter-spacing="3" fill="#668178">FORGE · YOUR BUSINESS CREATIVE SYSTEM</text></svg>';
 }
 function saveForgeAsset(name,type,description,svg){
   state.contentAssets=state.contentAssets||[];

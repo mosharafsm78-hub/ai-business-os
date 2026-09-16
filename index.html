@@ -815,10 +815,11 @@ input:focus,select:focus,textarea:focus{border-color:#49a979!important;box-shado
 </head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
-/* FORGE STARTUP — never leave the customer on a dead loading screen */
+/* FORGE STARTUP — wait for the application to finish loading; never overwrite a healthy render */
 (function(){
   window.__forgeRendered=false;
   window.__forgeBootError="";
+  window.__forgeBootStarted=Date.now();
   function captureError(e){
     window.__forgeBootError=(e&&e.message)||String(e||"Forge startup error");
   }
@@ -830,10 +831,9 @@ input:focus,select:focus,textarea:focus{border-color:#49a979!important;box-shado
     if(!app)return;
     var detail=String(window.__forgeBootError||"The workspace did not finish initializing.");
     var safe=detail.replace(/[<>&]/g,function(c){return c==="&"?"&amp;":c===">"?"&gt;":"&lt;"});
-    app.innerHTML="<div class='onboarding'><div class='onboarding-card'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='eyebrow' style='margin-top:32px'>FORGE RECOVERY</div><div class='h1'>Your workspace is ready to retry.</div><p class='sub'>Forge did not finish starting this time. Your saved business data is still stored locally and has not been replaced.</p><div class='notice'><b>Workspace protection is active.</b><div class='small'>No business profile or product data was deleted.</div></div><div class='actions' style='margin-top:18px'><button class='btn primary' onclick='location.reload()'>Retry Forge →</button></div><div class='small' style='margin-top:14px;opacity:.55'>Startup detail: "+safe+"</div></div></div>";
-    try{console.error("Forge startup:",detail)}catch(e){}
+    app.innerHTML="<div class='onboarding'><div class='onboarding-card'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='eyebrow' style='margin-top:32px'>FORGE RECOVERY</div><div class='h1'>Your workspace is ready to retry.</div><p class='sub'>Forge is taking longer than expected to start. Your saved business data has not been replaced.</p><div class='notice'><b>Workspace protection is active.</b><div class='small'>No business profile or product data was deleted.</div></div><div class='actions' style='margin-top:18px'><button class='btn primary' onclick='location.reload()'>Retry Forge →</button></div><div class='small' style='margin-top:14px;opacity:.55'>Startup detail: "+safe+"</div></div></div>";
   }
-  setTimeout(function(){
+  function boot(){
     if(window.__forgeRendered)return;
     try{
       if(typeof render==="function"){
@@ -841,10 +841,14 @@ input:focus,select:focus,textarea:focus{border-color:#49a979!important;box-shado
         if(window.__forgeRendered)return;
       }
     }catch(e){captureError(e)}
-    showRecovery();
-  },1800);
+    if(Date.now()-window.__forgeBootStarted<15000){
+      setTimeout(boot,250);
+    }else{
+      showRecovery();
+    }
+  }
+  setTimeout(boot,50);
 })();
-</script>
 <script>
 const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};

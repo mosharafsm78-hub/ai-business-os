@@ -767,11 +767,35 @@ function openWizard(){
   document.getElementById("modal").classList.add("open");return;
  }
  let step=1,d={...DEFAULT_PROFILE};
- function draw(){document.getElementById("modalbox").innerHTML="<div><div class='row' style='justify-content:space-between'><div><div class='eyebrow'>Forge onboarding · "+step+" / 5</div><h2 style='margin:6px 0'>Let's understand the entrepreneur first.</h2><div class='small'>No dashboard until this profile is complete. Your answers become locked decision inputs.</div></div></div><div class='progress' style='margin:18px 0'><i style='width:"+(step*20)+"%'></i></div>"+wizardStep(step,d)+"<div class='actions' style='justify-content:flex-end;margin-top:22px'>"+(step>1?"<button class='btn' onclick='wizardBack()'>← Back</button>":"")+"<button class='btn primary' onclick='"+(step<5?"wizardNext()":"finishWizard()")+"'>"+(step<5?"Continue →":"Lock my profile & enter Forge →")+"</button></div></div>"}
- window.wizardBack=()=>{step--;draw()};
+ function draw(){
+   const back=step>1?"<button id='wizardBackBtn' type='button' class='btn'>← Back</button>":"";
+   const next=step<5?"Continue →":"Lock my profile & enter Forge →";
+   document.getElementById("modalbox").innerHTML="<div><div class='row' style='justify-content:space-between'><div><div class='eyebrow'>Forge onboarding · "+step+" / 5</div><h2 style='margin:6px 0'>Let's understand the entrepreneur first.</h2><div class='small'>No dashboard until this profile is complete. Your answers become locked decision inputs.</div></div></div><div class='progress' style='margin:18px 0'><i style='width:"+(step*20)+"%'></i></div>"+wizardStep(step,d)+"<div class='actions' style='justify-content:flex-end;margin-top:22px'>"+back+"<button id='wizardContinueBtn' type='button' class='btn primary'>"+next+"</button></div></div>";
+   const backBtn=document.getElementById("wizardBackBtn");
+   const continueBtn=document.getElementById("wizardContinueBtn");
+   if(backBtn)backBtn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();wizardBack()});
+   if(continueBtn)continueBtn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();step<5?wizardNext():finishWizard()});
+ }
+ window.wizardBack=()=>{if(step>1){step--;draw()}};
  window.wizardNext=()=>{captureWizard();if(!validateWizard(step))return;step++;draw()};
  window.captureWizard=()=>{["budget","age","income","expenses","reserve","market","city","occupation","experience","skills","workStyle","category","goal","risk","riskCapacity","lossTolerance","time","targetIncome","model"].forEach(k=>{let e=document.getElementById("w"+k);if(e)d[k]=e.type==="number"?Number(e.value):e.value})};
- window.validateWizard=(s)=>{let required=s===1?["budget","income","expenses","reserve"]:s===2?["age","city","occupation","time"]:s===3?["risk","riskCapacity","lossTolerance"]:[];for(const k of required){let v=d[k];if((typeof v==="number"&&(v<=0))||(!v&&typeof v!=="number")){toast("Please complete all required fields");return false}}return true};
+ window.validateWizard=(s)=>{
+   const required=s===1?["budget","income","expenses","reserve"]:s===2?["age","city","occupation","time"]:s===3?["risk","riskCapacity","lossTolerance"]:[];
+   for(const k of required){
+     const v=d[k];
+     const numeric=["budget","income","expenses","reserve","age","time","lossTolerance"].includes(k);
+     if(numeric){
+       if(v===""||v===null||Number.isNaN(Number(v))||Number(v)<0||(k==="age"&&Number(v)<18)||(k==="time"&&Number(v)<=0)){
+         toast("Please complete the required fields");
+         return false;
+       }
+     }else if(!String(v||"").trim()){
+       toast("Please complete the required fields");
+       return false;
+     }
+   }
+   return true;
+ };
  window.finishWizard=()=>{captureWizard();if(!validateWizard(5))return;state.profile={...d};state.business={name:businessName(d.category),budget:d.budget,market:d.market,category:d.category,age:d.age,income:d.income,goal:d.goal,risk:d.risk,time:d.time,targetMargin:categoryMargin(d.category),planMode:planMode(d)};state.profileLocked=true;state.page="ideas";persistProfile();closeModal();render();toast("Profile locked — Forge is now personalized to you")};
  document.getElementById("modal").classList.add("open");draw();
 }

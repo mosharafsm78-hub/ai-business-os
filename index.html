@@ -59,24 +59,6 @@
 @media(max-width:560px){.content-studio-grid{grid-template-columns:1fr}.content-quality{grid-template-columns:1fr}.content-pack-head{display:block}.content-studio-product{min-height:280px}}
 
 
-
-.marketing-onboard{padding:28px;background:linear-gradient(135deg,#101d17,#08120e);border-color:rgba(255,158,120,.25)}
-.marketing-onboard h2{margin:7px 0 18px;font-size:28px}
-.marketing-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.marketing-form-grid label{font-size:10px;font-weight:900;letter-spacing:.08em;color:var(--muted)}
-.marketing-form-grid input,.marketing-form-grid select{display:block;width:100%;margin-top:7px;padding:13px;border:1px solid #294238;border-radius:12px;background:#07110d;color:var(--text);box-sizing:border-box}
-.marketing-money-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
-.money-card{padding:18px;border:1px solid var(--line);border-radius:15px;background:#09150f}
-.money-card span{display:block;font-size:9px;letter-spacing:.12em;color:var(--muted);font-weight:900}
-.money-card b{display:block;font-size:22px;margin-top:8px}
-.marketing-channels{display:grid;gap:10px}
-.marketing-channel-card{display:flex;align-items:center;gap:14px;padding:15px 16px;border:1px solid var(--line);border-radius:15px;background:#09150f}
-.channel-logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#10231a;color:#8eeab6;font-weight:900;font-size:11px}
-.channel-info{flex:1;display:flex;flex-direction:column;gap:4px}
-.channel-info b{font-size:14px}.channel-info span{font-size:11px;color:var(--muted)}
-.activity-list{display:grid;gap:0}.activity-row{display:grid;grid-template-columns:160px 1fr auto;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);align-items:center}.activity-row:last-child{border-bottom:0}.activity-row>span:first-child{font-size:10px;color:var(--muted)}
-@media(max-width:700px){.marketing-form-grid,.marketing-money-grid{grid-template-columns:1fr 1fr}.marketing-channel-card{flex-wrap:wrap}.channel-info{min-width:150px}.activity-row{grid-template-columns:1fr}.activity-row .status{justify-self:start}}
-
 /* FORGE AI MARKETING CONNECTION */
 .marketing-hero{border-color:rgba(255,158,120,.22)}
 .meta-connect-card{margin-top:18px;padding:28px;background:linear-gradient(135deg,#101d17,#08120e);border-color:rgba(255,158,120,.25)}
@@ -485,8 +467,8 @@ const STORAGE_KEY="forge_profile_v3";
 const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bangladesh",city:"",occupation:"",experience:"Beginner",skills:"",workStyle:"Builder",category:"Open to anything",goal:"Profit + growth",risk:"Balanced",riskCapacity:"Medium",lossTolerance:0,time:0,targetIncome:0,model:"Open to recommendations"};
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
 const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},contentRequests:saved?.contentRequests||[],contentAssets:saved?.contentAssets||[],contentAutomation:saved?.contentAutomation||{},billing:saved?.billing||{},billingInvoice:saved?.billingInvoice||null,chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
-function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[],contentAutomation:state.contentAutomation||[],billing:state.billing||{},billingInvoice:state.billingInvoice||null,marketingConnection:state.marketingConnection||{},marketingActivity:state.marketingActivity||[]}))}
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},contentRequests:saved?.contentRequests||[],contentAssets:saved?.contentAssets||[],contentAutomation:saved?.contentAutomation||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[],contentAutomation:state.contentAutomation||{},billing:state.billing||{},billingInvoice:state.billingInvoice||null}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
 const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["content","✦","Content Library"],["marketing","◎","AI Marketing"],["billing","▣","Billing & Budget"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
@@ -807,7 +789,11 @@ function reviewQueued(i){
   const stockState=orderStockStatus(p,t.qty);
   const paymentButton=p.paymentStatus==="paid"
     ? "<span class='status green'>Payment verified</span>"
-    : "<button class='btn primary' onclick='closeModal();go(&quot;billing&quot;)'>Pay from Billing →</button>";
+    : p.paymentStatus==="submitted"
+      ? "<button class='btn' onclick='markPaymentReceived("+i+")'>Verify payment received</button>"
+      : stockState.ok
+        ? "<button class='btn primary' onclick='markPaymentSubmitted("+i+")'>Make payment →</button>"
+        : "<button class='btn' disabled title='Supplier stock is below your requested quantity'>Waiting for stock →</button>";
   let next="";
   if(p.paymentStatus==="paid" && !["processing","ordered"].includes(p.orderStatus)) next="<button class='btn primary' onclick='advanceProcurement("+i+")'>Release to procurement →</button>";
   else if(p.paymentStatus==="paid" && p.orderStatus==="processing") next="<button class='btn primary' onclick='markSupplierOrdered("+i+")'>Confirm supplier order placed →</button>";
@@ -1541,60 +1527,10 @@ function store(){
   "<div class='store-checklist'>"+checklist.map((x,i)=>"<div class='store-check card'><div class='store-check-number'>"+String(i+1).padStart(2,"0")+"</div><div><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div><span class='status "+(s.status==="ready"?"":"amber")+"'>"+(s.status==="ready"?"READY":"QUEUED")+"</span></div>").join("")+"</div>"+
   "";
 }
-function billingData(){
-  const b=state.billing||{}, p=state.selectedProduct||{}, e=p.economics||liveEconomics(p);
-  const qty=Math.max(1,Number(b.quantity||p.orderQty||p.batch||40));
-  const unitCost=Number(p.priceUsd)>0?bdtEstimate(p.priceUsd):Number(e.supplier||0);
-  const marketingPerUnit=Number(e.cac||p.cac||0);
-  const logisticsPerUnit=Number(e.logistics||0);
-  const storeBill=typeof storeLaunchBill==="function"?storeLaunchBill():null;
-  const domain=Number(storeBill?.domainBdt||0), shopify=Number(storeBill?.hostingBdt||0), other=Number(b.other||0);
-  const productTotal=unitCost*qty, logisticsTotal=logisticsPerUnit*qty, marketingTotal=marketingPerUnit*qty;
-  return {qty,unitCost,productTotal,logisticsPerUnit,logisticsTotal,marketingPerUnit,marketingTotal,domain,shopify,other,domainYears:Number(storeBill?.domainYears||0),domainVerified:!!storeBill?.domainResult,shopifyVerified:!!storeBill?.hostingBdt,total:productTotal+logisticsTotal+marketingTotal+domain+shopify+other};
-}
-function prepareBillingPayment(){
-  const d=billingData(), p=state.selectedProduct||{};
-  if(!p.name)return toast("Choose a product first.");
-  if(!d.unitCost)return toast("Live supplier purchase price is unavailable. Payment is blocked.");
-  if(!d.marketingPerUnit)return toast("Product-specific marketing data is unavailable. Payment is blocked.");
-  state.billing={...state.billing,quantity:d.qty};
-  state.billingInvoice={ref:state.billingInvoice?.ref||("FORGE-BILL-"+new Date().toISOString().replace(/\D/g,"").slice(0,14)),createdAt:state.billingInvoice?.createdAt||new Date().toISOString(),status:"payment_ready",total:d.total,orderRef:p.orderRef||null};
-  persistProfile();render();toast("Payment checkout prepared from this exact billing total.");
-}
-function billingStatusLabel(kind){
-  return kind==="verified"?"Verified":kind==="user"?"Provided by you":"AI planning";
-}
-function setBillingQuantity(){
-  const q=Math.max(1,Number(document.getElementById("billingQty")?.value||40));
-  const d=billingData();
-  state.billing={...state.billing,quantity:q};
-  persistProfile();render();
-}
-function billing(){
-  const d=billingData(), p=state.selectedProduct||{}, inv=state.billingInvoice||null;
-  if(!p.name)return "<div class='hero'><div><div class='eyebrow'>BILLING & BUDGET</div><div class='h1'>Your single payment point.</div><div class='sub'>Choose a product first. Forge will then calculate the product purchase price, product-specific marketing plan, domain and applicable store costs here.</div></div><div class='actions'><button class='btn primary' onclick='go(&quot;products&quot;)'>Choose a product →</button></div></div>";
-  const hasUnit=!!d.unitCost, hasMarketing=!!d.marketingPerUnit, paymentReady=hasUnit&&hasMarketing&&d.total>0;
-  const invoiceState=inv?.status==="payment_ready"?"PAYMENT READY":"PAYMENT NOT COMPLETED";
-  return "<div class='hero billing-hero'><div><div class='eyebrow'>BILLING & BUDGET · SINGLE PAYMENT POINT</div><div class='h1'>Everything you need to pay, in one place.</div><div class='sub'>Forge calculates the total for your selected product and quantity before payment. Product and live service prices are shown separately from the AI marketing planning amount.</div></div></div>"+
-  "<div class='billing-layout'><section class='billing-summary card'><div class='eyebrow'>CUSTOMER PAYMENT</div><div class='billing-product-line'><div><b>"+esc(p.name)+"</b><span>"+d.qty+" units · confirmed supplier product</span></div><input id='billingQty' type='number' min='1' value='"+d.qty+"' onchange='setBillingQuantity()'></div>"+
-  "<div class='billing-total'><span>Total amount due</span><strong>"+BDT(d.total)+"</strong></div><div class='billing-breakdown'>"+
-  "<div class='billing-line'><div><b>Product purchase</b><span>"+d.qty+" × "+(hasUnit?BDT(d.unitCost):"Live supplier price unavailable")+"</span></div><strong>"+(hasUnit?BDT(d.productTotal):"—")+"</strong></div>"+
-  "<div class='billing-line'><div><b>Fulfillment / logistics</b><span>"+d.qty+" × "+BDT(d.logisticsPerUnit)+" planning allowance</span></div><strong>"+BDT(d.logisticsTotal)+"</strong></div>"+
-  "<div class='billing-line'><div><b>AI marketing budget</b><span>"+(hasMarketing?d.qty+" × "+BDT(d.marketingPerUnit)+" planned / expected purchase":"Product-specific data unavailable")+"</span></div><strong>"+(hasMarketing?BDT(d.marketingTotal):"—")+"</strong></div>"+
-  "<div class='billing-line'><div><b>Domain</b><span>"+(d.domainYears?d.domainYears+"-year registration":"No verified domain price yet")+"</span></div><strong>"+(d.domain?BDT(d.domain):"—")+"</strong></div>"+
-  "<div class='billing-line'><div><b>Shopify</b><span>"+(d.shopifyVerified?"Current plan · hosting included":"Current plan price unavailable")+"</span></div><strong>"+(d.shopify?BDT(d.shopify):"—")+"</strong></div>"+
-  "<div class='billing-line'><div><b>Other applicable costs</b><span>Only if required</span></div><strong>"+(d.other?BDT(d.other):"—")+"</strong></div></div>"+
-  "<div class='billing-note'><b>"+invoiceState+"</b><span>Orders can display the amount and payment status, but the customer pays only here.</span></div>"+
-  "<button class='btn primary' style='width:100%;margin-top:15px' onclick='prepareBillingPayment()' "+(paymentReady?"":"disabled")+">"+(inv?.status==="payment_ready"?"Continue to secure payment →":"Review total & continue to payment →")+"</button>"+
-  (!paymentReady?"<div class='small' style='margin-top:9px'>Forge will not create a payable bill from a blank or fabricated price.</div>":"")+
-  "</section><aside class='billing-explain'><div class='eyebrow'>WHY THIS AMOUNT</div>"+
-  "<div class='explain-card'><div class='explain-icon'>01</div><div><h3>Product purchase</h3><p>"+(hasUnit?"Live supplier purchase price is <b>"+BDT(d.unitCost)+"/unit</b>. "+d.qty+" units = <b>"+BDT(d.productTotal)+"</b>.":"A live supplier purchase price is required before payment.")+"</p><span class='data-tag "+(hasUnit?"verified":"amber")+"'>"+(hasUnit?"VERIFIED":"BLOCKED")+"</span></div></div>"+
-  "<div class='explain-card'><div class='explain-icon'>02</div><div><h3>Marketing</h3><p>"+(hasMarketing?"Forge's current product-specific planning value is <b>"+BDT(d.marketingPerUnit)+" per expected purchase</b>.":"Product-specific marketing data is required before payment.")+"</p><p class='warning-copy'><b>This is not a fixed Meta price.</b> Meta works through an ad auction. Actual cost per purchase can be lower or higher because of competition, audience, creative, objective, conversion rate, seasonality and campaign performance. Forge updates the planning forecast from live results.</p><span class='data-tag planning'>AI PLANNING</span></div></div>"+
-  "<div class='explain-card'><div class='explain-icon'>03</div><div><h3>Domain</h3><p>"+(d.domain?"Current checked price for "+(d.domainYears||1)+" year(s) of registration.":"A current domain price must be returned before it is included as a verified charge.")+"</p><span class='data-tag "+(d.domain?"verified":"amber")+"'>"+(d.domain?"VERIFIED":"TO VERIFY")+"</span></div></div>"+
-  "<div class='explain-card'><div class='explain-icon'>04</div><div><h3>Store platform</h3><p>"+(d.shopify?"Current Shopify plan charge. Shopify hosting is included, so Forge does not add a second hosting charge.":"Current Shopify plan price is required.")+"</p><span class='data-tag "+(d.shopify?"verified":"amber")+"'>"+(d.shopify?"VERIFIED":"TO VERIFY")+"</span></div></div>"+
-  "<div class='explain-card'><div class='explain-icon'>05</div><div><h3>After payment</h3><p>Forge records the payment state against the order. <b>Orders is for status and operations, not payment.</b></p><span class='data-tag planning'>ORDER TRACKING</span></div></div>"+
-  "</aside></div><div class='billing-footer card'><div><div class='eyebrow'>FLOW</div><h2>Billing → Payment → Orders</h2><p class='small'>Review the complete amount here, complete payment here, then use Orders to follow procurement and delivery.</p></div><button class='btn' onclick='go(&quot;orders&quot;)'>View Orders →</button></div>";
-}
+function billingData(){const p=state.selectedProduct||{},e=liveEconomics(p),b=state.billing||{},sb=typeof storeLaunchBill==="function"?storeLaunchBill():{};const qty=Math.max(1,Number(b.quantity||p.orderQty||p.batch||40)),supplier=Number(e.supplier||0),cac=Number(e.cac||0),logistics=Number(e.logistics||0),domain=Number(sb.domainBdt||0),shopify=Number(sb.hostingBdt||0),setup=Number(sb.setup||0);return {qty,supplier,cac,logistics,domain,shopify,setup,domainYears:Number(sb.domainYears||0),productTotal:supplier*qty,marketingTotal:cac*qty,logisticsTotal:logistics*qty,total:(supplier+cac+logistics)*qty+domain+shopify+setup};}
+function prepareBilling(){const d=billingData(),p=state.selectedProduct||{};if(!p.name)return toast("Choose a product first.");if(!d.supplier)return toast("Supplier purchase price is unavailable for this product.");const ref=state.billingInvoice?.ref||("FORGE-BILL-"+new Date().toISOString().replace(/\D/g,"").slice(0,14));state.billingInvoice={ref,createdAt:state.billingInvoice?.createdAt||new Date().toISOString(),status:"payment_pending",total:d.total,orderRef:p.orderRef||null};state.billing={...(state.billing||{}),quantity:d.qty};p.paymentStatus="unpaid";p.orderStatus="payment_pending";persistProfile();render();toast("Billing record created. Complete payment from this page.");}
+function setBillingQuantity(){state.billing={...(state.billing||{}),quantity:Math.max(1,Number(document.getElementById("billingQty")?.value||1))};persistProfile();render();}
+function billing(){const d=billingData(),p=state.selectedProduct||{},inv=state.billingInvoice||null;if(!p.name)return "<div class='hero'><div><div class='eyebrow'>BILLING & BUDGET</div><div class='h1'>One place to review and pay.</div><div class='sub'>Choose a product first. Forge will calculate its supplier purchase price, product-specific marketing budget, domain and store costs here.</div></div></div><div class='card' style='padding:24px'><h2>No product selected</h2><p class='small'>Product Lab chooses the product. Billing is the only customer payment point.</p><button class='btn primary' onclick='go(&quot;products&quot;)'>Choose product →</button></div>";return "<div class='hero'><div><div class='eyebrow'>BILLING & BUDGET · SINGLE PAYMENT POINT</div><div class='h1'>Review everything. Pay once.</div><div class='sub'>The total is assembled from the selected product's supplier economics, product-specific marketing plan, domain and applicable store costs. <b>Payment belongs only here.</b></div></div></div><div class='billing-layout'><section class='billing-summary card'><div class='eyebrow'>AMOUNT DUE</div><div class='billing-product-line'><div><b>"+esc(p.name)+"</b><span>"+d.qty+" units · supplier-linked product</span></div><input id='billingQty' type='number' min='1' value='"+d.qty+"' onchange='setBillingQuantity()'></div><div class='billing-total'><span>Total to pay</span><strong>"+BDT(d.total)+"</strong></div><div class='billing-breakdown'><div class='billing-line'><div><b>Product purchase</b><span>"+d.qty+" × "+BDT(d.supplier)+" supplier cost</span></div><strong>"+BDT(d.productTotal)+"</strong></div><div class='billing-line'><div><b>Fulfillment / logistics</b><span>"+d.qty+" × "+BDT(d.logistics)+" / unit</span></div><strong>"+BDT(d.logisticsTotal)+"</strong></div><div class='billing-line'><div><b>AI marketing budget</b><span>"+d.qty+" × "+BDT(d.cac)+" / expected purchase</span></div><strong>"+BDT(d.marketingTotal)+"</strong></div><div class='billing-line'><div><b>Domain</b><span>"+(d.domain?((d.domainYears||1)+"-year registration"):"No confirmed domain charge")+"</span></div><strong>"+(d.domain?BDT(d.domain):"—")+"</strong></div><div class='billing-line'><div><b>Shopify store</b><span>"+(d.shopify?"Applicable plan · hosting included":"No confirmed store charge")+"</span></div><strong>"+(d.shopify?BDT(d.shopify):"—")+"</strong></div><div class='billing-line'><div><b>Store setup</b><span>"+(d.setup?"Forge store-build service":"No setup charge")+"</span></div><strong>"+(d.setup?BDT(d.setup):"—")+"</strong></div></div><div class='billing-note'><b>"+(inv?.status==="paid"?"PAID":inv?.status==="payment_pending"?"PAYMENT PENDING":"READY")+"</b><span>Orders can display the same amount and status, but customers do not pay from Orders.</span></div><button class='btn primary' style='width:100%;margin-top:15px' onclick='prepareBilling()'>Review & continue to payment →</button><div class='small' style='margin-top:9px'>Marketing is a planning allocation, not a guaranteed Meta charge. Actual CPA can be lower or higher after campaigns go live.</div></section><aside class='billing-explain'><div class='eyebrow'>BILL DESCRIPTION</div><div class='explain-card'><div class='explain-icon'>01</div><div><h3>Product purchase</h3><p>Forge uses the supplier-linked purchase economics for this selected product and quantity.</p><span class='data-tag verified'>SUPPLIER DATA</span></div></div><div class='explain-card'><div class='explain-icon'>02</div><div><h3>Marketing</h3><p>The charge is based on this product's current Forge acquisition model. It is a budget allocation; Meta is auction-based and actual CPA can vary.</p><span class='data-tag planning'>AI PLANNING</span></div></div><div class='explain-card'><div class='explain-icon'>03</div><div><h3>Domain & store</h3><p>Domain and applicable Shopify costs are added when current pricing is available. Hosting is not double-counted.</p></div></div><div class='explain-card'><div class='explain-icon'>04</div><div><h3>After payment</h3><p>Orders becomes the tracking record: Payment pending → Paid → procurement/fulfillment. There is no second payment there.</p></div></div></aside></div><div class='billing-footer card'><div><div class='eyebrow'>CUSTOMER FLOW</div><h2>Product → Billing → Payment → Orders</h2><p class='small'>One total, one payment point, then operational tracking.</p></div><button class='btn' onclick='go(&quot;orders&quot;)'>View Orders →</button></div>";}
 function marketingConnection(){
   const m=state.marketingConnection||{};
   return {
@@ -1631,74 +1567,44 @@ function marketingStep(status,number,title,desc,action){
   const done=status==="done",active=status==="active";
   return "<div class='meta-step "+(done?"done ":"")+(active?"active":"")+"'><div class='meta-step-icon'>"+(done?"✓":number)+"</div><div class='meta-step-body'><b>"+title+"</b><span>"+desc+"</span></div>"+(action||"")+"</div>";
 }
-function marketingConnection(){
-  const m=state.marketingConnection||{};
-  return {
-    pageUrl:m.pageUrl||"",pageName:m.pageName||"",status:m.status||"not_connected",
-    metaConnected:!!m.metaConnected,instagram:m.instagram||"",whatsapp:m.whatsapp||"",
-    adAccount:m.adAccount||"",tiktokConnected:!!m.tiktokConnected,
-    googleConnected:!!m.googleConnected,snapchatConnected:!!m.snapchatConnected,
-    monthlyBudget:Number(m.monthlyBudget||0),spent:Number(m.spent||0),
-    reserved:Number(m.reserved||0),updatedAt:m.updatedAt||""
-  };
-}
-function saveMarketingSettings(){
-  const budget=Number(document.getElementById("aiMarketingBudget")?.value||0);
-  const objective=String(document.getElementById("aiMarketingObjective")?.value||"sales");
-  if(!budget||budget<1)return toast("Enter your monthly marketing budget.");
-  state.marketingConnection={...marketingConnection(),monthlyBudget:budget,objective,status:marketingConnection().pageUrl?"page_added":"planning",updatedAt:new Date().toISOString()};
-  persistProfile();render();toast("Marketing budget saved.");
-}
-function saveMarketingPageUrl(){
-  const input=document.getElementById("metaPageUrl"),url=String(input?.value||"").trim();
-  if(!url)return toast("Paste your Facebook Page link first.");
-  if(!/^https?:\/\/(www\.)?facebook\.com\//i.test(url))return toast("Use the Facebook Page link customers see.");
-  state.marketingConnection={...marketingConnection(),pageUrl:url,status:"page_added",updatedAt:new Date().toISOString()};
-  persistProfile();render();toast("Page added. Forge will use one secure Meta permission step.");
-}
-function beginMetaPermission(){
-  const m=marketingConnection();
-  if(!m.pageUrl)return toast("Add your Facebook Page link first.");
-  state.marketingConnection={...m,status:"permission_ready",permissionStartedAt:new Date().toISOString()};
-  persistProfile();render();
-  toast("Meta permission step prepared. Production OAuth will open here after the Meta app credentials are configured.");
-}
-function connectMarketingChannel(channel){
-  const m=marketingConnection();
-  state.marketingConnection={...m,[channel+"Connected"]:true,updatedAt:new Date().toISOString()};
-  persistProfile();render();toast(channel.charAt(0).toUpperCase()+channel.slice(1)+" connection marked ready.");
-}
-function disconnectMarketing(){state.marketingConnection={status:"not_connected"};persistProfile();render();toast("Marketing connections removed.");}
-function aiMarketingAction(action){
-  state.marketingActivity=state.marketingActivity||[];
-  state.marketingActivity.unshift({action,at:new Date().toISOString(),status:"queued"});
-  persistProfile();render();toast(action+" queued for Forge AI.");
-}
-function marketingChannelCard(name,key,desc,connected,action){
-  return "<div class='marketing-channel-card'><div class='channel-logo'>"+esc(name.slice(0,2).toUpperCase())+"</div><div class='channel-info'><b>"+esc(name)+"</b><span>"+esc(desc)+"</span></div><span class='status "+(connected?"":"amber")+"'>"+(connected?"Connected":"Not connected")+"</span>"+(connected?"":"<button class='btn' onclick='connectMarketingChannel(\""+key+"\")'>Connect →</button>")+"</div>";
-}
 function marketing(){
-  const m=marketingConnection(), brand=state.brandStudio?.chosenName||state.business?.name||"Your business";
-  const budget=m.monthlyBudget||0,spent=m.spent||0,reserved=m.reserved||0,available=Math.max(0,budget-spent-reserved);
-  const activity=(state.marketingActivity||[]).slice(0,5);
-  if(!m.monthlyBudget){
-    return "<div class='hero marketing-hero'><div><div class='eyebrow'>AI MARKETING · ONE CONTROL ROOM</div><div class='h1'>Tell Forge how much you want to spend.</div><div class='sub'>You give Forge the business budget and goal. Forge handles the marketing complexity across the channels you choose.</div></div></div>"+
-    "<div class='card marketing-onboard'><div class='eyebrow'>STEP 01 · BUSINESS INPUT</div><h2>Set your marketing envelope</h2><div class='marketing-form-grid'><label>MONTHLY MARKETING BUDGET<input id='aiMarketingBudget' type='number' placeholder='30000'></label><label>PRIMARY OBJECTIVE<select id='aiMarketingObjective'><option value='sales'>Sales</option><option value='leads'>Leads</option><option value='traffic'>Traffic</option><option value='awareness'>Awareness</option></select></label></div><button class='btn primary' onclick='saveMarketingSettings()'>Continue →</button><div class='small' style='margin-top:10px'>Forge will not ask for campaign IDs, pixel IDs or API tokens here.</div></div>"+
-    "<div class='section'><div class='eyebrow'>THE PROMISE</div><h2>One page. Every marketing channel.</h2><p class='small'>The customer should not have to learn Meta Ads Manager, TikTok Ads Manager or Google Ads just to run a business.</p></div>";
+  const m=marketingConnection();
+  const selected=state.selectedProduct;
+  const brand=state.brandStudio?.chosenName||state.business?.name||"Your business";
+  const budget=Math.round((state.business?.budget||250000)*.15);
+  const connected=m.metaConnected;
+  const step1=m.pageUrl?"done":"active";
+  const step2=connected?"done":(m.pageUrl?"active":"locked");
+  const step3=connected?"active":"locked";
+  const step4=connected?"active":"locked";
+
+  if(!connected){
+    return "<div class='hero marketing-hero'><div><div class='eyebrow'>AI MARKETING · HANDS-OFF SETUP</div><div class='h1'>Tell Forge where your Facebook Page is.</div><div class='sub'>You should not have to learn Meta Ads Manager. Add the Page link once. Forge will use that to start the secure connection, then handle the marketing workflow from this page.</div></div></div>"+
+    "<div class='meta-connect-card card'>"+
+      "<div class='eyebrow'>ONE-TIME CONNECTION</div><h2>Connect your Facebook Page</h2><p class='small'>No campaign settings yet. No audience forms. No confusing Meta terminology.</p>"+
+      "<label class='label'>FACEBOOK PAGE LINK</label><div class='meta-url-row'><input id='metaPageUrl' value='"+esc(m.pageUrl)+"' placeholder='https://facebook.com/yourpage'><button class='btn primary' onclick='saveMarketingPageUrl()'>Continue →</button></div>"+
+      (m.pageUrl?"<div class='meta-page-found'><span class='status'>Page link saved</span><b>"+esc(m.pageUrl)+"</b><button class='btn' onclick='beginMetaPermission()'>Give Forge permission →</button></div>":"<div class='small' style='margin-top:10px'>If the customer does not have a Page yet, Forge should send them to the Facebook Page creation flow instead of showing an error.</div>")+
+    "</div>"+
+    "<div class='section'><div class='eyebrow'>WHAT HAPPENS NEXT</div><h2>Four steps. One place.</h2></div>"+
+    "<div class='meta-steps'>"+
+      marketingStep(step1,"01","Facebook Page","Paste the Page link. That's the only information Forge needs from the customer at this stage.","")+
+      marketingStep(step2,"02","Secure Meta permission","One Meta permission screen. Forge requests only what the marketing workspace needs.","")+
+      marketingStep(step3,"03","Forge prepares the plan","Products, Shopify data, economics and available creative assets are analyzed automatically.","")+
+      marketingStep(step4,"04","Launch & optimize","Forge prepares campaigns, reports performance and asks before consequential account changes.","")+
+    "</div>"+
+    "<div class='notice' style='margin-top:18px'><b>Hassle rule:</b> The customer should never be asked to paste tokens, business IDs, pixel IDs, campaign IDs or technical API credentials into Forge.</div>";
   }
-  const channels=
-    marketingChannelCard("Meta","meta","Facebook · Instagram · Messenger · WhatsApp",m.metaConnected)+
-    marketingChannelCard("TikTok","tiktok","TikTok Ads + Business",m.tiktokConnected)+
-    marketingChannelCard("Google","google","Search · Shopping · YouTube",m.googleConnected)+
-    marketingChannelCard("Snapchat","snapchat","Snap Ads",m.snapchatConnected);
-  const activityHtml=activity.length?activity.map(a=>"<div class='activity-row'><span>"+esc(new Date(a.at).toLocaleString())+"</span><b>"+esc(a.action)+"</b><span class='status amber'>"+esc(a.status)+"</span></div>").join(""):"<div class='small'>Forge has not taken any marketing actions yet.</div>";
-  return "<div class='hero marketing-hero'><div><div class='eyebrow'>AI MARKETING · CONTROL ROOM</div><div class='h1'>"+esc(brand)+" marketing, managed from one place.</div><div class='sub'>Forge shows the customer what it is doing, where money is going, what happened and why. Platform complexity stays behind the scenes.</div></div><div class='actions'><button class='btn primary' onclick='aiMarketingAction(\"Run AI marketing analysis\")'>Run AI analysis →</button><button class='btn' onclick='disconnectMarketing()'>Reset connections</button></div></div>"+
-  "<div class='marketing-money-grid'><div class='money-card'><span>MONTHLY BUDGET</span><b>"+BDT(budget)+"</b></div><div class='money-card'><span>SPENT</span><b>"+BDT(spent)+"</b></div><div class='money-card'><span>RESERVED</span><b>"+BDT(reserved)+"</b></div><div class='money-card'><span>AVAILABLE</span><b>"+BDT(available)+"</b></div></div>"+
-  "<div class='section'><div class='eyebrow'>CHANNELS</div><h2>Connect once. Manage here.</h2></div><div class='marketing-channels'>"+channels+"</div>"+
-  "<div class='section'><div class='eyebrow'>CAMPAIGN CONTROL</div><h2>Forge AI decides what needs attention.</h2></div><div class='grid'><div class='card span8'><div class='label'>TODAY'S AI BRIEF</div><h2 style='margin:7px 0'>No manual campaign setup required.</h2><p class='small'>Forge combines Shopify sales, inventory, product economics, creative availability and channel performance before recommending a change.</p><div class='actions'><button class='btn primary' onclick='aiMarketingAction(\"Generate today’s AI brief\")'>Generate brief →</button><button class='btn' onclick='aiMarketingAction(\"Prepare campaign draft\")'>Prepare campaign</button></div></div><div class='card span4'><div class='label'>SPENDING SAFETY</div><div class='kpi'><span><b>Approval mode</b><div class='small'>Default: customer approves consequential changes.</div></span><span class='status'>SAFE</span></div><div class='kpi'><span><b>Monthly limit</b><div class='small'>"+BDT(budget)+"</div></span><span class='status'>ACTIVE</span></div></div></div>"+
-  "<div class='section'><h2>Money & billing</h2></div><div class='card'><p class='small'>Forge should distinguish the customer's Forge service fee from advertising spend. If Forge later operates a prepaid advertising wallet, every deposit, reservation, channel allocation and spend must appear here. For now, the dashboard never pretends that advertising money has been transferred to a platform.</p><div class='actions'><button class='btn' onclick='aiMarketingAction(\"Check payment readiness\")'>Check payment readiness →</button></div></div>"+
-  "<div class='section'><h2>Forge activity</h2></div><div class='card'><div class='activity-list'>"+activityHtml+"</div></div>"+
-  "<div class='notice' style='margin-top:15px'><b>Customer promise:</b> Forge hides complexity, not accountability. The customer can always see budget, spend, channels, campaigns, actions and AI reasoning.</div>";
+
+  const product=selected?.name||"No product selected";
+  const e=selected?liveEconomics(selected):null;
+  const selling=e?.selling?BDT(e.selling):"—";
+  const statusText=m.status==="connected"?"Connected and syncing":"Connected";
+  return "<div class='hero marketing-hero'><div><div class='eyebrow'>AI MARKETING · AUTOPILOT WORKSPACE</div><div class='h1'>"+esc(brand)+" marketing, without the Meta headache.</div><div class='sub'>Forge is connected to the business context. The customer stays inside this page while Forge plans, prepares, monitors and explains the marketing.</div></div><div class='actions'><button class='btn primary' onclick='toast(\"AI marketing analysis queued\")'>Run AI analysis →</button><button class='btn' onclick='disconnectMarketing()'>Disconnect Meta</button></div></div>"+
+  "<div class='grid'><div class='card span3'><div class='label'>Meta connection</div><div class='stat' style='font-size:20px'>"+statusText+"</div><div class='small'>"+esc(m.pageUrl)+"</div></div><div class='card span3'><div class='label'>Monthly marketing envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Product in focus</div><div class='stat' style='font-size:18px'>"+esc(product)+"</div></div><div class='card span3'><div class='label'>Current selling price</div><div class='stat'>"+selling+"</div></div></div>"+
+  "<div class='section'><div class='eyebrow'>AI MARKETING CONTROL ROOM</div><h2>Forge decides what needs attention.</h2></div>"+
+  "<div class='grid'><div class='card span8'><div class='label'>TODAY'S AI BRIEF</div><h2 style='margin:7px 0'>No manual campaign setup required.</h2><p class='small'>Forge should combine Shopify sales, product economics, inventory, creative availability and Meta performance before recommending a change. It should never invent results or silently spend money.</p><div class='actions'><button class='btn primary' onclick='toast(\"AI brief generated\")'>Generate today's brief →</button><button class='btn' onclick='toast(\"Campaign draft prepared\")'>Prepare campaign draft</button></div></div><div class='card span4'><div class='label'>AUTOPILOT MODE</div><div class='kpi'><span><b>Approval required</b><div class='small'>Recommended default for new businesses</div></span><span class='status amber'>SAFE</span></div><div class='kpi'><span><b>Auto-optimization</b><div class='small'>Can be enabled later</div></span><button class='btn' onclick='toast(\"Autopilot settings opened\")'>Settings</button></div></div></div>"+
+  "<div class='section'><h2>Campaign desk</h2></div><div class='card'><div class='kpi'><span><b>Product launch campaign</b><div class='small'>Sales objective · connected product · Shopify destination</div></span><span class='status'>Draft</span></div><div class='kpi'><span><b>Creative testing</b><div class='small'>Use available product media first; request AI production only when needed.</div></span><span class='status'>Ready</span></div><div class='kpi'><span><b>Performance monitoring</b><div class='small'>Spend, purchases, CPA, revenue and contribution should feed the Forge decision layer.</div></span><span class='status'>Connected</span></div></div>"+
+  "<div class='notice' style='margin-top:15px'><b>Customer promise:</b> Forge handles the complexity. The customer supplies the Page link and gives permission once; everything else should happen inside AI Marketing.</div>";
 }
 function support(){return "<div class='hero'><div><div class='eyebrow'>AI customer support</div><div class='h1'>Fast answers. Safe escalation.</div><div class='sub'>Routine questions can be automated; sensitive cases remain visible to a human.</div></div></div><div class='grid'><div class='card span4'><div class='label'>Conversations today</div><div class='stat'>84</div></div><div class='card span4'><div class='label'>Median response</div><div class='stat'>11 sec</div></div><div class='card span4'><div class='label'>Human escalations</div><div class='stat'>3</div></div></div><div class='section'><h2>Support queue</h2></div><div class='card'>"+[["Do you have size 42?","Catalog availability","Resolved"],["When will my parcel arrive?","Order tracking","Resolved"],["Can I exchange this size?","Policy","Resolved"],["Wrong item received.","Evidence required","Needs you"],["I want a refund for change of mind.","Policy","Needs you"]].map(x=>"<div class='kpi'><span><b>"+x[0]+"</b><div class='small'>"+x[1]+"</div></span><span class='status "+(x[2]==="Needs you"?"amber":"")+"'>"+x[2]+"</span></div>").join("")+"</div><div class='notice' style='margin-top:15px'><b>Safety rule:</b> AI must not invent stock, delivery dates, refunds or policy exceptions.</div>"}
 function plan(){
@@ -2136,19 +2042,4 @@ setTimeout(refreshForgeFxRate,50);
 setInterval(refreshForgeFxRate,3600000);
 </script>
 </body>
-</html>
-<style>
-/* FORGE BILLING & BUDGET */
-.billing-hero{border-color:rgba(255,158,120,.2)}
-.billing-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.9fr);gap:18px;align-items:start}
-.billing-summary{padding:26px;position:sticky;top:20px}
-.billing-product-line{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
-.billing-product-line div{display:flex;flex-direction:column;gap:4px}.billing-product-line span{font-size:11px;color:var(--muted)}
-.billing-product-line input{width:90px;padding:10px;border:1px solid #294238;border-radius:10px;background:#07110d;color:var(--text)}
-.billing-total{padding:22px 0;border-bottom:1px solid var(--line);display:flex;align-items:end;justify-content:space-between;gap:12px}.billing-total span{font-size:12px;color:var(--muted)}.billing-total strong{font-size:32px}
-.billing-breakdown{padding:6px 0}.billing-line{display:flex;justify-content:space-between;gap:15px;padding:15px 0;border-bottom:1px solid var(--line)}.billing-line div{display:flex;flex-direction:column;gap:5px}.billing-line span{font-size:11px;color:var(--muted)}.billing-line strong{font-size:14px}
-.billing-note{margin-top:15px;padding:14px;border-radius:12px;background:#0b1a13;border:1px solid #294238;display:flex;flex-direction:column;gap:5px}.billing-note span{font-size:11px;color:var(--muted);line-height:1.5}
-.billing-explain{display:grid;gap:10px}.explain-card{display:flex;gap:13px;padding:17px;border:1px solid var(--line);border-radius:15px;background:#09150f}.explain-icon{width:30px;height:30px;flex:0 0 30px;border:1px solid #294238;border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:900;color:#9de8bc}.explain-card h3{margin:0 0 6px;font-size:14px}.explain-card p{margin:0 0 8px;font-size:11px;line-height:1.55;color:var(--muted)}.warning-copy{padding:10px;border-left:2px solid #a45d45;background:#17120f;border-radius:7px}.data-tag{display:inline-flex;padding:4px 7px;border-radius:6px;font-size:8px;font-weight:900;letter-spacing:.08em}.data-tag.verified{background:#123522;color:#7de0a4}.data-tag.planning{background:#302817;color:#f0c77d}.data-tag.amber{background:#302017;color:#ffad82}
-.billing-footer{margin-top:18px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-@media(max-width:850px){.billing-layout{grid-template-columns:1fr}.billing-summary{position:static}.billing-footer{flex-direction:column;align-items:flex-start}}@media(max-width:560px){.billing-total{align-items:flex-start;flex-direction:column}.billing-total strong{font-size:28px}}
-</style>
+</html><style>.billing-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.85fr);gap:18px;align-items:start}.billing-summary{padding:26px;position:sticky;top:90px}.billing-product-line{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:16px 0;border-bottom:1px solid var(--line)}.billing-product-line div{display:flex;flex-direction:column;gap:4px}.billing-product-line span{font-size:11px;color:var(--muted)}.billing-product-line input{width:82px;padding:10px;border:1px solid #294238;border-radius:10px;background:#07110d;color:var(--text)}.billing-total{display:flex;justify-content:space-between;align-items:end;padding:22px 0;border-bottom:1px solid var(--line)}.billing-total span{font-size:12px;color:var(--muted)}.billing-total strong{font-size:32px}.billing-line{display:flex;justify-content:space-between;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}.billing-line div{display:flex;flex-direction:column;gap:4px}.billing-line span{font-size:11px;color:var(--muted)}.billing-note{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#0b1a13;display:flex;flex-direction:column;gap:5px}.billing-explain{display:grid;gap:10px}.explain-card{display:flex;gap:13px;padding:17px;border:1px solid var(--line);border-radius:15px;background:#09150f}.explain-icon{width:30px;height:30px;flex:0 0 30px;border:1px solid #294238;border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:900;color:#9de8bc}.explain-card h3{margin:0 0 6px;font-size:14px}.explain-card p{margin:0;font-size:11px;line-height:1.55;color:var(--muted)}.data-tag{display:inline-flex;margin-top:8px;padding:4px 7px;border-radius:6px;font-size:8px;font-weight:900;letter-spacing:.08em}.data-tag.verified{background:#123522;color:#7de0a4}.data-tag.planning{background:#302817;color:#f0c77d}.billing-footer{margin-top:18px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:20px}@media(max-width:850px){.billing-layout{grid-template-columns:1fr}.billing-summary{position:static}.billing-footer{flex-direction:column;align-items:flex-start}}@media(max-width:560px){.billing-total{align-items:flex-start;flex-direction:column}.billing-total strong{font-size:28px}}</style>

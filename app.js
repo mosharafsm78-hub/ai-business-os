@@ -1778,10 +1778,43 @@ function reviewCj(i){
   const modalBox=document.getElementById("modalbox");
   if(!modalBox)return;
   modalBox.innerHTML=
-    "<div class='cj-decision-head'><div><div class='eyebrow'>Product decision</div><h2>Review this product</h2><div class='small'>Real supplier record · price and stock checked now</div></div><button class='cj-modal-close' onclick='closeModal()' aria-label='Close'>×</button></div>"+
-    "<div class='cj-detail-grid' style='margin-top:20px'><div class='cj-detail-media'><span>Live product</span><img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'></div><div><div class='cj-modal-category'>"+esc(p.category||"Product")+"</div><h3 class='cj-modal-product-name'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>Live supplier price · ≈ "+BDT(e.supplier)+"</div><div class='cj-data cj-modal-data'><div>Estimated landed<b>"+BDT(e.landed)+"</b></div><div>Estimated selling<b>"+BDT(e.selling)+"</b></div><div>Marketing / CAC<b>"+BDT(e.cac)+"</b></div><div class='cj-contribution'>Contribution<b>"+BDT(e.contribution)+" ("+e.margin+"%)</b></div><div>Supplier stock<b>"+formatQty(p.inventory)+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Checked before order")+"</b></div></div></div></div>"+
-    "<div class='cj-decision-note'><b>What happens next</b><span>This exact supplier product becomes the selected product for Sourcing & Orders. Forge then carries its live economics into the business plan, brand, store and marketing workflow. Final stock, shipping and payable amount are rechecked before purchase.</span></div>"+
-    "<div class='actions cj-modal-actions'><button class='btn primary' onclick='addCjToQueue("+i+")'>Choose this product</button><button class='btn' onclick='closeModal()'>Keep comparing</button></div>";
+    "<div class='forge-product-review'>"+
+      "<div class='forge-review-head'>"+
+        "<div class='forge-review-head-copy'><div class='forge-review-kicker'>Product Lab · live supplier review</div><h2>Review this product</h2><p>Verify the product, unit economics and supply signal before selecting it.</p></div>"+
+        "<button class='forge-review-close' onclick='closeModal()' aria-label='Close'>×</button>"+
+      "</div>"+
+      "<div class='forge-review-main'>"+
+        "<div class='forge-review-gallery'>"+
+          "<div class='forge-review-image-stage'>"+
+            "<span class='forge-review-live'><i></i>Live supplier</span>"+
+            "<span class='forge-review-rec'>"+String(i+1).padStart(2,"0")+"</span>"+
+            "<img class='forge-review-image' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'>"+
+          "</div>"+
+        "</div>"+
+        "<div class='forge-review-details'>"+
+          "<span class='forge-review-category'>"+esc(p.category||"Product")+"</span>"+
+          "<h3 class='forge-review-title'>"+esc(p.name)+"</h3>"+
+          "<div class='forge-review-price-row'>"+
+            "<div><div class='forge-review-price'>"+moneyUsd(p.priceUsd)+"</div><div class='forge-review-price-note'>Live supplier price · ≈ "+BDT(e.supplier)+"</div></div>"+
+            "<div class='forge-review-source'>Checked "+new Date(cjLastFetched||Date.now()).toLocaleTimeString("en-BD",{hour:"2-digit",minute:"2-digit"})+"</div>"+
+          "</div>"+
+          "<div class='forge-review-section-title'>Unit economics</div>"+
+          "<div class='forge-review-economics'>"+
+            "<div class='forge-review-metric'><span>Estimated landed</span><b>"+BDT(e.landed)+"</b><small>Logistics included</small></div>"+
+            "<div class='forge-review-metric'><span>Estimated selling</span><b>"+BDT(e.selling)+"</b><small>Forge model</small></div>"+
+            "<div class='forge-review-metric'><span>Marketing / CAC</span><b>"+BDT(e.cac)+"</b><small>Target acquisition</small></div>"+
+            "<div class='forge-review-metric is-positive'><span>Contribution</span><b>"+BDT(e.contribution)+" · "+e.margin+"%</b><small>After modeled costs</small></div>"+
+          "</div>"+
+          "<div class='forge-review-section-title'>Supply signals</div>"+
+          "<div class='forge-review-signals'>"+
+            "<div class='forge-review-signal'><span>Supplier stock</span><b>"+formatQty(p.inventory)+" units</b></div>"+
+            "<div class='forge-review-signal'><span>Delivery</span><b>"+esc(p.deliveryDays||"Checked before order")+"</b></div>"+
+          "</div>"+
+        "</div>"+
+      "</div>"+
+      "<div class='forge-review-next'><div class='forge-review-next-icon'>→</div><div><b>What happens after you choose it</b><span>This exact supplier record becomes the selected product for Sourcing & Orders. Forge carries its economics into the business plan, brand, store and marketing workflow. Stock, shipping and payable amount are rechecked before purchase.</span></div></div>"+
+      "<div class='forge-review-footer'><button class='btn' onclick='closeModal()'>Keep comparing</button><button class='btn primary' onclick='addCjToQueue("+i+")'>Choose this product →</button></div>"+
+    "</div>";
   document.getElementById("modal").classList.add("open");
 }
 

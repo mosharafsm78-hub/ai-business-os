@@ -812,6 +812,70 @@ input:focus,select:focus,textarea:focus{border-color:#49a979!important;box-shado
 <style id="forge-wizard-stability-v1">
 #forge-start-profile{touch-action:manipulation}
 </style>
+<style id="forge-business-finder-worldclass">
+/* FORGE BUSINESS FINDER — decision intelligence layout */
+.finder-command{
+  display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,.65fr);
+  gap:18px;margin-top:8px;padding:22px;border:1px solid #dfe6e2;border-radius:18px;
+  background:#f8fbf9;
+}
+.finder-command-main{padding:3px 2px}
+.finder-command-main h2{margin:7px 0 6px;font-size:26px;letter-spacing:-.035em}
+.finder-command-main p{margin:0;max-width:760px;color:#66736d;font-size:12px;line-height:1.6}
+.finder-command-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.finder-command-stats div{padding:13px;border:1px solid #dfe6e2;border-radius:12px;background:#fff}
+.finder-command-stats span,.finder-data span,.finder-side-callout>span{display:block;font-size:8px;letter-spacing:.12em;font-weight:850;color:#718078}
+.finder-command-stats b{display:block;margin-top:7px;font-size:16px;letter-spacing:-.02em}
+.finder-section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:34px 0 14px}
+.finder-section-head h2{margin:5px 0 4px;font-size:24px;letter-spacing:-.035em}
+.finder-section-head p{margin:0;color:#66736d;font-size:11px}
+.finder-live{padding:8px 10px;border:1px solid #cfdad4;border-radius:999px;font-size:8px;letter-spacing:.1em;font-weight:850;white-space:nowrap}
+.finder-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
+.finder-list{display:grid;gap:10px}
+.finder-row{
+  display:grid;grid-template-columns:46px minmax(0,1fr);gap:16px;
+  padding:18px;border:1px solid #dfe6e2;border-radius:16px;background:#fff;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.finder-row:hover{transform:translateY(-1px);border-color:#b8cec1;box-shadow:0 10px 28px rgba(17,24,22,.06)}
+.finder-row.is-primary{border-color:#9bd9b5;box-shadow:inset 3px 0 #52c98d,0 8px 24px rgba(17,24,22,.045)}
+.finder-rank{width:38px;height:38px;border:1px solid #d5dfda;border-radius:11px;display:grid;place-items:center;font-size:10px;font-weight:900;color:#187a4b;background:#f7fbf8}
+.finder-row-top{display:flex;justify-content:space-between;gap:18px;align-items:start}
+.finder-model{font-size:8px;text-transform:uppercase;letter-spacing:.12em;color:#187a4b;font-weight:900}
+.finder-row h3{margin:5px 0 5px;font-size:20px;letter-spacing:-.03em}
+.finder-row>div>p,.finder-main>p{margin:0;color:#66736d;font-size:11px;line-height:1.55;max-width:850px}
+.finder-match{font-size:22px;font-weight:900;letter-spacing:-.04em;white-space:nowrap}
+.finder-match span{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#718078;font-weight:800}
+.finder-data{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}
+.finder-data>div{padding:10px;border:1px solid #e2e8e4;border-radius:10px;background:#fafcfb}
+.finder-data b{display:block;font-size:12px;margin-top:5px}
+.finder-data small{display:block;color:#7a8781;font-size:8px;line-height:1.4;margin-top:3px}
+.finder-reason{margin-top:9px;padding:11px 12px;border-left:2px solid #52c98d;background:#f6faf7}
+.finder-reason>span{font-size:8px;letter-spacing:.12em;font-weight:900;color:#187a4b}
+.finder-reason p{margin:4px 0 0;color:#5f6e67;font-size:10px;line-height:1.5}
+.finder-row-actions{display:flex;gap:7px;margin-top:12px}
+.finder-row-actions .btn{padding:9px 12px;font-size:11px}
+.finder-row-actions .btn:first-child{min-width:150px}
+.finder-side{position:sticky;top:88px;border:1px solid #dfe6e2;border-radius:16px;background:#fbfcfb;padding:18px}
+.finder-side-head h3{margin:6px 0 5px;font-size:18px;letter-spacing:-.025em}
+.finder-side-head p{margin:0;color:#66736d;font-size:10px;line-height:1.55}
+.finder-rule{padding:14px 0;border-top:1px solid #e2e8e4}
+.finder-rule b{display:block;font-size:10px;letter-spacing:.06em}
+.finder-rule span{display:block;margin-top:4px;color:#68766f;font-size:10px;line-height:1.45}
+.finder-side-callout{margin-top:8px;padding:14px;border:1px solid #cfdad4;border-radius:12px;background:#fff}
+.finder-side-callout>b{display:block;margin-top:5px;font-size:15px}
+.finder-side-callout>p{margin:4px 0 12px;color:#66736d;font-size:10px}
+.finder-side-callout .btn{width:100%;font-size:10px}
+@media(max-width:1050px){
+ .finder-layout{grid-template-columns:1fr}.finder-side{position:static}.finder-command{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+ .finder-command-stats{grid-template-columns:1fr}.finder-section-head{display:block}.finder-live{display:inline-block;margin-top:10px}
+ .finder-row{grid-template-columns:1fr;padding:15px}.finder-rank{display:none}.finder-data{grid-template-columns:1fr 1fr}
+ .finder-row-top{gap:10px}.finder-match{font-size:18px}.finder-row-actions{flex-direction:column}.finder-row-actions .btn{width:100%}
+}
+@media(max-width:480px){.finder-data{grid-template-columns:1fr}.finder-row h3{font-size:18px}}
+</style>
 </head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
@@ -1028,7 +1092,35 @@ function opportunities(){
    return {...x,fit,cap:x.cap,capitalGap:Math.max(0,x.cap-cap),capitalFit:cap>=x.cap,model:x.model||"Inventory"};
  }).sort((a,b)=>b.fit-a.fit);
 }
-function ideas(){let ps=opportunities(),p=state.profile,cap=Math.max(0,Number(p.budget||0)-Number(p.reserve||0)),mode=forgeRealityCheck(p).mode;let modeNote=cap<=10?"You have very little business money available right now. Forge will focus on ways to test demand first — services, pre-orders and commission-based approaches. These tests assume you already have access to the basic tools you need, such as a phone or computer and internet.":cap<1000?"Your starting budget is limited. Forge will favor low-upfront-cost tests before larger launches.":"Forge will compare each idea with the money you can actually use, not just the amount you entered.";return "<div class='hero'><div><div class='eyebrow'>Business finder · personalized</div><div class='h1'>Only show me what fits.</div><div class='sub'>Forge is matching opportunities to your real budget, time, experience and risk limits.</div></div><button class='btn' onclick='openWizard()'>View locked profile</button></div><div class='notice'><b>"+mode.replace("-"," ").toUpperCase()+" mode:</b> "+modeNote+" <span class='small'>Available business money: "+BDT(cap)+".</span></div><div class='section'><div><h2>Ranked opportunities</h2><p>Fit score combines capital fit, risk fit, time fit and experience fit. Lower-fit businesses are intentionally deprioritized.</p></div></div><div class='grid'>"+ps.map((x,i)=>"<div class='card span4'><div class='row' style='justify-content:space-between'><span class='tag'>#"+(i+1)+" · "+x.fit+"% fit</span><span class='status "+(x.risk==="Medium"||x.risk==="High"?"amber":"")+"'>"+x.risk+" risk</span></div><div class='product-photo'>"+x.icon+"</div><h3>"+x.name+"</h3><div class='small'>"+x.thesis+"</div><div class='metric'><span><div class='label'>Typical start capital</div><b>"+BDT(x.cap)+"</b></span><span><div class='label'>Business model</div><b>"+x.model+"</b></span><span><div class='label'>Time need</div><b>"+x.time+"h/wk</b></span></div><div class='notice' style='margin-top:13px'><b>Why this priority?</b><div class='small'>"+(x.cap<=cap?"Budget fits":(x.model==="Service"||x.model==="Commission")?"No inventory needed for the first test":x.model==="Pre-order"?"Test demand before buying stock":"About "+BDT(x.cap-cap)+" more would be needed for the estimated launch")+" · "+(p.time>=x.time?"Time fits":"Time stretch")+" · "+(x.risk==="High"&&p.risk!=="Aggressive"?"High risk deprioritized":"Risk profile compatible")+(x.test?" · "+x.test:"")+"</div></div><button class='btn primary' style='width:100%;margin-top:16px' onclick=\"selectOpportunity('"+x.name+"')\">Build this business →</button></div>").join("")+"</div>"}
+function ideas(){
+ let ps=opportunities(),p=state.profile,cap=Math.max(0,Number(p.budget||0)-Number(p.reserve||0)),mode=forgeRealityCheck(p).mode;
+ let modeTitle=mode==="lean-launch"?"Lean launch":mode==="capital-protective"?"Capital-protective":"Validation-first";
+ let modeNote=cap<=10
+   ?"Your available business budget is extremely small. Forge will focus on ways to test demand without buying inventory first."
+   :cap<1000
+   ?"Your starting budget is limited. Forge will prioritize low-upfront-cost tests before larger launches."
+   :"Forge is comparing each path with the money, time, experience and risk limits you entered.";
+ let immediate=ps.filter(x=>x.cap<=cap).slice(0,3);
+ let testPaths=ps.filter(x=>x.model==="Service"||x.model==="Commission"||x.model==="Pre-order").slice(0,3);
+ let focus=immediate.length?immediate:testPaths;
+ let lead=focus[0]||ps[0];
+ let riskLabel=x=>x.risk==="High"?"Higher":x.risk;
+ let capitalText=x=>x.cap===0?"No inventory required":x.cap<=cap?"Within your budget":"Needs more capital";
+ let rationale=x=>{
+   if(x.cap<=cap) return "The estimated starting requirement fits the capital Forge can currently deploy.";
+   if(x.model==="Service"||x.model==="Commission") return "Can be tested without purchasing inventory first.";
+   if(x.model==="Pre-order") return "Demand can be tested before committing to a larger stock purchase.";
+   return "Forge is keeping this lower in the list because the estimated launch requires more capital.";
+ };
+ return "<div class='hero ideas-hero'><div><div class='eyebrow'>Business Finder · decision workspace</div><div class='h1'>Find a business you can actually start.</div><div class='sub'>Forge turns your profile into a practical opportunity shortlist — then shows you exactly why each path fits, what it needs and what could block it.</div></div><button class='btn' onclick='openWizard()'>Review my profile</button></div>"
+ +"<div class='finder-command'><div class='finder-command-main'><div class='eyebrow'>FORGE DECISION BRIEF</div><h2>"+modeTitle+" mode</h2><p>"+modeNote+"</p></div><div class='finder-command-stats'><div><span>Available capital</span><b>"+BDT(cap)+"</b></div><div><span>Time available</span><b>"+(p.time||0)+"h / week</b></div><div><span>Risk comfort</span><b>"+(p.risk||"Not set")+"</b></div></div></div>"
+ +"<div class='finder-section-head'><div><div class='eyebrow'>PERSONALIZED SHORTLIST</div><h2>Paths Forge can evaluate for you</h2><p>These are planning options, not promises. Every path is checked against your current constraints.</p></div><div class='finder-live'>LIVE PROFILE · "+BDT(cap)+" AVAILABLE</div></div>"
+ +"<div class='finder-layout'><div class='finder-list'>"+ps.map((x,i)=>{
+   let primary=x===lead;
+   return "<article class='finder-row "+(primary?"is-primary":"")+"'><div class='finder-rank'>"+String(i+1).padStart(2,"0")+"</div><div class='finder-main'><div class='finder-row-top'><div><div class='finder-model'>"+x.model+" · "+riskLabel(x.risk)+" risk</div><h3>"+x.name+"</h3></div><div class='finder-match'>"+x.fit+"% <span>match</span></div></div><p>"+x.thesis+"</p><div class='finder-data'><div><span>STARTING CAPITAL</span><b>"+capitalText(x)+"</b><small>"+BDT(x.cap)+" estimated</small></div><div><span>TIME</span><b>"+x.time+"h / week</b><small>"+(p.time>=x.time?"Fits your availability":"Above your current availability")+"</small></div><div><span>RISK</span><b>"+riskLabel(x.risk)+"</b><small>"+(x.risk==="Low"?"Lower capital exposure":"More execution exposure")+"</small></div><div><span>BUSINESS MODEL</span><b>"+x.model+"</b><small>"+(x.model==="Inventory"?"Stock-led":"Demand-led")+"</small></div></div><div class='finder-reason'><span>FORGE'S READ</span><p>"+rationale(x)+" "+(p.experience&&x.experience?("Experience fit: "+(p.experience===x.experience?"aligned":"manageable with support")+"."):"")+"</p></div><div class='finder-row-actions'><button class='btn primary' onclick="selectOpportunity('"+x.name+"')">Build this path <span>→</span></button><button class='btn' onclick="fcSend('Why was "+x.name.replace(/'/g,"\\'")+" recommended?')">Why this path?</button></div></div></article>"
+ }).join("")+"</div>"
+ +"<aside class='finder-side'><div class='finder-side-head'><div class='eyebrow'>HOW FORGE DECIDES</div><h3>Your shortlist is constraint-led.</h3><p>Forge does not treat every business idea as equally practical. It starts with what you can realistically deploy.</p></div><div class='finder-rule'><b>01 · Capital</b><span>Can the first test happen with your available money?</span></div><div class='finder-rule'><b>02 · Time</b><span>Does the weekly workload fit the time you said you can give?</span></div><div class='finder-rule'><b>03 · Experience</b><span>Does the model match your current experience, or can Forge support the gap?</span></div><div class='finder-rule'><b>04 · Risk</b><span>Is the exposure consistent with the risk level you selected?</span></div><div class='finder-side-callout'><span>ACTIVE PROFILE</span><b>"+(p.category||"Open to anything")+"</b><p>"+(p.market||"Primary market not set")+" · "+(p.goal||"Goal not set")+"</p><button class='btn' onclick='openWizard()'>Change inputs</button></div></aside></div>";
+}
 function applyFilters(){toast("Your profile is locked. Finder filters are intentionally disabled so recommendations cannot be gamed.")}
 function selectOpportunity(n){state.selectedOpportunityName=n;state.selectedProduct=opportunities().find(x=>x.name===n)||opportunities()[0];state.page="products";persistProfile();render();toast(n+" added to your personalized plan")}
 function productCatalog(){return {

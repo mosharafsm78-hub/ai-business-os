@@ -2100,7 +2100,87 @@ function printBusinessPlan(){
   const d=planSnapshot();if(!d)return toast("Confirm a product first.");
   const content=document.querySelector(".plan-document")?.innerHTML||"";
   const w=window.open("","_blank","width=1100,height=850");if(!w)return toast("Allow pop-ups to print the business plan.");
-  w.document.write("<!doctype html><html><head><title>"+esc(d.brand)+" — Business Plan</title><style>body{font-family:Arial,sans-serif;color:#000;max-width:950px;margin:30px auto;padding:0 25px;line-height:1.55}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid #000;break-inside:avoid}.plan-number{font-size:24px;font-weight:900;color:#000}.plan-section h2{margin:0 0 9px}.plan-finance,.plan-risk,.plan-roadmap,.plan-two-col{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:13px;background:#fff;border:1px solid #000;border-radius:9px}.plan-finance span{display:block;font-size:9px;color:#000;text-transform:uppercase}.plan-finance b{font-size:18px}.small{font-size:13px;color:#000}.plan-quote{font-size:19px;font-weight:650;border-left:3px solid #000;padding:14px;background:#fff}.plan-meta{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#000}@media print{body{margin:0}}</style></head><body><h1>"+esc(d.brand)+" — Business Plan</h1><p class='small'>Personalized to the confirmed product, capital, market and operating profile.</p>"+content+"</body></html>");
+  w.document.write("<!doctype html><html><head><title>"+esc(d.brand)+" — Business Plan</title><style>body{font-family:Arial,sans-serif;color:#000;max-width:950px;margin:30px auto;padding:0 25px;line-height:1.55}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid #000;break-inside:avoid}.plan-number{font-size:24px;font-weight:900;color:#000}.plan-section h2{margin:0 0 9px}.plan-finance,.plan-risk,.plan-roadmap,.plan-two-col{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:13px;background:#fff;border:1px solid #000;border-radius:9px}.plan-finance span{display:block;font-size:9px;color:#000;text-transform:uppercase}.plan-finance b{font-size:18px}.small{font-size:13px;color:#000}.plan-quote{font-size:19px;font-weight:650;border-left:3px solid #000;padding:14px;background:#fff}.plan-meta{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#000}@media print{body{margin:0}}</style></head><body><h1>"+esc(d.brand)+" — Business Plan</h1><p class='small'>Personalized to the confirmed product, capital, market and operating profile.</p>"+content+"</body><style id="forge-sitewide-analyst-skin">
+:root{
+ --bg:#F7F5F1;--panel:#FFFFFF;--panel2:#FFFFFF;--panel-hi:#FFFFFF;
+ --line:#E4E0D8;--text:#14181C;--muted:#6B6F73;
+ --mint:#2B4C3F;--mint2:#2B4C3F;--amber:#2B4C3F;--red:#2B4C3F;--blue:#2B4C3F;
+ --fc-bg:#F7F5F1;--fc-surface:#FFFFFF;--fc-surface2:#FFFFFF;--fc-ink:#14181C;--fc-muted:#6B6F73;--fc-border:#E4E0D8;--fc-accent:#2B4C3F;--fc-accent-soft:#E8EEE9;--fc-shadow:none;
+}
+html,body{background:var(--paper)!important;color:var(--ink)!important}
+body[data-page]{background:var(--paper)!important;color:var(--ink)!important}
+body[data-page] .main{background:var(--paper)!important;color:var(--ink)!important}
+body[data-page] .forge-context{height:48px;display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line);background:var(--paper)!important;color:var(--ink)!important;font-size:13px}
+body[data-page] .context-business,body[data-page] .context-stats{display:flex;align-items:center;min-width:0}
+body[data-page] .context-business b,body[data-page] .context-business span{padding-right:16px;margin-right:16px;border-right:1px solid var(--line);white-space:nowrap}
+body[data-page] .context-business b{font-weight:650;color:var(--ink)!important}.context-business span{color:var(--muted)!important}.context-business span:last-child{border-right:0;margin-right:0}
+body[data-page] .context-stats{margin-left:auto}.context-stats>div{padding:0 16px;border-left:1px solid var(--line)}.context-stats span{color:var(--muted)!important;margin-right:6px}.context-stats b{color:var(--ink)!important;font-weight:650}
+
+body[data-page] .page-header{display:flex!important;justify-content:space-between;align-items:flex-end;gap:32px;padding:32px 0!important;margin:0 0 32px!important;border-bottom:1px solid var(--line)!important;background:transparent!important}
+body[data-page] .page-header h1{font-family:"Inter Tight",Inter,sans-serif!important;font-size:30px!important;line-height:1.1!important;font-weight:750!important;letter-spacing:-.04em!important;margin:0!important;color:var(--ink)!important}
+body[data-page] .page-header p{font-family:Inter,"IBM Plex Sans",sans-serif!important;font-size:14px!important;line-height:1.5!important;color:var(--muted)!important;margin:8px 0 0!important}
+body[data-page] .page-header-action{flex:0 0 auto}
+
+body[data-page] .hero{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0 0 24px!important}
+body[data-page] .hero>div:first-child{display:none!important}
+body[data-page] .hero .actions{margin-bottom:24px!important}
+body[data-page] .hero .eyebrow{display:none!important}
+
+body[data-page] .grid{gap:16px!important}
+body[data-page] .card,body[data-page] .panel,body[data-page] .tile,body[data-page] .metric,body[data-page] .table-wrap,body[data-page] .chat-shell,body[data-page] .composer,body[data-page] .notice,body[data-page] .section,body[data-page] .order-command,body[data-page] .billing-summary,body[data-page] .explain-card,body[data-page] .meta-connect-card,body[data-page] .content-command-v3,body[data-page] .content-no-product,body[data-page] .domain-launch-selector,body[data-page] .finder-command,body[data-page] .finder-row,body[data-page] .meta-step,body[data-page] .forge-reality-panel{
+ background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:8px!important;box-shadow:none!important
+}
+body[data-page] .card.selected,body[data-page] .card.primary,body[data-page] .panel.selected,body[data-page] .tile.selected,body[data-page] .finder-row.is-primary,body[data-page] .selected{
+ background:var(--accent-soft)!important;border-color:var(--accent)!important;color:var(--ink)!important
+}
+body[data-page] .section{padding:24px!important}
+body[data-page] .section>h2,body[data-page] .section h2{font-size:19px!important;font-weight:650!important;color:var(--ink)!important;margin:0!important}
+body[data-page] .label,body[data-page] .small,body[data-page] .eyebrow,body[data-page] .guide-kicker,body[data-page] .finder-data span,body[data-page] .path-data span{font-size:13px!important;font-weight:500!important;letter-spacing:normal!important;text-transform:none!important;color:var(--muted)!important}
+body[data-page] h1,body[data-page] h2,body[data-page] h3,body[data-page] h4,body[data-page] .h1{font-family:"Inter Tight",Inter,sans-serif!important;color:var(--ink)!important;letter-spacing:-.025em!important}
+body[data-page] p{color:var(--muted)!important}
+body[data-page] .stat,body[data-page] .kpi b,body[data-page] .metric b{color:var(--ink)!important}
+body[data-page] .kpi{border-color:var(--line)!important}
+body[data-page] .btn{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:6px!important;box-shadow:none!important;transform:none!important;font-size:13px!important;font-weight:600!important}
+body[data-page] .btn.primary,body[data-page] .btn.accent,body[data-page] .btn.green,body[data-page] .btn.success{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+body[data-page] .btn:hover{transform:none!important;box-shadow:none!important}
+body[data-page] input,body[data-page] select,body[data-page] textarea,.input{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:6px!important;box-shadow:none!important}
+body[data-page] input:focus,body[data-page] select:focus,body[data-page] textarea:focus{outline:2px solid var(--accent-soft)!important;border-color:var(--accent)!important}
+body[data-page] .chat .bubble:not(.me){background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important}
+body[data-page] .chat .bubble.me{background:var(--accent-soft)!important;color:var(--ink)!important;border-color:var(--line)!important}
+body[data-page] .status,body[data-page] .badge,body[data-page] .tag,body[data-page] .chip,.data-tag{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:6px!important;box-shadow:none!important}
+body[data-page] .status.active,body[data-page] .badge.active,body[data-page] .tag.active,body[data-page] .chip.active{background:var(--accent-soft)!important;color:var(--accent)!important;border-color:var(--accent)!important}
+body[data-page] a{color:var(--accent)!important}
+body[data-page] .progress,body[data-page] .score{background:var(--line)!important}.progress i,.score i{background:var(--accent)!important}
+body[data-page] .chart{background:transparent!important;border-color:var(--line)!important}.chart .bar{background:var(--accent)!important}
+body[data-page] .finder-row{border-color:var(--line)!important}.finder-row.is-primary{background:var(--accent-soft)!important}
+body[data-page] .finder-rank{background:transparent!important;color:var(--accent)!important;border:0!important}
+body[data-page] .finder-model{color:var(--muted)!important}.finder-match b{color:var(--accent)!important}
+body[data-page] .finder-reason{border-left:4px solid var(--accent)!important;background:transparent!important}
+body[data-page] .finder-data{border-top:1px solid var(--line)!important}
+body[data-page] .finder-data>div{border-right:1px solid var(--line)!important}
+body[data-page] .finder-data>div:last-child{border-right:0!important}
+body[data-page] .order-command,.billing-summary,.meta-connect-card,.content-command-v3{padding:24px!important}
+body[data-page] .billing-line,.explain-card,.meta-step{border-color:var(--line)!important}
+body[data-page] .billing-line strong,body[data-page] .billing-total strong{color:var(--ink)!important}
+body[data-page] .forge-sidebar-note{background:transparent!important;border-color:var(--line)!important;color:var(--muted)!important}
+body[data-page] .side{background:var(--ink)!important;border:0!important;box-shadow:none!important}
+body[data-page] .nav{background:transparent!important;color:rgba(255,255,255,.68)!important;border:0!important;box-shadow:none!important;border-radius:6px!important}
+body[data-page] .nav.active{background:var(--accent)!important;color:#fff!important}
+body[data-page] .top{background:var(--ink)!important;color:#fff!important;box-shadow:none!important;border:0!important}
+body[data-page] .top .mark{background:var(--accent)!important;color:#fff!important}
+body[data-page] .corner-tab{background:var(--ink)!important;color:#fff!important;border:0!important}
+body[data-page] .topright .pill,body[data-page] .topright .avatar{box-shadow:none!important}
+body[data-page] [style*="linear-gradient"],body[data-page] [style*="radial-gradient"]{background-image:none!important}
+body[data-page] [class*="glow"],body[data-page] [class*="shadow"]{box-shadow:none!important}
+@media(max-width:760px){
+ body[data-page] .forge-context{height:auto;min-height:48px;padding:12px 0;align-items:flex-start;flex-direction:column;gap:10px}
+ body[data-page] .context-business,body[data-page] .context-stats{width:100%;flex-wrap:wrap}
+ body[data-page] .context-stats{margin-left:0}.context-stats>div{padding-left:0;margin-right:16px}
+ body[data-page] .page-header{padding:24px 0!important;align-items:flex-start;flex-direction:column;gap:16px}
+ body[data-page] .page-header h1{font-size:28px!important}
+}
+</style>
+</html>");
   w.document.close();setTimeout(()=>w.print(),250);
 }</script>
 <script>
@@ -2321,18 +2401,9 @@ Object.assign(DEFAULT_PROFILE,{
 });
 
 function forgeWorkspaceBar(){
-  const p=state.profile||{}, b=state.business||{};
-  const cap=Number(p.budget||b.budget||0);
-  const reserve=Number(p.reserve||0);
-  const deploy=Math.max(0,cap-reserve);
-  return "<div class='forge-workspace-bar'>"+
-    "<div class='forge-workspace-main'><span class='forge-live-dot'></span><div><strong>"+esc(b.name||"New venture")+"</strong><span>"+esc(p.market||"Bangladesh")+" · "+esc(p.category||"Business setup")+"</span></div></div>"+
-    "<div class='forge-workspace-metrics'>"+
-      "<span><b>"+BDT(deploy)+"</b><small>deployable</small></span>"+
-      "<span><b>"+(p.time||0)+"h</b><small>per week</small></span>"+
-      "<span><b>"+esc(p.risk||"Balanced")+"</b><small>risk profile</small></span>"+
-      "<span class='forge-locked'>✓ Profile locked</span>"+
-    "</div></div>";
+ const p=state.profile||{},b=state.business||{};
+ const cap=Math.max(0,Number(p.budget||b.budget||0)-Number(p.reserve||0));
+ return "<div class='forge-context'><div class='context-business'><b>"+esc(b.name||"Northstar Goods")+"</b><span>"+esc(p.market||b.market||"Bangladesh")+"</span><span>"+esc(p.category||b.category||"Fashion & accessories")+"</span></div><div class='context-stats'><div><span>Deployable</span><b>"+BDT(cap)+"</b></div><div><span>Time</span><b>"+Number(p.time||0)+"h / week</b></div><div><span>Risk</span><b>"+esc(p.risk||"Balanced")+"</b></div></div></div>";
 }
 
 function shell(c){

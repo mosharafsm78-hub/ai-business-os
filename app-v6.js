@@ -34,6 +34,8 @@ const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
 const GENERATED_BUSINESS_NAMES=new Set(["Northstar Goods","Nura Labs","Hearth & Form","Circuit Lane","Daily Harvest Co.","Motion Supply","Northstar Ventures"]);
 if(saved?.business?.name && GENERATED_BUSINESS_NAMES.has(saved.business.name)){
   saved.business.name=String(saved.profile?.businessName||"").trim()||"Your Business";
+  if(saved.profile) saved.profile.businessName=String(saved.profile.businessName||"").trim();
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));}catch(e){}
 }
 const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},contentRequests:saved?.contentRequests||[],contentAssets:saved?.contentAssets||[],contentAutomation:saved?.contentAutomation||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
 function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[],contentAutomation:state.contentAutomation||{},billing:state.billing||{},billingInvoice:state.billingInvoice||null}))}
@@ -71,7 +73,8 @@ function shell(c){
 function forgeContextBar(){
  const p=state.profile||{},b=state.business||{};
  const cap=Math.max(0,Number(p.budget||b.budget||0)-Number(p.reserve||0));
- return "<div class='forge-context'><div class='context-business'><b>"+esc(b.name||businessName(p.category||"Fashion & accessories"))+"</b><span>"+esc(p.market||"Bangladesh")+"</span><span>"+esc(p.category||"Fashion & accessories")+"</span></div><div class='context-stats'><div><span>Deployable</span><b>"+BDT(cap)+"</b></div><div><span>Time</span><b>"+Number(p.time||0)+"h / week</b></div><div><span>Risk</span><b>"+esc(p.risk||"Balanced")+"</b></div></div></div>";
+ const displayBusinessName=String(p.businessName||b.name||"").trim()||"Your Business";
+ return "<div class='forge-context'><div class='context-business'><b>"+esc(displayBusinessName)+"</b><span>"+esc(p.market||"Bangladesh")+"</span><span>"+esc(p.category||"Fashion & accessories")+"</span></div><div class='context-stats'><div><span>Deployable</span><b>"+BDT(cap)+"</b></div><div><span>Time</span><b>"+Number(p.time||0)+"h / week</b></div><div><span>Risk</span><b>"+esc(p.risk||"Balanced")+"</b></div></div></div>";
 }
 
 function toggleCorner(){document.getElementById("cornerPanel").classList.toggle("open")}
@@ -710,7 +713,7 @@ function generateBrandDirection(){
   const category=String(p.category||state.profile?.category||"").toLowerCase();
   const brandCandidates=[
     category.includes("bag")?"Carry & Co.":category.includes("footwear")?"Stride House":"Northstar & Co.",
-    category.includes("beauty")?"Nura Form":category.includes("home")?"Hearth & Form":"Form House",
+    category.includes("beauty")?"Beauty Brand":category.includes("home")?"Home Brand":"New Brand",
     "Novera Goods"
   ];
   const productCandidates=[core+" Essential",core+" Signature",core+" Everyday"];
@@ -763,7 +766,7 @@ function generateNameSet(p,cycle){
   const seedNames={
     bag:[["Carryva","Mora & Co.","Veyra Living"],["Lunaro","Cove & Form","Avela Goods"],["Vanta Carry","Nomi House","Sora & Co."],["Orla Goods","Maven Carry","Velora"],["Cora & Lane","Aster Carry","Nove & Co."]],
     footwear:[["Stride House","Solevia","Form & Sole"],["Veyro","Northline Goods","Aero & Co."],["Morrow Sole","Crest Footwear","Nexa Step"],["Urban Form","Vanta Sole","Rove Goods"],["Solaire Goods","North & Sole","Aven Step"]],
-    beauty:[["Nura Form","Velune Beauty","Mira & Co."],["Aurelia Labs","Novi Skin","Luma Form"],["Veya Beauty","Serein Labs","Mora Skin"],["Elora Care","Nuvia","Sola Beauty"],["Aven Beauty","Ciela Labs","Viora"]],
+    beauty:[["Beauty Brand","Velune Beauty","Mira & Co."],["Aurelia Labs","Novi Skin","Luma Form"],["Veya Beauty","Serein Labs","Mora Skin"],["Elora Care","Nuvia","Sola Beauty"],["Aven Beauty","Ciela Labs","Viora"]],
     home:[["Hearth & Form","Mora Home","Nove Living"],["Cedar & Co.","Vela Home","Aster Living"],["Forma Home","Luno Living","Nora House"],["Maven Home","Cove & Form","Veya Living"],["Arden Home","Novi Living","Luma House"]],
     default:[["Northstar & Co.","Form House","Novera Goods"],["Morrow & Co.","Vela Goods","Aster House"],["Novi & Co.","Crest Goods","Mora House"],["Veyra Goods","Northline Co.","Luno House"],["Aven & Co.","Cove Goods","Sora House"]]
   };
@@ -1888,7 +1891,7 @@ function shell(c){
     "<button class='corner-tab' type='button' onclick='toggleCorner()'>CATEGORIES</button>"+
     "<aside id='cornerPanel' class='corner-panel'><div class='row' style='justify-content:space-between'><div><div class='eyebrow'>Forge workspace</div><h3>Categories & tools</h3><div class='small'>Everything stays connected to the same business context.</div></div><button class='btn' type='button' onclick='toggleCorner()'>✕</button></div><div class='navlabel'>Business workflow</div>"+nav()+"</aside>"+
     "<div class='layout'><aside class='side'><div class='navlabel'>Business workspace</div>"+nav()+
-      "<div class='navlabel' style='margin-top:18px'>Your business</div><div class='business-mini'><div class='row'><div class='bizicon'>◈</div><div><b>"+(b?esc(b.name):"New venture")+"</b><div class='small'>"+(b?"Operating workspace active":"Profile not completed")+"</div></div></div><div class='progress' style='margin-top:12px'><i style='width:"+(b?72:8)+"%'></i></div></div>"+
+      "<div class='navlabel' style='margin-top:18px'>Your business</div><div class='business-mini'><div class='row'><div class='bizicon'>◈</div><div><b>"+esc(String(state.profile?.businessName||b?.name||"").trim()||"Your Business")+"</b><div class='small'>"+(b?"Operating workspace active":"Profile not completed")+"</div></div></div><div class='progress' style='margin-top:12px'><i style='width:"+(b?72:8)+"%'></i></div></div>"+
       "<div class='forge-sidebar-note'><b>Forge principle</b><span>Every downstream decision should trace back to your profile, live data and explicit assumptions.</span></div>"+
     "</aside><main class='main'>"+forgeWorkspaceBar()+forgePageGuide()+c+"</main></div>";
 }
@@ -2000,7 +2003,7 @@ function forgeWizardView(){
     forgeWizardField("How much financial risk can you realistically handle?","riskCapacity","text","",["Low","Medium","High"])+
     forgeWizardField("What is the most you are comfortable losing while testing an idea?","lossTolerance","number","10000")+
     "</div><div class='forge-risk-note'><b>Forge will use this as a safety limit.</b><span>Recommendations, opening quantities and testing budgets should stay proportional to this limit.</span></div>";
-  if(step===4) body="<div class='forge-direction-intro'><span>YOUR BUSINESS DIRECTION</span><b>Let's narrow down what could actually work for you.</b><p>You don't need a perfect business idea yet. Give Forge a direction, and it will connect your money, skills, risk and market before suggesting what to build.</p></div><div class='forge-w-grid'>"+
+  if(step===4) body="<div class='forge-direction-intro'><span>YOUR BUSINESS DIRECTION</span><b>Let's narrow down what could actually work for you.</b><p>You don't need a perfect business idea yet. Give Forge a direction, and it will connect your money, skills, risk and market before suggesting what to build.</p></div><div class='forge-w-grid'><div class='forge-w-field' style='grid-column:1/-1'><span>What is your business name?</span><input id='fw_businessName' data-key='businessName' type='text' value='"+esc(d.businessName||"")+"' placeholder='e.g. BlackBole'><small>Use your real business name. If you do not have one yet, leave this blank and Forge will use “Your Business” — it will not invent a brand name.</small></div>
     forgeWizardField("What kind of business interests you?","category","text","",["Open to anything","Fashion & accessories","Beauty & personal care","Home & living","Electronics","Food & beverage","Sports & fitness","Services / digital"])+
     forgeWizardField("Who would you most like to serve?","customer","text","",["Open to recommendations","Everyday consumers","Students & young adults","Working professionals","Families & households","Business customers (B2B)","Niche / enthusiast customers","Local community"])+
     forgeWizardField("How would you like to reach customers?","channel","text","",["Open to recommendations","Social media + website","Online marketplace","Physical shop / outlet","B2B sales","A mix of online and offline"])+
@@ -2054,7 +2057,7 @@ function forgeWizardNext(){
   const d=window.__forgeWizardData;
   state.profile={...DEFAULT_PROFILE,...d,reality:forgeRealityCheck(d)};
   const reality=forgeRealityCheck(d);
-  state.business={name:businessName(d.category),budget:Number(d.budget||0),market:d.market,category:d.category,age:Number(d.age||0),income:Number(d.income||0),goal:d.goal,risk:d.risk,time:Number(d.time||0),targetMargin:categoryMargin(d.category),planMode:planMode(d),realityMode:reality.mode,realitySeverity:reality.severity,realityFlags:reality.flags};
+  state.business={name:String(d.businessName||"").trim()||"Your Business",budget:Number(d.budget||0),market:d.market,category:d.category,age:Number(d.age||0),income:Number(d.income||0),goal:d.goal,risk:d.risk,time:Number(d.time||0),targetMargin:categoryMargin(d.category),planMode:planMode(d),realityMode:reality.mode,realitySeverity:reality.severity,realityFlags:reality.flags};
   state.profileLocked=true;state.page="ideas";
   try{localStorage.removeItem("forge_wizard_draft_v1")}catch(e){}
   persistProfile();render();toast("Forge is activated — your workspace is now personalized");

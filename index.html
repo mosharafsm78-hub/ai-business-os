@@ -614,6 +614,29 @@ html,body{overflow-x:hidden!important}
  .top{padding:0 16px!important}
  .card,.panel,.hero,.section{border-radius:18px!important}
 }
+</style><style id="forge-monochrome-final">
+html,body,#app{background:#fff!important;color:#000!important;background-image:none!important}
+body *{text-shadow:none!important}
+.top,.side,.main,.layout,.workspace,.shell,.content,.page,.hero,.hero-banner,.section,.card,.panel,.tile,.box,.workspace-card,.modalbox,.corner-panel,.business-mini,.step,.asset,.bubble,.composer,.notice,.product,.product-card,.order-card,.metric-card,.stat-card,.billing-summary,.billing-explain,.billing-footer,.explain-card,.table,.table-wrap,.filterbar,.field,.choice,.source-note{background:#fff!important;background-image:none!important;color:#000!important;border-color:#000!important;box-shadow:none!important}
+h1,h2,h3,h4,h5,h6,.h1,.stat,.price,.brand,b,strong,label,p,span,li,dt,dd,a,.eyebrow,.kicker,.label,.small,.sub,.muted,.up,.navlabel,.source-note{color:#000!important}
+.eyebrow,.kicker,.label,.navlabel{font-weight:800!important}
+.btn,.pill,.avatar,.nav,.choice,.input,button,input,select,textarea{background:#fff!important;color:#000!important;border:1px solid #000!important;box-shadow:none!important}
+.btn.primary,.primary,.nav.active,.side .nav.active,.corner-panel .nav.active{background:#000!important;color:#fff!important;border-color:#000!important}
+.btn:hover,.nav:hover,.pill:hover,.choice:hover{background:#000!important;color:#fff!important}
+.mark{background:#000!important;color:#fff!important;box-shadow:none!important}
+.corner-tab,.category-tab,.categories-tab,.floating-category,.category-toggle{background:#fff!important;color:#000!important;border:1px solid #000!important;box-shadow:none!important}
+.progress,.score{background:#fff!important;border:1px solid #000!important}.progress i,.score i{background:#000!important}
+.status,.tag,.badge,.chip,.data-tag,.data-tag.verified,.data-tag.planning,.status.amber,.status.red{background:#fff!important;color:#000!important;border:1px solid #000!important}
+.billing-note{background:#fff!important;color:#000!important;border:1px solid #000!important}
+input::placeholder,textarea::placeholder{color:#000!important;opacity:.45}
+table,thead,tbody,tr,td,th{background:#fff!important;color:#000!important;border-color:#000!important}hr{border-color:#000!important}
+.modal{background:rgba(0,0,0,.78)!important}.modalbox{background:#fff!important;color:#000!important;border:1px solid #000!important}
+.toast{background:#000!important;color:#fff!important;border:1px solid #000!important}
+.hero::before,.hero::after,.hero-banner::before,.hero-banner::after,.section::before,.section::after,.card::before,.card::after{background:none!important;background-image:none!important;box-shadow:none!important}
+body img,body video,body canvas{filter:none!important;background:transparent!important}
+body svg{color:#000!important}
+html,body{overflow-x:hidden!important}
+@media(max-width:700px){.card,.panel,.tile,.hero,.hero-banner,.section,.step,.product-card,.order-card{border-radius:16px!important}}
 </style></head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
@@ -1982,47 +2005,7 @@ function printBusinessPlan(){
   const d=planSnapshot();if(!d)return toast("Confirm a product first.");
   const content=document.querySelector(".plan-document")?.innerHTML||"";
   const w=window.open("","_blank","width=1100,height=850");if(!w)return toast("Allow pop-ups to print the business plan.");
-  w.document.write("<!doctype html><html><head><title>"+esc(d.brand)+" — Business Plan</title><style>body{font-family:Arial,sans-serif;color:#17221f;max-width:950px;margin:30px auto;padding:0 25px;line-height:1.55}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid #ddd;break-inside:avoid}.plan-number{font-size:24px;font-weight:900;color:#26805f}.plan-section h2{margin:0 0 9px}.plan-finance,.plan-risk,.plan-roadmap,.plan-two-col{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:13px;background:#f3f7f5;border-radius:9px}.plan-finance span{display:block;font-size:9px;color:#687771;text-transform:uppercase}.plan-finance b{font-size:18px}.small{font-size:13px;color:#52625b}.plan-quote{font-size:19px;font-weight:650;border-left:3px solid #26805f;padding:14px;background:#f4f8f6}.plan-meta{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#64736d}@media print{body{margin:0}}</head><body><h1>"+esc(d.brand)+" — Business Plan</h1><p class='small'>Personalized to the confirmed product, capital, market and operating profile.</p>"+content+"<style id="forge-pure-monochrome">
-html,body{background:#fff!important;color:#000!important}body{background-image:none!important}
-.top,.side,.main,.layout,.workspace,.shell,.content,.page,.hero,.hero-banner,.section,.card,.panel,.tile,.box,.workspace-card,.modalbox,.corner-panel,.business-mini,.step,.asset,.bubble,.composer,.notice,.product,.product-card,.order-card,.metric-card,.stat-card,.billing-summary,.billing-explain,.billing-footer,.explain-card,.table,.table-wrap,.filterbar,.field,.choice,.source-note{background:#fff!important;background-image:none!important;color:#000!important;border-color:#000!important;box-shadow:none!important}
-.hero-banner{border:1px solid #000!important}.hero-banner *,.card *,.section *,.step *,.asset *,.product *,.order-card *,.metric-card *,.billing-summary *,.billing-explain *,.billing-footer *,.corner-panel *,.side *{color:#000!important}
-h1,h2,h3,h4,h5,h6,.h1,.stat,.price,.brand,b,strong,label,p,span,li,dt,dd,a,.eyebrow,.kicker,.label,.small,.sub,.muted,.up,.navlabel,.source-note{color:#000!important}
-.eyebrow,.kicker,.label,.navlabel{font-weight:800!important}
-.btn,.pill,.avatar,.nav,.choice,.input,button,input,select,textarea{background:#fff!important;color:#000!important;border:1px solid #000!important;box-shadow:none!important;filter:none!important}
-.btn.primary,.primary,.nav.active,.side .nav.active,.corner-panel .nav.active{background:#000!important;color:#fff!important;border-color:#000!important}
-.btn:hover,.nav:hover,.pill:hover,.choice:hover{background:#000!important;color:#fff!important}
-.mark{background:#000!important;color:#fff!important;box-shadow:none!important}.online{background:#fff!important;color:#000!important;border-color:#000!important}
-.corner-tab,.category-tab,.categories-tab,.floating-category,.category-toggle{background:#fff!important;color:#000!important;border:1px solid #000!important;box-shadow:none!important}
-.progress,.score{background:#fff!important;border:1px solid #000!important}.progress i,.score i{background:#000!important}
-.status,.tag,.badge,.chip,.data-tag,.data-tag.verified,.data-tag.planning,.status.amber,.status.red{background:#fff!important;color:#000!important;border:1px solid #000!important}
-.billing-note{background:#fff!important;color:#000!important;border:1px solid #000!important}.billing-total strong{color:#000!important}
-input::placeholder,textarea::placeholder{color:#000!important;opacity:.45}
-table,thead,tbody,tr,td,th{background:#fff!important;color:#000!important;border-color:#000!important}hr{border-color:#000!important}
-.modal{background:rgba(0,0,0,.72)!important}.modalbox{background:#fff!important;color:#000!important;border:1px solid #000!important}
-.toast{background:#000!important;color:#fff!important;border:1px solid #000!important}
-img,video,canvas{filter:none!important}svg{color:#000!important}svg *{stroke:#000!important;fill:currentColor}
-.hero::before,.hero::after,.hero-banner::before,.hero-banner::after,.section::before,.section::after,.card::before,.card::after{background:none!important;background-image:none!important;box-shadow:none!important}
-*{text-shadow:none!important}html,body{overflow-x:hidden!important}
-@media(max-width:700px){.card,.panel,.tile,.hero,.hero-banner,.section,.step,.product-card,.order-card{border-radius:16px!important}}
-</style><style id="forge-monochrome-absolute">
-html,body,#app{background:#fff!important;color:#000!important}
-#app .onboarding{background:#fff!important;background-image:none!important;color:#000!important}
-#app .onboarding-card{background:#fff!important;background-image:none!important;color:#000!important;border:1px solid #000!important;border-radius:24px!important;box-shadow:0 18px 60px rgba(0,0,0,.14)!important}
-#app .onboarding-card .brand,#app .onboarding-card .eyebrow,#app .onboarding-card .h1,#app .onboarding-card p,#app .onboarding-card .sub,#app .onboarding-card .small,#app .onboarding-card b{color:#000!important}
-#app .onboarding-card .mark{background:#000!important;color:#fff!important;box-shadow:none!important}
-#app .onboarding-card .notice,#app .onboarding-card .locked-profile{background:#fff!important;color:#000!important;border:1px solid #000!important;box-shadow:none!important}
-#app .onboarding-card .btn,#app .onboarding-card button{background:#fff!important;color:#000!important;border:1px solid #000!important;box-shadow:none!important}
-#app .onboarding-card .btn.primary,#app .onboarding-card button.primary{background:#000!important;color:#fff!important;border-color:#000!important}
-body *{color:#000!important;border-color:#000!important;text-shadow:none!important}
-body *:not(img):not(video):not(canvas){background-image:none!important}
-body button,body input,body textarea,body select{background:#fff!important;color:#000!important;border:1px solid #000!important}
-body .btn.primary,body .primary,body button.primary,body .nav.active,body .side .nav.active,body .corner-panel .nav.active{background:#000!important;color:#fff!important;border-color:#000!important}
-body .mark{background:#000!important;color:#fff!important}
-body .modal{background:rgba(0,0,0,.78)!important}
-body .toast{background:#000!important;color:#fff!important}
-body img,body video,body canvas{background:transparent!important;filter:none!important}
-body svg{color:#000!important}
-</style></body></html>");
+  w.document.write("<!doctype html><html><head><title>"+esc(d.brand)+" — Business Plan</title><style>body{font-family:Arial,sans-serif;color:#17221f;max-width:950px;margin:30px auto;padding:0 25px;line-height:1.55}.plan-section{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:25px 0;border-bottom:1px solid #ddd;break-inside:avoid}.plan-number{font-size:24px;font-weight:900;color:#26805f}.plan-section h2{margin:0 0 9px}.plan-finance,.plan-risk,.plan-roadmap,.plan-two-col{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.plan-finance>div,.plan-risk>div,.plan-roadmap>div,.plan-two-col>div{padding:13px;background:#f3f7f5;border-radius:9px}.plan-finance span{display:block;font-size:9px;color:#687771;text-transform:uppercase}.plan-finance b{font-size:18px}.small{font-size:13px;color:#52625b}.plan-quote{font-size:19px;font-weight:650;border-left:3px solid #26805f;padding:14px;background:#f4f8f6}.plan-meta{display:flex;gap:15px;flex-wrap:wrap;font-size:10px;color:#64736d}@media print{body{margin:0}}</head><body><h1>"+esc(d.brand)+" — Business Plan</h1><p class='small'>Personalized to the confirmed product, capital, market and operating profile.</p>"+content+"</body></html>");
   w.document.close();setTimeout(()=>w.print(),250);
 }
 function analytics(){let b=state.business||{targetMargin:43};return "<div class='hero'><div><div class='eyebrow'>Decision intelligence</div><div class='h1'>Numbers that lead to decisions.</div><div class='sub'>Track demand, unit economics, cash efficiency, customer experience, inventory risk and marketing efficiency.</div></div><button class='btn' onclick=\"toast('Decision model refreshed')\">Refresh model ↻</button></div><div class='grid'><div class='card span8'><div class='label'>Illustrative revenue trajectory</div><div class='chart'>"+[32,41,38,55,63,71,86].map(h=>"<div class='bar' style='height:"+h+"%'></div>").join("")+"</div><div class='small'>Indexed planning view. Connect actual sales data before financial decisions.</div></div><div class='card span4'><div class='label'>AI business verdict</div><h2>Validate before scaling.</h2><p class='small'>Keep the first batch small enough to learn. Scale only when contribution remains positive after acquisition, delivery fees and expected returns.</p></div></div><div class='section'><h2>Scorecard</h2></div><div class='grid'>"+[["Demand",92,"Strong"],["Unit economics",88,"Healthy"],["Cash efficiency",73,"Watch"],["Customer experience",95,"Strong"],["Inventory risk",68,"Watch"],["Marketing efficiency",84,"Healthy"]].map(x=>"<div class='card span4'><div class='row' style='justify-content:space-between'><b>"+x[0]+"</b><span class='status "+(x[2]==="Watch"?"amber":"")+"'>"+x[2]+"</span></div><div class='stat'>"+x[1]+"</div><div class='score'><i style='width:"+x[1]+"%'></i></div></div>").join("")+"</div><div class='section'><h2>Financial guardrails</h2></div><div class='grid'><div class='card span4'><div class='label'>Protected reserve</div><div class='stat'>22%</div></div><div class='card span4'><div class='label'>Target gross margin</div><div class='stat'>"+b.targetMargin+"%</div></div><div class='card span4'><div class='label'>Break-even rule</div><div class='stat'>Contribution &gt; 0</div></div></div>"}

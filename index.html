@@ -1545,6 +1545,60 @@ function store(){
   "<div class='store-checklist'>"+checklist.map((x,i)=>"<div class='store-check card'><div class='store-check-number'>"+String(i+1).padStart(2,"0")+"</div><div><b>"+x[0]+"</b><p class='small'>"+x[1]+"</p></div><span class='status "+(s.status==="ready"?"":"amber")+"'>"+(s.status==="ready"?"READY":"QUEUED")+"</span></div>").join("")+"</div>"+
   "";
 }
+function billingData(){
+  const b=state.billing||{};
+  const m=marketingConnection();
+  const p=state.selectedProduct||{};
+  const qty=Number(b.quantity||state.selectedQuantity||40);
+  const unitCost=Number(b.unitCost||p.cost||p.purchasePrice||0);
+  const marketingPerUnit=Number(b.marketingPerUnit||400);
+  const productTotal=unitCost*qty;
+  const marketingTotal=marketingPerUnit*qty;
+  const domain=Number(b.domain||0),shopify=Number(b.shopify||0),other=Number(b.other||0);
+  return {qty,unitCost,productTotal,marketingPerUnit,marketingTotal,domain,shopify,other,total:productTotal+marketingTotal+domain+shopify+other};
+}
+function billingStatusLabel(kind){
+  return kind==="verified"?"Verified":kind==="user"?"Provided by you":"AI planning";
+}
+function setBillingQuantity(){
+  const q=Math.max(1,Number(document.getElementById("billingQty")?.value||40));
+  const d=billingData();
+  state.billing={...state.billing,quantity:q};
+  persistProfile();render();
+}
+function billing(){
+  const d=billingData();
+  const p=state.selectedProduct||{};
+  const productName=p.name||"Selected product";
+  const hasUnit=!!d.unitCost;
+  const productCost=hasUnit?d.productTotal:0;
+  const total=d.total;
+  return "<div class='hero billing-hero'><div><div class='eyebrow'>BILLING & BUDGET · PRE-LAUNCH</div><div class='h1'>Know what you need before you spend.</div><div class='sub'>Forge builds a clear launch budget from product costs, channel planning, domain and business setup costs. Verified numbers stay separate from AI planning numbers.</div></div></div>"+
+  "<div class='billing-layout'>"+
+    "<section class='billing-summary card'>"+
+      "<div class='eyebrow'>YOUR LAUNCH BUDGET</div><div class='billing-product-line'><div><b>"+esc(productName)+"</b><span>Quantity to sell</span></div><input id='billingQty' type='number' min='1' value='"+d.qty+"' onchange='setBillingQuantity()'></div>"+
+      "<div class='billing-total'><span>Estimated launch requirement</span><strong>"+BDT(total)+"</strong></div>"+
+      "<div class='billing-breakdown'>"+
+        "<div class='billing-line'><div><b>Product purchase</b><span>"+d.qty+" × "+(hasUnit?BDT(d.unitCost):"price unavailable")+"</span></div><strong>"+(hasUnit?BDT(productCost):"—")+"</strong></div>"+
+        "<div class='billing-line'><div><b>Marketing budget</b><span>"+d.qty+" × "+BDT(d.marketingPerUnit)+" / purchase</span></div><strong>"+BDT(d.marketingTotal)+"</strong></div>"+
+        "<div class='billing-line'><div><b>Domain</b><span>1-year registration</span></div><strong>"+(d.domain?BDT(d.domain):"—")+"</strong></div>"+
+        "<div class='billing-line'><div><b>Shopify</b><span>Applicable subscription</span></div><strong>"+(d.shopify?BDT(d.shopify):"—")+"</strong></div>"+
+        "<div class='billing-line'><div><b>Other required costs</b><span>Only applicable items</span></div><strong>"+(d.other?BDT(d.other):"—")+"</strong></div>"+
+      "</div>"+
+      "<div class='billing-note'><b>Planning total</b><span>Marketing is a planning allocation. It is not a guaranteed Meta/TikTok/Google cost.</span></div>"+
+    "</section>"+
+    "<aside class='billing-explain'>"+
+      "<div class='eyebrow'>WHAT THESE NUMBERS MEAN</div>"+
+      "<div class='explain-card'><div class='explain-icon'>01</div><div><h3>Product purchase</h3><p>"+(hasUnit?"Forge uses the supplier purchase price available for <b>"+esc(productName)+"</b>. "+d.qty+" units × "+BDT(d.unitCost)+" gives "+BDT(productCost)+".":"A verified supplier purchase price is not available yet, so Forge will not invent one. Connect/select a supplier price to calculate this line.")+"</p><span class='data-tag "+(hasUnit?"verified":"amber")+"'>"+(hasUnit?"VERIFIED":"NEEDS VERIFICATION")+"</span></div></div>"+
+      "<div class='explain-card'><div class='explain-icon'>02</div><div><h3>Marketing budget</h3><p>Forge is currently using <b>"+BDT(d.marketingPerUnit)+" per expected purchase</b> as the planning assumption, giving "+BDT(d.marketingTotal)+" for "+d.qty+" purchases.</p><p class='warning-copy'><b>Actual cost can move.</b> Meta advertising is an auction, not a fixed per-sale price. Competition, audience, creative, objective, conversion rate, seasonality and campaign performance can make the actual cost lower or higher. Forge should replace this planning figure with live CPA data as soon as the campaign runs.</p><span class='data-tag planning'>AI PLANNING</span></div></div>"+
+      "<div class='explain-card'><div class='explain-icon'>03</div><div><h3>Domain</h3><p>"+(d.domain?"Current verified domain price for a <b>1-year registration</b>.":"The live domain price must be retrieved for the selected domain before Forge labels this cost verified.")+"</p><span class='data-tag "+(d.domain?"verified":"amber")+"'>"+(d.domain?"VERIFIED":"NEEDS LIVE PRICE")+"</span></div></div>"+
+      "<div class='explain-card'><div class='explain-icon'>04</div><div><h3>Shopify</h3><p>"+(d.shopify?"Current applicable Shopify subscription is included.":"Forge will use the applicable Shopify plan price. Shopify hosting should not be double-counted as a separate hosting bill when included with the Shopify plan.")+"</p><span class='data-tag "+(d.shopify?"verified":"amber")+"'>"+(d.shopify?"VERIFIED":"TO VERIFY")+"</span></div></div>"+
+      "<div class='explain-card'><div class='explain-icon'>05</div><div><h3>Other costs</h3><p>Forge only adds costs that actually apply to this business. Every line should state its billing period and what the customer is paying for.</p><span class='data-tag planning'>TRANSPARENT</span></div></div>"+
+    "</aside>"+
+  "</div>"+
+  "<div class='billing-footer card'><div><div class='eyebrow'>NEXT</div><h2>Ready to move from planning to marketing?</h2><p class='small'>Once the budget is reviewed, AI Marketing can use the approved marketing allocation and connected channels to prepare campaigns.</p></div><button class='btn primary' onclick='navigate(\"marketing\")'>Open AI Marketing →</button></div>";
+}
+
 function marketingConnection(){
   const m=state.marketingConnection||{};
   return {
@@ -2087,3 +2141,18 @@ setInterval(refreshForgeFxRate,3600000);
 </script>
 </body>
 </html>
+<style>
+/* FORGE BILLING & BUDGET */
+.billing-hero{border-color:rgba(255,158,120,.2)}
+.billing-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.9fr);gap:18px;align-items:start}
+.billing-summary{padding:26px;position:sticky;top:20px}
+.billing-product-line{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.billing-product-line div{display:flex;flex-direction:column;gap:4px}.billing-product-line span{font-size:11px;color:var(--muted)}
+.billing-product-line input{width:90px;padding:10px;border:1px solid #294238;border-radius:10px;background:#07110d;color:var(--text)}
+.billing-total{padding:22px 0;border-bottom:1px solid var(--line);display:flex;align-items:end;justify-content:space-between;gap:12px}.billing-total span{font-size:12px;color:var(--muted)}.billing-total strong{font-size:32px}
+.billing-breakdown{padding:6px 0}.billing-line{display:flex;justify-content:space-between;gap:15px;padding:15px 0;border-bottom:1px solid var(--line)}.billing-line div{display:flex;flex-direction:column;gap:5px}.billing-line span{font-size:11px;color:var(--muted)}.billing-line strong{font-size:14px}
+.billing-note{margin-top:15px;padding:14px;border-radius:12px;background:#0b1a13;border:1px solid #294238;display:flex;flex-direction:column;gap:5px}.billing-note span{font-size:11px;color:var(--muted);line-height:1.5}
+.billing-explain{display:grid;gap:10px}.explain-card{display:flex;gap:13px;padding:17px;border:1px solid var(--line);border-radius:15px;background:#09150f}.explain-icon{width:30px;height:30px;flex:0 0 30px;border:1px solid #294238;border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:900;color:#9de8bc}.explain-card h3{margin:0 0 6px;font-size:14px}.explain-card p{margin:0 0 8px;font-size:11px;line-height:1.55;color:var(--muted)}.warning-copy{padding:10px;border-left:2px solid #a45d45;background:#17120f;border-radius:7px}.data-tag{display:inline-flex;padding:4px 7px;border-radius:6px;font-size:8px;font-weight:900;letter-spacing:.08em}.data-tag.verified{background:#123522;color:#7de0a4}.data-tag.planning{background:#302817;color:#f0c77d}.data-tag.amber{background:#302017;color:#ffad82}
+.billing-footer{margin-top:18px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+@media(max-width:850px){.billing-layout{grid-template-columns:1fr}.billing-summary{position:static}.billing-footer{flex-direction:column;align-items:flex-start}}@media(max-width:560px){.billing-total{align-items:flex-start;flex-direction:column}.billing-total strong{font-size:28px}}
+</style>

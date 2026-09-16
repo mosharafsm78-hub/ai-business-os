@@ -2669,10 +2669,10 @@ function reviewCj(i){
   const p=cjState[i]; if(!p)return;
   const e=liveEconomics(p);
   document.getElementById("modalbox").innerHTML=
-    "<div class='row' style='justify-content:space-between;gap:12px'><div><div class='eyebrow'>PRODUCT DECISION</div><h2 style='margin:5px 0'>Confirm this product</h2><div class='small'>Real supplier record · live price checked now</div></div><button class='btn' onclick='closeModal()'>✕</button></div>"+
-    "<div class='cj-detail-grid' style='margin-top:18px'><img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'><div><h3 style='margin:0 0 8px'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>Live supplier price · ≈ "+BDT(e.supplier)+"</div><div class='cj-data'><div>Estimated landed<b>"+BDT(e.landed)+"</b></div><div>Estimated selling<b>"+BDT(e.selling)+"</b></div><div>Marketing / CAC<b>"+BDT(e.cac)+"</b></div><div>Contribution<b>"+BDT(e.contribution)+" ("+e.margin+"%)</b></div><div>Stock<b>"+formatQty(p.inventory)+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Checked before order")+"</b></div></div></div></div>"+
-    "<div class='notice' style='margin-top:16px'><b>After confirmation</b><div class='small'>This exact supplier product is saved to <b>Sourcing & Orders</b>, becomes the selected hero product, and starts a product-specific business-plan preparation. Final variant, stock, shipping and payable amount are rechecked before any supplier purchase order.</div></div>"+
-    "<div class='actions' style='margin-top:16px'><button class='btn primary' onclick='addCjToQueue("+i+")'>Confirm & secure product →</button><button class='btn' onclick='closeModal()'>Keep comparing</button></div>";
+    "<div class='cj-decision-head'><div><div class='eyebrow'>Product decision</div><h2>Review this product</h2><div class='small'>Real supplier record · price and stock checked now</div></div><button class='cj-modal-close' onclick='closeModal()' aria-label='Close'>×</button></div>"+
+    "<div class='cj-detail-grid' style='margin-top:20px'><div class='cj-detail-media'><span>Live product</span><img class='cj-detail-img' src='"+esc(p.image)+"' alt='"+esc(p.name)+"'></div><div><div class='cj-modal-category'>"+esc(p.category||"Product")+"</div><h3 class='cj-modal-product-name'>"+esc(p.name)+"</h3><div class='cj-detail-price'>"+moneyUsd(p.priceUsd)+"</div><div class='cj-detail-bdt'>Live supplier price · ≈ "+BDT(e.supplier)+"</div><div class='cj-data cj-modal-data'><div>Estimated landed<b>"+BDT(e.landed)+"</b></div><div>Estimated selling<b>"+BDT(e.selling)+"</b></div><div>Marketing / CAC<b>"+BDT(e.cac)+"</b></div><div class='cj-contribution'>Contribution<b>"+BDT(e.contribution)+" ("+e.margin+"%)</b></div><div>Supplier stock<b>"+formatQty(p.inventory)+"</b></div><div>Delivery<b>"+esc(p.deliveryDays||"Checked before order")+"</b></div></div></div></div>"+
+    "<div class='cj-decision-note'><b>What happens next</b><span>This exact supplier product becomes the selected product for Sourcing & Orders. Forge then carries its live economics into the business plan, brand, store and marketing workflow. Final stock, shipping and payable amount are rechecked before purchase.</span></div>"+
+    "<div class='actions cj-modal-actions'><button class='btn primary' onclick='addCjToQueue("+i+")'>Choose this product</button><button class='btn' onclick='closeModal()'>Keep comparing</button></div>";
   document.getElementById("modal").classList.add("open");
 }
 
@@ -3011,6 +3011,79 @@ setInterval(refreshForgeFxRate,3600000);
 .fc-thinking{display:inline-flex;gap:4px;align-items:center}.fc-thinking i{width:5px;height:5px;border-radius:50%;background:#000;display:block;animation:fcPulse 1s infinite}.fc-thinking i:nth-child(2){animation-delay:.15s}.fc-thinking i:nth-child(3){animation-delay:.3s}@keyframes fcPulse{0%,100%{opacity:.25}50%{opacity:1}}
 @media(max-width:560px){#forgeChatLauncher{right:12px;bottom:78px;padding:12px 14px}#forgeChatPanel{right:12px;bottom:130px;width:calc(100vw - 24px);max-height:calc(100vh - 160px);border-radius:17px}.fc-messages{max-height:none}}
 html,body,#app{background:#fff!important;color:#000!important;background-image:none!important}#app *{box-shadow:none!important;text-shadow:none!important}
+#app .cj-hero{margin-bottom:8px!important;padding-bottom:28px!important;border-bottom:1px solid #E4E0D8!important}
+#app .cj-hero .eyebrow{color:#2B4C3F!important;text-transform:none!important;letter-spacing:0!important;font-size:13px!important;font-weight:700!important}
+#app .cj-hero .h1{max-width:820px!important;font-size:36px!important;line-height:1.05!important;letter-spacing:-.035em!important}
+#app .cj-hero .sub{max-width:820px!important;font-size:15px!important;line-height:1.6!important}
+#app .cj-hero-points{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+#app .cj-hero-points span{padding:8px 11px!important;border:1px solid #E4E0D8!important;border-radius:999px!important;background:#E8EEE9!important;color:#14181C!important;font-size:12px!important}
+#app .cj-hero-points b{color:#2B4C3F!important}
+#app .cj-live{margin-top:24px!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#app .cj-head{padding-bottom:18px!important;border-bottom:1px solid #E4E0D8!important}
+#app .cj-head .eyebrow{color:#6B6F73!important;text-transform:none!important;letter-spacing:0!important;font-size:13px!important}
+#app .cj-head h2{font-size:21px!important;line-height:1.2!important;margin:4px 0 6px!important;color:#14181C!important}
+#app .cj-live-note{min-width:200px!important}
+#app .cj-live-note .pill{background:#E8EEE9!important;color:#2B4C3F!important;border:1px solid #d3dfd8!important}
+#app .cj-toolbar{margin:18px 0 14px!important}
+#app .cj-count{color:#14181C!important;font-size:13px!important}
+#app .cj-fresh{font-size:12px!important;color:#6B6F73!important}
+#app .cj-results{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important}
+#app .cj-card{position:relative!important;overflow:hidden!important;border:1px solid #E4E0D8!important;border-radius:12px!important;background:#FFFFFF!important;color:#14181C!important;box-shadow:none!important;transition:border-color .16s ease,transform .16s ease!important}
+#app .cj-card:hover{transform:translateY(-2px)!important;border-color:#b8c9c0!important;box-shadow:none!important}
+#app .cj-card.featured{border-color:#2B4C3F!important}
+#app .cj-card.featured:before{content:"";display:block;height:4px;background:#2B4C3F!important}
+#app .cj-image-wrap{height:250px!important;background:#F7F5F1!important;border-bottom:1px solid #E4E0D8!important}
+#app .cj-image-wrap img{object-fit:contain!important;mix-blend-mode:multiply}
+#app .cj-live-badge{top:12px!important;left:12px!important;background:#2B4C3F!important;color:#fff!important;border:0!important;border-radius:999px!important;padding:7px 10px!important;font-size:10px!important;font-weight:800!important;letter-spacing:.02em!important;text-transform:none!important}
+#app .cj-rec-number{position:absolute!important;right:12px!important;top:12px!important;width:30px!important;height:30px!important;display:grid!important;place-items:center!important;border-radius:8px!important;background:rgba(255,255,255,.94)!important;color:#14181C!important;border:1px solid #E4E0D8!important;font-size:10px!important;font-weight:800!important}
+#app .cj-card-body{padding:18px!important;color:#14181C!important}
+#app .cj-recommendation{display:flex!important;align-items:center!important;gap:6px!important;color:#6B6F73!important;font-size:11px!important;margin-bottom:5px!important}
+#app .cj-recommendation span{color:#6B6F73!important}
+#app .cj-recommendation b{color:#2B4C3F!important}
+#app .cj-card-body h3{min-height:46px!important;margin:6px 0 10px!important;font-size:17px!important;line-height:1.28!important;color:#14181C!important;letter-spacing:-.01em!important}
+#app .cj-meta{gap:6px!important;margin:0 0 14px!important}
+#app .cj-chip{padding:6px 8px!important;border:1px solid #d9e2dc!important;border-radius:999px!important;background:#F7F5F1!important;color:#6B6F73!important;font-size:10px!important}
+#app .cj-price-row{border-top:1px solid #E4E0D8!important;margin-top:0!important;padding-top:15px!important}
+#app .cj-price{font-size:25px!important;font-weight:800!important;color:#2B4C3F!important;letter-spacing:-.02em!important}
+#app .cj-bdt{color:#6B6F73!important;font-size:11px!important;margin-top:3px!important}
+#app .cj-fresh-time{font-size:10px!important;color:#6B6F73!important}
+#app .cj-economics{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin:16px 0!important;padding-top:1px!important}
+#app .cj-economics>div{padding:11px!important;border:1px solid #E4E0D8!important;border-radius:8px!important;background:#fff!important}
+#app .cj-economics>div span{display:block!important;color:#6B6F73!important;font-size:10px!important;margin-bottom:4px!important}
+#app .cj-economics>div b{display:block!important;color:#14181C!important;font-size:13px!important}
+#app .cj-economics>div small{display:block!important;color:#6B6F73!important;font-size:9px!important;margin-top:3px!important}
+#app .cj-economics .cj-contribution{background:#E8EEE9!important;border-color:#d1ddd6!important}
+#app .cj-economics .cj-contribution b{color:#2B4C3F!important}
+#app .cj-stock{display:flex!important;align-items:center!important;gap:6px!important;padding:12px 0!important;border-top:1px solid #E4E0D8!important;color:#6B6F73!important;font-size:10px!important;flex-wrap:wrap!important}
+#app .cj-stock b{color:#14181C!important;font-size:11px!important}
+#app .cj-stock i{width:3px!important;height:3px!important;border-radius:50%!important;background:#E4E0D8!important;display:block!important;margin:0 3px!important}
+#app .cj-footer{margin-top:auto!important;padding-top:2px!important;background:transparent!important;border:0!important}
+#app .cj-footer .btn.primary{background:#2B4C3F!important;border-color:#2B4C3F!important;color:#fff!important;border-radius:6px!important;min-height:42px!important}
+#app .cj-empty{background:#FFFFFF!important;border:1px dashed #E4E0D8!important;color:#6B6F73!important}
+#app .cj-empty b{color:#14181C!important}
+#app .cj-detail-grid{background:#FFFFFF!important;border:0!important}
+#app .cj-detail-media{position:relative!important}
+#app .cj-detail-media>span{position:absolute!important;left:12px!important;top:12px!important;z-index:2!important;padding:7px 9px!important;border-radius:999px!important;background:#2B4C3F!important;color:#fff!important;font-size:10px!important;font-weight:800!important}
+#app .cj-detail-img{background:#F7F5F1!important;border:1px solid #E4E0D8!important;border-radius:10px!important}
+#app .cj-decision-head{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:16px!important;padding-bottom:18px!important;border-bottom:1px solid #E4E0D8!important}
+#app .cj-decision-head .eyebrow{color:#2B4C3F!important;text-transform:none!important;letter-spacing:0!important;font-size:12px!important;font-weight:700!important}
+#app .cj-decision-head h2{margin:5px 0!important;color:#14181C!important;font-size:25px!important}
+#app .cj-modal-close{width:38px!important;height:38px!important;border:1px solid #E4E0D8!important;border-radius:6px!important;background:#FFFFFF!important;color:#14181C!important;font-size:22px!important;line-height:1!important}
+#app .cj-modal-category{display:inline-block!important;padding:6px 8px!important;border-radius:999px!important;background:#E8EEE9!important;color:#2B4C3F!important;font-size:10px!important;font-weight:700!important}
+#app .cj-modal-product-name{margin:10px 0 8px!important;color:#14181C!important;font-size:21px!important;line-height:1.25!important}
+#app .cj-detail-price{color:#2B4C3F!important;font-size:30px!important}
+#app .cj-detail-bdt{color:#6B6F73!important}
+#app .cj-modal-data{margin-top:16px!important}
+#app .cj-modal-data>div{background:#FFFFFF!important;border:1px solid #E4E0D8!important;color:#14181C!important}
+#app .cj-modal-data>div b{color:#14181C!important}
+#app .cj-modal-data .cj-contribution{background:#E8EEE9!important;border-color:#d1ddd6!important}
+#app .cj-modal-data .cj-contribution b{color:#2B4C3F!important}
+#app .cj-decision-note{margin-top:18px!important;padding:15px 16px!important;border-left:4px solid #2B4C3F!important;background:#F7F5F1!important;color:#14181C!important;border-radius:0 8px 8px 0!important}
+#app .cj-decision-note b{display:block!important;color:#14181C!important;font-size:12px!important}
+#app .cj-decision-note span{display:block!important;margin-top:4px!important;color:#6B6F73!important;font-size:12px!important;line-height:1.55!important}
+#app .cj-modal-actions{margin-top:18px!important}
+@media(max-width:1050px){#app .cj-results{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:680px){#app .cj-results{grid-template-columns:1fr!important}#app .cj-hero .h1{font-size:30px!important}#app .cj-live-note{min-width:0!important}#app .cj-detail-grid{grid-template-columns:1fr!important}}
 #app .top,#app .side,#app .main,#app .card,#app .panel,#app .tile,#app .hero,#app .hero-banner,#app .section,#app .step,#app .asset,#app .notice,#app .business-mini,#app .product,#app .product-card,#app .order-card,#app .metric-card,#app .stat-card,#app .billing-summary,#app .billing-explain,#app .billing-footer,#app .explain-card,#app .content-copy-section,#app .content-copy-card,#app .content-studio-product,#app .content-command-v3,#app .content-quality>div,#app .content-studio-preview,#app .content-empty-quality,#app .content-rule,#app .meta-connect-card,#app .meta-page-found,#app .meta-step,#app .plan-identity,#app .plan-document,#app .plan-highlight,#app .plan-finance>div,#app .plan-risk>div,#app .plan-roadmap>div,#app .plan-two-col>div,#app .plan-cover,#app .plan-cover-product,#app .plan-cover-meta span,#app .cj-card,#app .cj-detail-grid,#app .cj-data>div,#app .cj-footer,#app .product-photo,#app .product-image,#app .live-product,#app .loading-card{background:#fff!important;background-color:#fff!important;color:#000!important;border-color:#000!important}
 #app h1,#app h2,#app h3,#app h4,#app h5,#app h6,#app p,#app span,#app label,#app b,#app strong,#app li,#app a,#app .eyebrow,#app .label,#app .small,#app .sub,#app .muted,#app .up,#app .navlabel{color:#000!important}
 #app .btn,#app button,#app .pill,#app .avatar,#app .nav,#app .choice,#app input,#app select,#app textarea{background:#fff!important;color:#000!important;border:1px solid #000!important}#app .btn.primary,#app .primary,#app button.primary,#app .nav.active{background:#000!important;color:#fff!important;border-color:#000!important}#app .btn:hover,#app button:hover,#app .nav:hover{background:#000!important;color:#fff!important}#app .mark{background:#000!important;color:#fff!important;border-color:#000!important}#app .status,#app .tag,#app .badge,#app .chip,#app .data-tag,#app .quality-pill{background:#fff!important;color:#000!important;border:1px solid #000!important}#app .modal{background:rgba(0,0,0,.78)!important}#app .modalbox{background:#fff!important;color:#000!important;border:1px solid #000!important}#app img,#app video{background:transparent!important;filter:none!important}

@@ -2378,7 +2378,7 @@ fcInstall();fcAddNav();fcContextRefresh();new MutationObserver(function(){fcAddN
     const products=forgePlanProducts();
     if(!products.length){
       return "<div class='fp-empty'>"+
-        "<div><span class='fp-eyebrow'>BUSINESS PLAN</span><h1>Build the plan after you shortlist your products.</h1><p>Select 2–3 live supplier products in Product Lab. Forge will turn the shortlist into one operating plan instead of forcing you to create separate plans.</p><button class='btn primary' onclick='go("products")'>Open Product Lab →</button></div>"+
+        "<div><span class='fp-eyebrow'>BUSINESS PLAN</span><h1>Build the plan after you shortlist your products.</h1><p>Select 2–3 live supplier products in Product Lab. Forge will turn the shortlist into one operating plan instead of forcing you to create separate plans.</p><button class='btn primary' onclick=\"go('products')\">Open Product Lab →</button></div>"+
       "</div>";
     }
 
@@ -2430,7 +2430,7 @@ fcInstall();fcAddNav();fcContextRefresh();new MutationObserver(function(){fcAddN
       "</header>"+
 
       "<section class='fp-product-section'>"+
-        "<div class='fp-section-head'><div><span class='fp-eyebrow'>THE PRODUCT PORTFOLIO</span><h2>Your plan is built around these products.</h2><p>Forge keeps the products connected so pricing, cash use, marketing and launch decisions stay consistent.</p></div><button class='btn' onclick='go("products")'>Edit shortlist</button></div>"+
+        "<div class='fp-section-head'><div><span class='fp-eyebrow'>THE PRODUCT PORTFOLIO</span><h2>Your plan is built around these products.</h2><p>Forge keeps the products connected so pricing, cash use, marketing and launch decisions stay consistent.</p></div><button class='btn' onclick=\"go('products')\">Edit shortlist</button></div>"+
         "<div class='fp-product-grid'>"+products.map(forgeProductSelectionCard).join("")+"</div>"+
       "</section>"+
 
@@ -2478,7 +2478,7 @@ fcInstall();fcAddNav();fcContextRefresh();new MutationObserver(function(){fcAddN
         "</div>"+
       "</section>"+
 
-      "<section class='fp-footer-note'><div><span class='fp-eyebrow'>PLAN PRINCIPLE</span><b>Build evidence before adding complexity.</b><p>Forge will carry this product portfolio into Brand Studio, Store Launch, Marketing and Orders. Any live cost or supplier change should trigger a fresh economics check.</p></div><button class='btn primary' onclick='go("brand")'>Continue to Brand Studio →</button></section>"+
+      "<section class='fp-footer-note'><div><span class='fp-eyebrow'>PLAN PRINCIPLE</span><b>Build evidence before adding complexity.</b><p>Forge will carry this product portfolio into Brand Studio, Store Launch, Marketing and Orders. Any live cost or supplier change should trigger a fresh economics check.</p></div><button class='btn primary' onclick=\"go('brand')\">Continue to Brand Studio →</button></section>"+
     "</div>";
   }
 

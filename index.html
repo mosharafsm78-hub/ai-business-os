@@ -2810,8 +2810,14 @@ if(n3){
 var base=available||budget;
 if(has(/invest|put|spend|use/))return "I see "+money(n3)+" in your question. Compared with your current deployable amount of "+money(base)+", that is "+(base?Math.round(n3/base*100):0)+"% of the available capital. Tell me what the money is for—inventory, ads, branding, store or something else—and I’ll model that specific use.";
 }
-var previous=hist.length?hist[hist.length-1]:"";
-return "I understand the question, but I need one more detail to give you a useful business answer. Tell me the goal, amount, product, or decision you are considering. For example: “I have ৳50,000 and want to test one product,” “Can I sell this at ৳1,799?”, or “Why did Forge choose this product?”"+(previous?" I’ll keep your previous message in context too.":"");
+var topic=has(/product|sell|supplier|cj|dropship/)?"product sourcing":has(/brand|name|domain|instagram|facebook/)?"brand identity":has(/store|shopify|website|launch/)?"store launch":has(/ads|marketing|content|customer/)?"customer acquisition":has(/order|payment|delivery|shipping/)?"operations":has(/money|budget|capital|cost|price|profit|margin/)?"business economics":"business decision";
+var stageLabel=stage();
+var pageLabel=c.page==="products"?"Product Lab":c.page==="plan"?"Business Plan":c.page==="brand"?"Brand Studio":c.page==="store"?"Store Launch":c.page==="marketing"?"AI Marketing":c.page==="orders"?"Orders":c.page==="ideas"?"Business Finder":"your current Forge workspace";
+var productLine=prod.name?" The active product is "+prod.name+".":"";
+var capitalLine=budget?" You are working from "+money(available)+" deployable capital.":"";
+var generic="I’m treating this as a "+topic+" question from "+pageLabel+"."+productLine+capitalLine+" Based on the information currently saved in Forge, the next useful move is to connect this question to a concrete decision—amount, product, quantity, price, supplier, channel or deadline. Give me that detail in your own words and I’ll calculate the impact instead of giving you a generic answer.";
+if(stageLabel==="profile")generic+=" Your profile is the main missing dependency, so I’ll keep the answer anchored to the inputs you have already entered.";
+return generic;
 }
 function fcAdd(role,text){var box=document.getElementById("fcMessages");if(!box)return;var d=document.createElement("div");d.className="fc-msg "+(role==="user"?"user":"assistant");d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight}
 function fcSend(q){

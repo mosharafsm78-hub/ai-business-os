@@ -809,6 +809,9 @@ input:focus,select:focus,textarea:focus{border-color:#49a979!important;box-shado
 <style id="forge-reality-engine-v2">
 .forge-reality-panel{box-shadow:0 8px 24px #0000000d}
 </style>
+<style id="forge-wizard-stability-v1">
+#forge-start-profile{touch-action:manipulation}
+</style>
 </head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
@@ -889,6 +892,8 @@ function ensureForgeModalHost(){
   return modal;
 }
 function openWizard(){
+ if(window.__forgeWizardOpen)return;
+ window.__forgeWizardOpen=true;
  const modal=ensureForgeModalHost();
  const onboarding=document.querySelector(".onboarding");
  if(onboarding)onboarding.classList.add("wizard-underlay-hidden");
@@ -982,6 +987,7 @@ function businessName(c){return ({"Fashion & accessories":"Northstar Goods","Bea
 function closeModal(){
  const modal=document.getElementById("modal");
  if(modal)modal.classList.remove("open");
+ window.__forgeWizardOpen=false;
  document.querySelector(".onboarding")?.classList.remove("wizard-underlay-hidden");
 }
 function opportunities(){
@@ -2497,27 +2503,16 @@ function addCjToQueue(i){
 
 function bindMobileInteractions(){
   const start=document.getElementById("forge-start-profile");
-  if(start && !start.dataset.bound){
-    start.dataset.bound="1";
-    start.style.pointerEvents="auto";
-    start.style.webkitUserSelect="none";
-    start.style.userSelect="none";
-    start.addEventListener("click",function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      openWizard();
-    },false);
-  }
-  if(!window.__forgeMobileDelegate){
-    window.__forgeMobileDelegate=true;
-    document.addEventListener("click",function(e){
-      const start=e.target&&e.target.closest?e.target.closest("#forge-start-profile"):null;
-      if(!start)return;
-      e.preventDefault();
-      e.stopPropagation();
-      openWizard();
-    },true);
-  }
+  if(!start || start.dataset.bound==="1")return;
+  start.dataset.bound="1";
+  start.style.pointerEvents="auto";
+  start.style.webkitUserSelect="none";
+  start.style.userSelect="none";
+  start.addEventListener("click",function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    openWizard();
+  },false);
 }
 function render(){
   window.__forgeRendered=true;
@@ -2741,7 +2736,7 @@ function forgeLockedProfileView(){
 window.openWizard=forgeOpenWizard;
 
 function onboardingLanding(){
-  return "<div class='onboarding forge-onboarding-v4'><div class='onboarding-card forge-landing-card'><div class='brand'><div class='mark'>F</div><span>FORGE</span><small>AI BUSINESS OS</small></div><div class='eyebrow'>STEP 0 · BEFORE THE DASHBOARD</div><div class='h1'>Your business workspace starts with you.</div><p class='sub'>Forge builds the operating system around your real capital, time, experience, risk and direction. We keep the same context connected across every page.</p><div class='forge-landing-grid'><div><b>01 · Financial reality</b><span>Capital, income, expenses and reserve.</span></div><div><b>02 · Risk guardrails</b><span>Risk appetite, capacity and loss tolerance.</span></div><div><b>03 · Business direction</b><span>Category, goal, market and business model.</span></div></div><div class='forge-starter-note'><b>Starter values are already filled.</b><span>They are only starting points. Edit anything that does not describe you.</span></div><button id='forge-start-profile' type='button' class='btn primary forge-start-profile' onclick='openWizard()'>Start my Forge profile →</button><p class='small'>Nothing is purchased or published during onboarding. Forge only activates the workspace after you confirm the inputs.</p></div></div>";
+  return "<div class='onboarding forge-onboarding-v4'><div class='onboarding-card forge-landing-card'><div class='brand'><div class='mark'>F</div><span>FORGE</span><small>AI BUSINESS OS</small></div><div class='eyebrow'>STEP 0 · BEFORE THE DASHBOARD</div><div class='h1'>Your business workspace starts with you.</div><p class='sub'>Forge builds the operating system around your real capital, time, experience, risk and direction. We keep the same context connected across every page.</p><div class='forge-landing-grid'><div><b>01 · Financial reality</b><span>Capital, income, expenses and reserve.</span></div><div><b>02 · Risk guardrails</b><span>Risk appetite, capacity and loss tolerance.</span></div><div><b>03 · Business direction</b><span>Category, goal, market and business model.</span></div></div><div class='forge-starter-note'><b>Starter values are already filled.</b><span>They are only starting points. Edit anything that does not describe you.</span></div><button id='forge-start-profile' type='button' class='btn primary forge-start-profile'>Start my Forge profile →</button><p class='small'>Nothing is purchased or published during onboarding. Forge only activates the workspace after you confirm the inputs.</p></div></div>";
 }
 
 function render(){

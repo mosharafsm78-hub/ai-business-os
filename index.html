@@ -2119,6 +2119,37 @@ function printBusinessPlan(){
  setTimeout(normalize,0);
 })();
 </script>
+<script id="forge-runtime">
+(function(){
+ window.go=function(page){
+   if(!page)return;
+   state.page=page;
+   document.body.dataset.page=page;
+   try{persistProfile()}catch(e){}
+   render();
+   window.scrollTo({top:0,behavior:"instant"});
+ };
+ window.render=function(){
+   window.__forgeRendered=true;
+   document.body.dataset.page=state.page||"home";
+   const pages={home,advisor,ideas,products,plan,orders,brand:brandStudioPage,store,content:contentLibrary,marketing,billing,support,analytics};
+   const app=document.getElementById("app");
+   if(!app)return;
+   if(!state.profileLocked){app.innerHTML=onboardingLanding();if(typeof bindMobileInteractions==="function")bindMobileInteractions();return;}
+   const pageFn=pages[state.page]||home;
+   try{
+     app.innerHTML=shell(pageFn());
+     if(state.page==="products"&&typeof autoCjSearch==="function")setTimeout(autoCjSearch,0);
+     if(state.page==="plan"&&state.planStatus==="preparing")setTimeout(function(){if(state.page==="plan")render()},500);
+   }catch(err){
+     console.error("Forge render error",state.page,err);
+     app.innerHTML="<div class='page-header'><div><h1>This workspace could not render.</h1><p>Saved business data is safe. Refresh to retry.</p></div><button class='btn primary' onclick='location.reload()'>Retry</button></div>";
+   }
+ };
+ window.forgeBootNow=function(){try{render()}catch(e){console.error(e)}};
+ setTimeout(forgeBootNow,0);
+})();
+</script>
 </body><style id="forge-sitewide-analyst-skin">
 :root{
  --bg:#F7F5F1;--panel:#FFFFFF;--panel2:#FFFFFF;--panel-hi:#FFFFFF;

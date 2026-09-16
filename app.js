@@ -697,8 +697,7 @@ function brandStudioPage(){
     "<div class='brand-product-strip card'><div class='brand-product-media'><img src='"+esc(p.image||"")+"' alt='"+esc(name)+"'></div><div class='brand-product-info'><div class='eyebrow'>CONFIRMED PRODUCT</div><h2>"+esc(name)+"</h2><p class='small'>Supplier listing · SKU "+esc(p.sku||"—")+" · Forge will create the customer-facing name below.</p><div class='brand-commercial'><div><span>Supplier cost</span><b>"+moneyUsd(p.priceUsd)+"</b></div><div><span>Planning sell</span><b>"+(p.economics?BDT(p.economics.selling):"—")+"</b></div><div><span>Contribution / unit</span><b>"+(p.economics?BDT(p.economics.contribution):"—")+"</b></div><div><span>Stock checked</span><b>"+formatQty(p.inventory||0)+"</b></div></div></div><div class='brand-lock'>SOURCE<br>LOCKED</div></div>"+
     "<div class='brand-progress card'><div><div class='eyebrow'>BRAND BUILD</div><h2>"+(kitReady?"Core identity prepared. Now refine the launch system.":"Let's make the identity decisions in the right order.")+"</h2><p class='small'>"+completed+" of 9 key decisions prepared. Forge keeps the confirmed supplier product as the source of truth.</p></div><div class='brand-progress-meter'><b>"+progress+"%</b><div class='progress'><i style='width:"+progress+"%'></i></div></div></div>"+
     (kitReady?"<div class='brand-identity-banner'><div class='eyebrow'>YOUR BRAND STARTER KIT</div><h2>"+esc(chosenName)+"</h2><p>"+esc(chosenProductName)+" · Digital identity and launch assets should use this exact naming system.</p><div class='brand-kit'><div class='brand-kit-item'><div class='kit-label'>Facebook Page</div><div class='kit-value'>@"+esc(social.facebook)+"</div><div class='kit-help'>Suggested handle · check availability before claiming.</div></div><div class='brand-kit-item'><div class='kit-label'>Instagram</div><div class='kit-value'>@"+esc(social.instagram)+"</div><div class='kit-help'>Suggested handle · keep it identical across platforms where possible.</div></div><div class='brand-kit-item'><div class='kit-label'>Website domain</div><div class='kit-value'>"+esc(social.domain)+"</div><div class='kit-help'>Suggested domain · availability must be checked before purchase.</div></div><div class='brand-kit-item'><div class='kit-label'>Business role</div><div class='kit-value'>Brand + product</div><div class='kit-help'>The company identity can expand beyond this first SKU.</div></div></div></div>":"")+
-    "<div class='section'><div><h2>01 · Brand foundation</h2><p>First make the commercial logic understandable. Then name it.</p></div></div>"+
-    "<div class='brand-foundation grid'><div class='card span8'><div class='label'>WHAT THIS BRAND SHOULD STAND FOR</div><div class='brand-thesis'>"+escHtml(direction.position)+"</div><div class='brand-proof-grid'><div><span>Who it is for</span><b>"+escHtml(direction.audience)+"</b></div><div><span>Customer promise</span><b>"+escHtml(direction.promise)+"</b></div><div><span>Brand personality</span><b>"+escHtml(direction.personality)+"</b></div><div><span>Proof we can use</span><b>"+escHtml(direction.proof)+"</b></div></div></div><div class='card span4 brand-coach'><div class='label'>FORGE COACH NOTE</div><h3>Do not copy the supplier.</h3><p class='small'>The supplier gives us a product. Your business needs its own company identity, customer-facing product name, promise, content language and commercial reason to exist.</p><button class='btn primary' onclick='generateBrandDirection()'>"+(saved.direction?"Improve direction":"Build direction")+" →</button></div></div>"+
+    "<div class='section'><div><h2>01 · Brand foundation</h2><p>First make the commercial logic understandable. Then name it.</p></div></div>"+    "<div class='brand-foundation grid'><div class='card span8'><div class='label'>WHAT THIS BRAND SHOULD STAND FOR</div><div class='brand-thesis'>"+escHtml(direction.position)+"</div><div class='brand-proof-grid'><div><span>Who it is for</span><b>"+escHtml(direction.audience)+"</b></div><div><span>Customer promise</span><b>"+escHtml(direction.promise)+"</b></div><div><span>Brand personality</span><b>"+escHtml(direction.personality)+"</b></div><div><span>Proof we can use</span><b>"+escHtml(direction.proof)+"</b></div></div></div><div class='card span4 brand-coach'><div class='label'>FORGE COACH NOTE</div><h3>Do not copy the supplier.</h3><p class='small'>The supplier gives us a product. Your business needs its own company identity, customer-facing product name, promise, content language and commercial reason to exist.</p><button class='btn primary' onclick='generateBrandDirection()'>"+(saved.direction?"Improve direction":"Build direction")+" →</button></div></div>"+
     "<div class='section'><div><h2>02 · Build the identity</h2><p>These are the concrete decisions you will use on your store, social pages, packaging and ads.</p></div></div>"+
     "<div class='brand-modules'>"+
       moduleCard("positioning","01","Positioning","Define the customer, promise and market position.","<div class='brand-copy'>"+escHtml(direction.position)+"</div>","<button class='btn' onclick='generateBrandModule(\"positioning\")'>"+(saved.positioning?"Refine positioning":"Generate positioning")+" →</button>")+
@@ -1397,8 +1396,7 @@ function marketing(){
   const product=selected?.name||"No product selected";
   const e=selected?liveEconomics(selected):null;
   const selling=e?.selling?BDT(e.selling):"—";
-  const statusText=m.status==="connected"?"Connected and syncing":"Connected";
-  return "<div class='hero marketing-hero'><div><div class='eyebrow'>AI MARKETING · AUTOPILOT WORKSPACE</div><div class='h1'>"+esc(brand)+" marketing, without the Meta headache.</div><div class='sub'>Forge is connected to the business context. The customer stays inside this page while Forge plans, prepares, monitors and explains the marketing.</div></div><div class='actions'><button class='btn primary' onclick='toast(\"AI marketing analysis queued\")'>Run AI analysis →</button><button class='btn' onclick='disconnectMarketing()'>Disconnect Meta</button></div></div>"+
+  const statusText=m.status==="connected"?"Connected and syncing":"Connected";  return "<div class='hero marketing-hero'><div><div class='eyebrow'>AI MARKETING · AUTOPILOT WORKSPACE</div><div class='h1'>"+esc(brand)+" marketing, without the Meta headache.</div><div class='sub'>Forge is connected to the business context. The customer stays inside this page while Forge plans, prepares, monitors and explains the marketing.</div></div><div class='actions'><button class='btn primary' onclick='toast(\"AI marketing analysis queued\")'>Run AI analysis →</button><button class='btn' onclick='disconnectMarketing()'>Disconnect Meta</button></div></div>"+
   "<div class='grid'><div class='card span3'><div class='label'>Meta connection</div><div class='stat' style='font-size:20px'>"+statusText+"</div><div class='small'>"+esc(m.pageUrl)+"</div></div><div class='card span3'><div class='label'>Monthly marketing envelope</div><div class='stat'>"+BDT(budget)+"</div></div><div class='card span3'><div class='label'>Product in focus</div><div class='stat' style='font-size:18px'>"+esc(product)+"</div></div><div class='card span3'><div class='label'>Current selling price</div><div class='stat'>"+selling+"</div></div></div>"+
   "<div class='section'><div class='eyebrow'>AI MARKETING CONTROL ROOM</div><h2>Forge decides what needs attention.</h2></div>"+
   "<div class='grid'><div class='card span8'><div class='label'>TODAY'S AI BRIEF</div><h2 style='margin:7px 0'>No manual campaign setup required.</h2><p class='small'>Forge should combine Shopify sales, product economics, inventory, creative availability and Meta performance before recommending a change. It should never invent results or silently spend money.</p><div class='actions'><button class='btn primary' onclick='toast(\"AI brief generated\")'>Generate today's brief →</button><button class='btn' onclick='toast(\"Campaign draft prepared\")'>Prepare campaign draft</button></div></div><div class='card span4'><div class='label'>AUTOPILOT MODE</div><div class='kpi'><span><b>Approval required</b><div class='small'>Recommended default for new businesses</div></span><span class='status amber'>SAFE</span></div><div class='kpi'><span><b>Auto-optimization</b><div class='small'>Can be enabled later</div></span><button class='btn' onclick='toast(\"Autopilot settings opened\")'>Settings</button></div></div></div>"+
@@ -2097,8 +2095,7 @@ function render(){
   const pageFn=pages[state.page]||home;
   try{
     app.innerHTML=shell(pageFn());
-    updateForgeContext();
-    if(state.page==="products")setTimeout(autoCjSearch,0);
+    updateForgeContext();    if(state.page==="products")setTimeout(autoCjSearch,0);
     if(state.page==="plan"&&state.planStatus==="preparing")setTimeout(()=>{if(state.page==="plan")render()},500);
   }catch(err){
     console.error("Forge render error",state.page,err);
@@ -2282,4 +2279,328 @@ function fcToggle(){var panel=document.getElementById("forgeChatPanel");if(!pane
 function fcInstall(){if(document.getElementById("forgeChatLauncher"))return;var l=document.createElement("button");l.id="forgeChatLauncher";l.type="button";l.innerHTML='<span class="fc-dot"></span> Forge Chat';l.onclick=fcToggle;document.body.appendChild(l);var p=document.createElement("section");p.id="forgeChatPanel";p.innerHTML='<div class="fc-head"><div class="fc-brand"><div class="fc-mark">F</div><div><div class="fc-title">Forge Chat</div><div class="fc-subtitle">Context-aware business assistant</div></div></div><button class="fc-close" type="button">×</button></div><div id="fcContext" class="fc-context"></div><div id="fcMessages" class="fc-messages"><div class="fc-msg assistant"><b>Hi. I’m Forge Chat.</b> Ask me anything about what you see in Forge. I’ll use your saved business context to explain it and suggest the next practical step.</div></div><div class="fc-suggestions"><button class="fc-suggestion" data-q="What should I do next?">What should I do next?</button><button class="fc-suggestion" data-q="Why was this recommended?">Why was this recommended?</button><button class="fc-suggestion" data-q="Explain the economics">Explain the economics</button></div><form class="fc-compose" id="fcForm"><input id="fcInput" class="fc-input" autocomplete="off" placeholder="Ask Forge Chat…"><button class="fc-send" type="submit">Send</button></form>';document.body.appendChild(p);p.querySelector(".fc-close").onclick=fcToggle;p.querySelectorAll(".fc-suggestion").forEach(function(b){b.onclick=function(){fcSend(b.dataset.q)}});p.querySelector("#fcForm").addEventListener("submit",function(e){e.preventDefault();fcSend()})}
 function fcAddNav(){document.querySelectorAll(".side,#cornerPanel").forEach(function(nav){if(!nav.querySelector(".forge-chat-nav")){var b=document.createElement("button");b.type="button";b.className="nav forge-chat-nav";b.innerHTML='<span class="ico">◉</span>Forge Chat';b.onclick=fcToggle;nav.appendChild(b)}})}
 fcInstall();fcAddNav();fcContextRefresh();new MutationObserver(function(){fcAddNav();fcContextRefresh()}).observe(document.getElementById("app")||document.body,{childList:true,subtree:true});window.fcToggle=fcToggle;
+})();
+
+/* FORGE BUSINESS PLAN V2 — portfolio-first planning + 3-product selection */
+(function(){
+  function forgePlanProducts(){
+    const q=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
+    const selected=q.filter(x=>x && x.planSelected).slice(0,3);
+    if(selected.length) return selected;
+    return state.selectedProduct ? [state.selectedProduct] : [];
+  }
+
+  function forgePlanEconomics(products){
+    return products.reduce(function(a,p){
+      const e=p.economics||liveEconomics(p)||{};
+      const qty=Number(p.plannedOrderQty||p.orderQty||quantityPlan(p).planned||1);
+      a.capital+=qty*Number(e.landed||0);
+      a.selling+=Number(e.selling||0);
+      a.contribution+=Number(e.contribution||0);
+      a.cac+=Number(e.cac||0);
+      a.qty+=qty;
+      a.products+=1;
+      return a;
+    },{capital:0,selling:0,contribution:0,cac:0,qty:0,products:0});
+  }
+
+  function forgePlanSelectionBar(){
+    const products=forgePlanProducts();
+    let el=document.getElementById("forge-plan-selection");
+    if(!products.length){
+      if(el) el.remove();
+      return;
+    }
+    if(!el){
+      el=document.createElement("div");
+      el.id="forge-plan-selection";
+      document.body.appendChild(el);
+    }
+    el.innerHTML=
+      "<div class='forge-plan-tray-inner'>"+
+        "<div class='forge-plan-tray-copy'><span>PLAN SHORTLIST</span><b>"+products.length+"/3 products selected</b><small>"+(products.length<2?"Add at least one more product to compare the portfolio.":"Your selected products will be planned together.")+"</small></div>"+
+        "<div class='forge-plan-tray-products'>"+
+          products.map(function(p,i){
+            return "<div class='forge-plan-tray-product'><img src='"+esc(p.image||"")+"' alt=''><div><b>"+esc(p.name||"Product")+"</b><span>"+(i===0?"Hero product":"Product "+(i+1))+"</span></div><button type='button' onclick='forgeRemovePlanProduct("+i+")' aria-label='Remove product'>×</button></div>";
+          }).join("")+
+        "</div>"+
+        "<div class='forge-plan-tray-actions'><button class='btn' type='button' onclick='forgeClearPlanProducts()'>Clear</button><button class='btn primary' type='button' "+(products.length<2?"disabled":"")+" onclick='go("plan")'>Build business plan →</button></div>"+
+      "</div>";
+  }
+
+  window.forgeRemovePlanProduct=function(index){
+    const products=forgePlanProducts();
+    const target=products[index];
+    if(!target)return;
+    const item=state.sourcingQueue.find(x=>x===target || x.id===target.id);
+    if(item)item.planSelected=false;
+    if(state.selectedProduct && (state.selectedProduct===target || state.selectedProduct.id===target.id)){
+      const next=forgePlanProducts()[0]||null;
+      state.selectedProduct=next;
+    }
+    try{persistProfile()}catch(e){}
+    render();
+  };
+
+  window.forgeClearPlanProducts=function(){
+    (state.sourcingQueue||[]).forEach(function(x){x.planSelected=false});
+    state.selectedProduct=null;
+    try{persistProfile()}catch(e){}
+    const tray=document.getElementById("forge-plan-selection");
+    if(tray)tray.remove();
+    toast("Plan shortlist cleared");
+  };
+
+  window.forgeSetHeroProduct=function(index){
+    const products=forgePlanProducts();
+    if(!products[index])return;
+    products.forEach(function(x){x.planSelected=false});
+    const hero=products[index];
+    hero.planSelected=true;
+    const q=state.sourcingQueue||[];
+    q.forEach(function(x){if(x.id!==hero.id)x.planSelected=false});
+    /* Preserve ordering while moving the chosen hero to the front. */
+    const rest=q.filter(function(x){return x.id!==hero.id});
+    state.sourcingQueue=[hero].concat(rest);
+    state.selectedProduct=hero;
+    try{persistProfile()}catch(e){}
+    render();
+  };
+
+  function forgeProductSelectionCard(p,index){
+    const e=p.economics||liveEconomics(p)||{};
+    const qp=quantityPlan(p);
+    const qty=Number(p.plannedOrderQty||p.orderQty||qp.planned||1);
+    const role=index===0?"HERO PRODUCT":"SUPPORTING PRODUCT";
+    return "<article class='fp-product-card "+(index===0?"is-hero":"")+"'>"+
+      "<div class='fp-product-media'><img src='"+esc(p.image||"")+"' alt='"+esc(p.name||"Product")+"'><span>"+role+"</span><button type='button' onclick='forgeSetHeroProduct("+index+")' title='Make this the hero product'>"+(index===0?"01":"0"+(index+1))+"</button></div>"+
+      "<div class='fp-product-body'>"+
+        "<div class='fp-product-index'>PRODUCT "+String(index+1).padStart(2,"0")+"</div>"+
+        "<h3>"+esc(p.name||"Unnamed product")+"</h3>"+
+        "<p>"+esc(p.category||"Connected supplier product")+" · live supplier record</p>"+
+        "<div class='fp-product-numbers'>"+
+          "<div><span>Landed / unit</span><b>"+BDT(e.landed)+"</b></div>"+
+          "<div><span>Selling / unit</span><b>"+BDT(e.selling)+"</b></div>"+
+          "<div><span>Contribution</span><b>"+BDT(e.contribution)+"</b></div>"+
+          "<div><span>Margin</span><b>"+pct(e.margin)+"</b></div>"+
+        "</div>"+
+        "<div class='fp-product-foot'><span>"+formatQty(qty)+" planned units</span><button class='fp-text-btn' type='button' onclick='forgeRemovePlanProduct("+index+")'>Remove</button></div>"+
+      "</div>"+
+    "</article>";
+  }
+
+  function forgePlanV2(){
+    const products=forgePlanProducts();
+    if(!products.length){
+      return "<div class='fp-empty'>"+
+        "<div><span class='fp-eyebrow'>BUSINESS PLAN</span><h1>Build the plan after you shortlist your products.</h1><p>Select 2–3 live supplier products in Product Lab. Forge will turn the shortlist into one operating plan instead of forcing you to create separate plans.</p><button class='btn primary' onclick='go("products")'>Open Product Lab →</button></div>"+
+      "</div>";
+    }
+
+    const p=state.profile||{};
+    const b=state.business||{};
+    const brand=(state.brandStudio&&state.brandStudio.chosenName)||b.name||"Your New Business";
+    const market=p.market||"Bangladesh";
+    const category=p.category||products[0].category||"your category";
+    const risk=p.risk||"Balanced";
+    const goal=p.goal||"Profit + growth";
+    const deploy=Math.max(0,Number(p.budget||b.budget||0)-Number(p.reserve||0));
+    const totals=forgePlanEconomics(products);
+    const remaining=Math.max(0,deploy-totals.capital);
+    const testEnvelope=Math.round(remaining*.25);
+    const avgContribution=totals.qty?Math.round(totals.contribution/products.length):0;
+    const blendedMargin=totals.selling?Math.round(totals.contribution/totals.selling*100):0;
+    const hero=products[0];
+    const heroE=hero.economics||liveEconomics(hero)||{};
+    const firstBatch=totals.qty;
+    const founderTime=Number(p.time||0);
+
+    const metric=function(label,value,note){
+      return "<div class='fp-metric'><span>"+label+"</span><b>"+value+"</b><small>"+note+"</small></div>";
+    };
+
+    const productRows=products.map(function(x,i){
+      const e=x.economics||liveEconomics(x)||{};
+      const q=Number(x.plannedOrderQty||x.orderQty||quantityPlan(x).planned||1);
+      return "<div class='fp-table-row'><div><span>"+String(i+1).padStart(2,"0")+"</span><b>"+esc(x.name||"Product")+"</b></div><b>"+formatQty(q)+"</b><b>"+BDT(e.landed)+"</b><b>"+BDT(e.selling)+"</b><b>"+BDT(e.contribution)+"</b><b>"+pct(e.margin)+"</b></div>";
+    }).join("");
+
+    const roadmap=[
+      ["01","Validate","Samples, product quality, variants, delivery and customer objections."],
+      ["02","Launch","One storefront, one clear offer, controlled acquisition tests and reliable support."],
+      ["03","Measure","Contribution, CAC, conversion, delivered orders, returns and product velocity."],
+      ["04","Scale","Increase the winning SKU only when real delivered economics support the next commitment."]
+    ];
+
+    return "<div class='fp-page'>"+
+      "<header class='fp-hero'>"+
+        "<div class='fp-hero-main'>"+
+          "<div class='fp-eyebrow'>FORGE / BUSINESS PLAN</div>"+
+          "<div class='fp-status'><span></span>CONNECTED OPERATING PLAN</div>"+
+          "<h1>"+esc(brand)+"</h1>"+
+          "<p class='fp-hero-sub'>A portfolio plan built around <strong>"+products.length+" connected products</strong>, your capital, market, time and risk limits.</p>"+
+          "<div class='fp-meta'><span>"+esc(market)+"</span><span>"+esc(category)+"</span><span>"+esc(goal)+"</span><span>"+esc(risk)+" risk</span></div>"+
+        "</div>"+
+        "<div class='fp-hero-side'><span>DEPLOYABLE CAPITAL</span><b>"+BDT(deploy)+"</b><small>"+(founderTime?founderTime+"h / week available":"Time not set")+" · reserve "+BDT(p.reserve||0)+"</small></div>"+
+      "</header>"+
+
+      "<section class='fp-product-section'>"+
+        "<div class='fp-section-head'><div><span class='fp-eyebrow'>THE PRODUCT PORTFOLIO</span><h2>Your plan is built around these products.</h2><p>Forge keeps the products connected so pricing, cash use, marketing and launch decisions stay consistent.</p></div><button class='btn' onclick='go("products")'>Edit shortlist</button></div>"+
+        "<div class='fp-product-grid'>"+products.map(forgeProductSelectionCard).join("")+"</div>"+
+      "</section>"+
+
+      "<section class='fp-command'>"+
+        "<div><span class='fp-eyebrow'>FORGE'S READ</span><h2>"+(products.length===1?"One focused product.":"A controlled product portfolio.")+"</h2><p>"+(products.length===1?"This keeps the first launch easy to learn from.":"Use one hero product to establish the brand, then use the supporting products to test adjacent demand without turning the launch into a catalogue.")+"</p></div>"+
+        "<div class='fp-command-side'><b>"+formatQty(firstBatch)+"</b><span>planned opening units across the portfolio</span></div>"+
+      "</section>"+
+
+      "<section class='fp-economics'>"+
+        "<div class='fp-section-head'><div><span class='fp-eyebrow'>MONEY MODEL</span><h2>Portfolio economics at a glance.</h2><p>Planning values only. Supplier price, freight, fees and actual acquisition costs must be rechecked before payment.</p></div></div>"+
+        "<div class='fp-metric-grid'>"+
+          metric("OPENING INVENTORY",BDT(totals.capital),"planned landed commitment")+
+          metric("SELLING VALUE",BDT(totals.selling),"one unit of each product")+
+          metric("MODELED CONTRIBUTION",BDT(totals.contribution),"portfolio unit contribution")+
+          metric("BLENDED MARGIN",blendedMargin+"%","modeled contribution / selling")+
+          metric("REMAINING ENVELOPE",BDT(remaining),"after planned inventory")+
+          metric("TEST ENVELOPE",BDT(testEnvelope),"25% of remaining capital")+
+        "</div>"+
+        "<div class='fp-table'>"+
+          "<div class='fp-table-head'><span>PRODUCT</span><span>QTY</span><span>LANDED</span><span>SELLING</span><span>CONTRIBUTION</span><span>MARGIN</span></div>"+
+          productRows+
+        "</div>"+
+      "</section>"+
+
+      "<section class='fp-two-column'>"+
+        "<div class='fp-panel'>"+
+          "<div class='fp-panel-head'><span class='fp-eyebrow'>BUSINESS LOGIC</span><h2>Why this portfolio makes sense</h2></div>"+
+          "<div class='fp-reason'><b>One brand story</b><span>The products should serve the same customer and category rather than becoming unrelated supplier listings.</span></div>"+
+          "<div class='fp-reason'><b>One learning loop</b><span>Every order gives Forge evidence about demand, CAC, conversion, objections, returns and product velocity.</span></div>"+
+          "<div class='fp-reason'><b>One cash discipline</b><span>The opening commitment is visible as one portfolio envelope instead of hiding cash exposure inside separate product decisions.</span></div>"+
+        "</div>"+
+        "<div class='fp-panel'>"+
+          "<div class='fp-panel-head'><span class='fp-eyebrow'>GUARDRAILS</span><h2>Before you spend</h2></div>"+
+          "<div class='fp-guardrail'><span>01</span><b>Recheck live supplier price and stock.</b></div>"+
+          "<div class='fp-guardrail'><span>02</span><b>Validate samples and product claims.</b></div>"+
+          "<div class='fp-guardrail'><span>03</span><b>Protect the reserve of "+BDT(p.reserve||0)+".</b></div>"+
+          "<div class='fp-guardrail'><span>04</span><b>Scale only after delivered economics are proven.</b></div>"+
+        "</div>"+
+      "</section>"+
+
+      "<section class='fp-roadmap'>"+
+        "<div class='fp-section-head'><div><span class='fp-eyebrow'>90-DAY OPERATING ROADMAP</span><h2>What happens next.</h2></div><button class='btn' onclick='printBusinessPlan()'>Print / Save PDF</button></div>"+
+        "<div class='fp-roadmap-grid'>"+
+          roadmap.map(function(r){return "<div><span>"+r[0]+"</span><b>"+r[1]+"</b><p>"+r[2]+"</p></div>"}).join("")+
+        "</div>"+
+      "</section>"+
+
+      "<section class='fp-footer-note'><div><span class='fp-eyebrow'>PLAN PRINCIPLE</span><b>Build evidence before adding complexity.</b><p>Forge will carry this product portfolio into Brand Studio, Store Launch, Marketing and Orders. Any live cost or supplier change should trigger a fresh economics check.</p></div><button class='btn primary' onclick='go("brand")'>Continue to Brand Studio →</button></section>"+
+    "</div>";
+  }
+
+  window.printBusinessPlan=function(){
+    const el=document.querySelector(".fp-page");
+    if(!el)return toast("Build the business plan first.");
+    const w=window.open("","_blank","width=1200,height=900");
+    if(!w)return toast("Allow pop-ups to print the business plan.");
+    w.document.write("<!doctype html><html><head><title>Forge Business Plan</title><style>body{font-family:Inter,Arial,sans-serif;color:#111;background:#fff;max-width:1100px;margin:0 auto;padding:36px;line-height:1.45}*{box-sizing:border-box}.fp-hero,.fp-command,.fp-panel,.fp-product-card,.fp-economics,.fp-roadmap,.fp-footer-note{border:1px solid #111;border-radius:18px;padding:24px;margin-bottom:18px}.fp-product-grid,.fp-metric-grid,.fp-two-column,.fp-roadmap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.fp-product-grid{grid-template-columns:repeat(3,1fr)}.fp-product-media{height:180px;background:#f5f5f5;position:relative;overflow:hidden}.fp-product-media img{width:100%;height:100%;object-fit:contain}.fp-product-body{padding:18px}.fp-product-numbers{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fp-metric{border:1px solid #ddd;border-radius:12px;padding:15px}.fp-metric span,.fp-metric small{display:block;color:#666}.fp-metric b{display:block;font-size:21px;margin:4px 0}.fp-table-head,.fp-table-row{display:grid;grid-template-columns:2.2fr .7fr 1fr 1fr 1fr .7fr;gap:10px;padding:12px;border-bottom:1px solid #ddd}.fp-table-head{font-size:10px;font-weight:800}.fp-table-row b{font-size:13px}.fp-eyebrow{font-size:10px;font-weight:800;letter-spacing:.14em}.fp-hero h1{font-size:54px;margin:10px 0}.fp-hero{display:flex;justify-content:space-between;gap:30px}.fp-hero-side{min-width:220px}.fp-hero-side b{font-size:32px;display:block}.fp-reason,.fp-guardrail{padding:12px 0;border-bottom:1px solid #ddd}.fp-reason b,.fp-reason span{display:block}.fp-roadmap-grid>div{border:1px solid #ddd;border-radius:12px;padding:16px}.fp-roadmap-grid span{font-size:11px;font-weight:800}.fp-roadmap-grid b{display:block;margin:5px 0}.fp-footer-note{display:flex;justify-content:space-between;gap:20px}@media print{body{padding:0}.fp-page{width:100%}.btn{display:none!important}}</style></head><body>"+el.outerHTML+"</body></html>");
+    w.document.close();setTimeout(function(){w.print()},250);
+  };
+
+  /* Product Lab selection flow: max 3, sticky tray, selection survives navigation. */
+  window.reviewCj=function(i){
+    const p=cjState[i]; if(!p)return;
+    const e=liveEconomics(p)||{};
+    const modal=ensureForgeModalHost();
+    const box=document.getElementById("modalbox");
+    if(!box)return;
+    const already=forgePlanProducts().some(function(x){return x.id===p.id});
+    box.innerHTML=
+      "<div class='forge-product-review-v2'>"+
+        "<div class='fp-modal-top'><div><span class='fp-eyebrow'>PRODUCT LAB / LIVE RECORD</span><h2>Review product</h2><p>Inspect the supplier record before adding it to your business-plan shortlist.</p></div><button type='button' class='fp-modal-close' onclick='closeModal()'>×</button></div>"+
+        "<div class='fp-modal-grid'>"+
+          "<div class='fp-modal-image'><img src='"+esc(p.image||"")+"' alt='"+esc(p.name||"Product")+"'><span>LIVE SUPPLIER RECORD</span></div>"+
+          "<div class='fp-modal-info'><span class='fp-modal-category'>"+esc(p.category||"Product")+"</span><h3>"+esc(p.name||"Product")+"</h3><div class='fp-modal-price'>"+moneyUsd(p.priceUsd)+"</div><small>Live supplier price · ≈ "+BDT(e.supplier)+"</small>"+
+            "<div class='fp-modal-econ'>"+
+              "<div><span>Landed</span><b>"+BDT(e.landed)+"</b></div><div><span>Selling</span><b>"+BDT(e.selling)+"</b></div><div><span>Contribution</span><b>"+BDT(e.contribution)+"</b></div><div><span>Margin</span><b>"+pct(e.margin)+"</b></div>"+
+            "</div>"+
+            "<div class='fp-modal-stock'><span>Supplier stock</span><b>"+formatQty(p.inventory)+"</b><span>Delivery</span><b>"+esc(p.deliveryDays||"Checked before order")+"</b></div>"+
+          "</div>"+
+        "</div>"+
+        "<div class='fp-modal-next'><b>Why Forge keeps this in the shortlist</b><span>This product is connected to the same supplier economics used by the Business Plan. Adding it does not commit you to a purchase; it only places the live record into your 3-product planning set.</span></div>"+
+        "<div class='fp-modal-actions'><button class='btn' onclick='closeModal()'>Keep comparing</button><button class='btn primary' "+(already?"disabled":"")+" onclick='addCjToQueue("+i+")'>"+(already?"Already shortlisted":"Add to plan shortlist →")+"</button></div>"+
+      "</div>";
+    document.getElementById("modal").classList.add("open");
+  };
+
+  window.addCjToQueue=function(i){
+    const p=cjState[i]; if(!p)return;
+    const current=forgePlanProducts();
+    if(current.some(function(x){return x.id===p.id})){
+      closeModal();toast("This product is already in your plan shortlist.");return;
+    }
+    if(current.length>=3){
+      closeModal();toast("Your business plan can contain up to 3 products.");return;
+    }
+    const e=liveEconomics(p)||{};
+    const qp=quantityPlan(p);
+    const item={...p,economics:e,selectedAt:new Date().toISOString(),sourceType:"connected_supplier",orderStatus:"draft",paymentStatus:"unpaid",procurementStatus:"awaiting_payment",deliveryStatus:"not_started",orderQty:qp.planned,minimumOrderQty:qp.minimum,suggestedOrderQty:qp.suggested,plannedOrderQty:qp.planned,variant:"Standard variant",orderRef:"FORGE-"+new Date().toISOString().replace(/\D/g,"").slice(0,14),planStatus:"preparing",planRequestedAt:new Date().toISOString(),planSelected:true};
+    state.sourcingQueue=Array.isArray(state.sourcingQueue)?state.sourcingQueue:[];
+    state.sourcingQueue.unshift(item);
+    state.selectedProduct=state.selectedProduct||item;
+    state.planStatus="preparing";
+    state.planRequestedAt=new Date().toISOString();
+    state.business=state.business||{name:(state.profile?.occupation||"My Business"),budget:Number(state.profile?.budget||0)};
+    try{persistProfile()}catch(e){}
+    closeModal();
+    forgePlanSelectionBar();
+    toast("Added to plan shortlist · "+(current.length+1)+"/3");
+  };
+
+  const originalRenderCjResults=window.renderCjResults||renderCjResults;
+  window.renderCjResults=function(j){
+    originalRenderCjResults(j);
+    setTimeout(forgePlanSelectionBar,0);
+  };
+
+  /* The existing render() calls the local function binding. Replace that binding with the V2 plan renderer. */
+  plan=forgePlanV2;
+
+  /* Inject the product shortlist tray whenever Product Lab is visible. */
+  const originalGo=window.go;
+  if(typeof originalGo==="function"){
+    window.go=function(page){
+      originalGo(page);
+      setTimeout(function(){if(page==="products")forgePlanSelectionBar();},40);
+    };
+  }
+
+  const style=document.createElement("style");
+  style.id="forge-business-plan-v2";
+  style.textContent=
+    ":root{--fp-black:#111;--fp-ink:#171717;--fp-muted:#6b6b6b;--fp-line:#dedede;--fp-soft:#f6f6f6;--fp-white:#fff}"+
+    ".fp-page{max-width:1320px;margin:0 auto;padding:8px 0 90px;color:var(--fp-ink)}"+
+    ".fp-eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#555}"+
+    ".fp-hero{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;border-bottom:1px solid #111;padding:42px 0 34px;margin-bottom:34px}"+
+    ".fp-hero-main h1{font-size:clamp(44px,6vw,78px);line-height:.94;letter-spacing:-.055em;margin:12px 0 18px;font-weight:800}"+
+    ".fp-hero-sub{max-width:760px;font-size:18px;line-height:1.55;margin:0 0 18px;color:#444}.fp-hero-sub strong{color:#111}"+
+    ".fp-status{display:inline-flex;align-items:center;gap:7px;border:1px solid #111;border-radius:999px;padding:6px 10px;font-size:9px;font-weight:800;letter-spacing:.12em}.fp-status span{width:6px;height:6px;border-radius:50%;background:#111}"+
+    ".fp-meta{display:flex;flex-wrap:wrap;gap:7px}.fp-meta span{border:1px solid #cfcfcf;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:700}"+
+    ".fp-hero-side{border-left:1px solid #ddd;padding:8px 0 8px 26px;display:flex;flex-direction:column;justify-content:center}.fp-hero-side span{font-size:10px;font-weight:800;letter-spacing:.12em;color:#666}.fp-hero-side b{font-size:36px;letter-spacing:-.04em;margin:7px 0}.fp-hero-side small{color:#666;font-size:11px}"+
+    ".fp-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:16px}.fp-section-head h2{font-size:28px;letter-spacing:-.035em;margin:5px 0}.fp-section-head p{margin:0;color:#666;max-width:720px;font-size:13px;line-height:1.5}"+
+    ".fp-product-section{margin-bottom:38px}.fp-product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.fp-product-card{border:1px solid #cfcfcf;border-radius:16px;background:#fff;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease}.fp-product-card:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(0,0,0,.07)}.fp-product-card.is-hero{border-color:#111}.fp-product-media{height:230px;background:#f7f7f7;position:relative;border-bottom:1px solid #ddd}.fp-product-media img{width:100%;height:100%;object-fit:contain}.fp-product-media>span{position:absolute;top:12px;left:12px;background:#111;color:#fff;border-radius:999px;padding:7px 9px;font-size:9px;font-weight:800;letter-spacing:.12em}.fp-product-media>button{position:absolute;right:12px;top:12px;width:30px;height:30px;border:1px solid #111;background:#fff;border-radius:50%;font-size:10px;font-weight:800;cursor:pointer}.fp-product-body{padding:17px}.fp-product-index{font-size:9px;font-weight:800;letter-spacing:.15em;color:#777}.fp-product-body h3{font-size:19px;line-height:1.15;letter-spacing:-.02em;margin:7px 0}.fp-product-body>p{font-size:11px;color:#666;margin:0 0 15px}.fp-product-numbers{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #e1e1e1}.fp-product-numbers>div{padding:10px 8px;border-bottom:1px solid #e1e1e1}.fp-product-numbers>div:nth-child(odd){border-right:1px solid #e1e1e1}.fp-product-numbers span{display:block;font-size:9px;color:#777}.fp-product-numbers b{display:block;font-size:14px;margin-top:3px}.fp-product-foot{display:flex;align-items:center;justify-content:space-between;padding-top:13px;font-size:10px;font-weight:700}.fp-text-btn{border:0;background:none;text-decoration:underline;font-weight:700;cursor:pointer}.fp-command{display:flex;justify-content:space-between;align-items:center;gap:30px;border-top:1px solid #111;border-bottom:1px solid #111;padding:25px 0;margin:38px 0}.fp-command h2{font-size:25px;margin:5px 0}.fp-command p{max-width:720px;color:#555;margin:0;font-size:13px}.fp-command-side{min-width:190px;text-align:right}.fp-command-side b{display:block;font-size:35px}.fp-command-side span{font-size:10px;color:#666}"+
+    ".fp-economics{margin-bottom:40px}.fp-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.fp-metric{border:1px solid #ddd;border-radius:12px;padding:16px;background:#fff}.fp-metric span{display:block;font-size:9px;font-weight:800;letter-spacing:.08em;color:#777}.fp-metric b{display:block;font-size:24px;letter-spacing:-.035em;margin:6px 0}.fp-metric small{display:block;color:#777;font-size:10px}.fp-table{border:1px solid #ddd;border-radius:14px;overflow:hidden}.fp-table-head,.fp-table-row{display:grid;grid-template-columns:2.3fr .65fr 1fr 1fr 1.1fr .7fr;gap:10px;align-items:center;padding:13px 15px}.fp-table-head{background:#f5f5f5;font-size:9px;font-weight:800;letter-spacing:.1em;color:#666}.fp-table-row{border-top:1px solid #e4e4e4;font-size:11px}.fp-table-row>div{display:flex;align-items:center;gap:10px}.fp-table-row>div span{font-size:9px;color:#888;font-weight:800}.fp-table-row b{font-size:12px}.fp-two-column{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:40px}.fp-panel{border:1px solid #ddd;border-radius:15px;padding:22px}.fp-panel-head h2{font-size:22px;margin:5px 0 16px}.fp-reason{padding:14px 0;border-top:1px solid #e5e5e5}.fp-reason b{display:block;font-size:13px}.fp-reason span{display:block;color:#666;font-size:11px;line-height:1.5;margin-top:4px}.fp-guardrail{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:12px 0;border-top:1px solid #e5e5e5}.fp-guardrail span{font-size:9px;font-weight:800;color:#777}.fp-guardrail b{font-size:12px}.fp-roadmap{margin-bottom:28px}.fp-roadmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.fp-roadmap-grid>div{border:1px solid #ddd;border-radius:14px;padding:18px;min-height:150px}.fp-roadmap-grid span{font-size:9px;font-weight:800;color:#777}.fp-roadmap-grid b{display:block;font-size:16px;margin:7px 0}.fp-roadmap-grid p{font-size:11px;line-height:1.5;color:#666;margin:0}.fp-footer-note{display:flex;justify-content:space-between;align-items:center;gap:25px;border:1px solid #111;border-radius:16px;padding:22px}.fp-footer-note>b,.fp-footer-note p{display:block}.fp-footer-note>div>b{display:block;font-size:18px;margin-top:5px}.fp-footer-note>div p{color:#666;font-size:11px;max-width:760px;margin:6px 0 0}"+
+    ".fp-empty{min-height:560px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid #ddd;border-radius:18px;padding:60px}.fp-empty>div{max-width:650px}.fp-empty h1{font-size:48px;letter-spacing:-.05em;margin:10px 0}.fp-empty p{color:#666;line-height:1.6;margin-bottom:24px}"+
+    ".forge-product-review-v2{max-width:980px;background:#fff;border:1px solid #111;border-radius:20px;padding:28px}.fp-modal-top{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #ddd;padding-bottom:18px}.fp-modal-top h2{font-size:32px;letter-spacing:-.035em;margin:5px 0}.fp-modal-top p{margin:0;color:#666;font-size:12px}.fp-modal-close{width:38px;height:38px;border:1px solid #111;background:#fff;border-radius:50%;font-size:20px;cursor:pointer}.fp-modal-grid{display:grid;grid-template-columns:44% 56%;gap:28px;padding:26px 0}.fp-modal-image{height:430px;background:#f7f7f7;border:1px solid #ddd;border-radius:14px;position:relative;overflow:hidden}.fp-modal-image img{width:100%;height:100%;object-fit:contain}.fp-modal-image span{position:absolute;top:14px;left:14px;background:#111;color:#fff;padding:7px 9px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.12em}.fp-modal-category{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.1em;font-weight:800}.fp-modal-info h3{font-size:30px;line-height:1.1;letter-spacing:-.04em;margin:8px 0 16px}.fp-modal-price{font-size:36px;font-weight:800;letter-spacing:-.04em}.fp-modal-info small{color:#666}.fp-modal-econ{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:24px}.fp-modal-econ>div{border:1px solid #ddd;border-radius:12px;padding:15px}.fp-modal-econ span,.fp-modal-stock span{display:block;color:#777;font-size:9px}.fp-modal-econ b{display:block;font-size:18px;margin-top:4px}.fp-modal-stock{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid #ddd;margin-top:18px;padding-top:18px}.fp-modal-stock b{font-size:14px}.fp-modal-next{border:1px solid #111;border-radius:12px;padding:16px;display:grid;gap:5px}.fp-modal-next b{font-size:12px}.fp-modal-next span{font-size:11px;line-height:1.5;color:#666}.fp-modal-actions{display:flex;justify-content:flex-end;gap:8px;padding-top:18px}"+
+    ".forge-plan-tray{display:none}.forge-plan-tray-inner{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:190px 1fr auto;gap:18px;align-items:center}.forge-plan-tray-copy span{display:block;font-size:9px;font-weight:800;letter-spacing:.14em;color:#777}.forge-plan-tray-copy b{display:block;font-size:14px}.forge-plan-tray-copy small{display:block;color:#777;font-size:10px;margin-top:2px}.forge-plan-tray-products{display:flex;gap:8px;min-width:0}.forge-plan-tray-product{display:flex;align-items:center;gap:8px;border:1px solid #ccc;background:#fff;border-radius:10px;padding:6px 8px;min-width:170px}.forge-plan-tray-product img{width:38px;height:38px;object-fit:contain;background:#f6f6f6;border-radius:7px}.forge-plan-tray-product div{min-width:0}.forge-plan-tray-product b{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}.forge-plan-tray-product span{display:block;font-size:9px;color:#777}.forge-plan-tray-product button{margin-left:auto;border:0;background:none;font-size:17px;cursor:pointer}.forge-plan-tray-actions{display:flex;gap:7px}.forge-plan-tray-actions .btn[disabled]{opacity:.35;cursor:not-allowed}"+
+    "#forge-plan-selection{position:fixed;left:calc(50% + 92px);right:20px;bottom:16px;z-index:9000;background:#fff;border:1px solid #111;border-radius:16px;padding:10px 12px;box-shadow:0 18px 50px rgba(0,0,0,.12)}"+
+    "@media(max-width:1050px){.fp-hero{grid-template-columns:1fr}.fp-hero-side{border-left:0;border-top:1px solid #ddd;padding:18px 0 0}.fp-product-grid{grid-template-columns:1fr 1fr}.fp-roadmap-grid{grid-template-columns:1fr 1fr}.fp-metric-grid{grid-template-columns:1fr 1fr}.forge-plan-tray-inner{grid-template-columns:1fr}.forge-plan-tray-products{overflow:auto}.forge-plan-tray-actions{justify-content:flex-end}}"+
+    "@media(max-width:760px){.fp-page{padding:0 0 100px}.fp-hero-main h1{font-size:46px}.fp-product-grid,.fp-two-column,.fp-roadmap-grid,.fp-metric-grid{grid-template-columns:1fr}.fp-section-head,.fp-command,.fp-footer-note{display:block}.fp-section-head .btn,.fp-footer-note .btn{margin-top:12px}.fp-table{overflow:auto}.fp-table-head,.fp-table-row{min-width:760px}.fp-modal-grid{grid-template-columns:1fr}.fp-modal-image{height:300px}.forge-plan-tray-inner{display:block}.forge-plan-tray-products{margin:8px 0}.forge-plan-tray-actions{justify-content:space-between}#forge-plan-selection{left:10px;right:10px;bottom:10px}}";
+  document.head.appendChild(style);
+
+  /* Reinstall the tray after navigation/rerender without creating duplicates. */
+  const observer=new MutationObserver(function(){
+    if(state.page==="products")forgePlanSelectionBar();
+  });
+  observer.observe(document.getElementById("app")||document.body,{childList:true,subtree:true});
+  setTimeout(function(){if(state.page==="products")forgePlanSelectionBar()},100);
 })();

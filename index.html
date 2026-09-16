@@ -206,6 +206,13 @@ body{
 .content-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:28px}.content-collection{padding:22px;cursor:pointer;position:relative;overflow:hidden}.content-collection:before{content:"";position:absolute;width:140px;height:140px;right:-60px;top:-60px;border-radius:50%;background:var(--accent-glow)}.content-icon{font-size:27px;margin-bottom:12px}.content-meta{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:900}.content-collection h3{font-size:19px;margin:7px 0 5px}.content-collection p{color:var(--soft);font-size:12px;max-width:470px;line-height:1.55}.content-action{margin-top:18px;font-size:11px;font-weight:800;color:var(--accent);display:flex;justify-content:space-between}
 .content-bottom-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.smart-panel,.creative-memory{padding:22px}.opportunity{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid rgba(150,220,188,.09)}.opportunity>span{font-size:21px;color:var(--accent)}.opportunity div{flex:1}.opportunity small{display:block;color:var(--soft);margin-top:3px}.memory-row{padding:12px 0;border-top:1px solid rgba(150,220,188,.09);font-size:12px}.memory-row span{float:right;color:var(--accent);font-size:10px}
 @media(max-width:760px){.content-hero{min-height:0}.content-hero-orb{width:100px;height:100px}.orb-core{width:56px;height:56px}.command-row{flex-direction:column}.content-create-btn{width:100%}.content-stats{grid-template-columns:repeat(2,1fr)}.content-grid,.content-bottom-grid{grid-template-columns:1fr}}
+/* FORGE_CONTENT_ENGINE_POLISH */
+body[data-page="content"]{background:radial-gradient(900px 650px at 85% -5%,#3b2035 0,transparent 58%),radial-gradient(700px 500px at 10% 100%,#142b38 0,transparent 60%),var(--bg)}
+body[data-page="content"] .eyebrow{color:#f29bc0}body[data-page="content"] .nav.active{box-shadow:inset 2px 0 #f29bc0}
+.content-engine-callout{margin-top:14px;padding:18px;border:1px solid #493142;border-radius:16px;background:linear-gradient(135deg,#241522,#0c1713);display:flex;align-items:center;justify-content:space-between;gap:14px}.content-engine-callout b{display:block;font-size:17px}.content-engine-callout span{display:block;color:#9d8d96;font-size:11px;line-height:1.5;margin-top:4px}.content-engine-badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#2a1830;color:#ffd0e4;font-size:9px;font-weight:900;letter-spacing:.1em;margin-bottom:6px}
+.content-asset-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}.content-asset-card{overflow:hidden;padding:0}.content-asset-card .asset-preview{height:145px;display:grid;place-items:center;background:radial-gradient(circle,#34213b,#0d1512);font-size:42px;color:#f29bc0}.content-asset-card .asset-body{padding:14px}.content-asset-card h3{margin:6px 0}.content-asset-card p{font-size:11px;color:#879d93;line-height:1.5}.content-asset-actions{display:flex;gap:7px}.content-asset-actions .btn{flex:1}
+@media(max-width:900px){.content-asset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-engine-callout{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.content-asset-grid{grid-template-columns:1fr}.content-engine-callout .btn{width:100%}}
+
 </style></style>
 
 <style id="forge-brand-studio">
@@ -376,10 +383,10 @@ const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bang
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
 const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
 const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
-function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{}}))}
+function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[]}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
-const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
+const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["content","✦","Content Library"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
 const BDT=n=>"৳"+Number(n||0).toLocaleString("en-BD");
 const pct=n=>Math.round(Number(n)||0)+"%";
 function nav(){return navItems.map(x=>"<button class='nav "+(state.page===x[0]?"active":"")+"' onclick=\"go('"+x[0]+"')\"><span class='ico'>"+x[1]+"</span>"+x[2]+"</button>").join("")}
@@ -1176,6 +1183,29 @@ function createContentRequest(prefill){
   if(el){el.value="";el.placeholder="Your request is saved. Tell Forge what to create next…";}
 }
 function openContentCollection(label){toast(label+" opened — Forge will use your approved brand and product context.");}
+function forgeSvg(title,subtitle,kind,accent){
+  const w=kind==="banner"?1600:1080,h=kind==="banner"?500:1350,a=String(accent||"#69dda0").replace(/[^#a-zA-Z0-9(),.% -]/g,"");
+  const t=esc(title),sub=esc(subtitle),bg="#08130f";
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+a+'"/><stop offset="1" stop-color="#b9f3d0"/></linearGradient></defs><rect width="100%" height="100%" fill="'+bg+'"/><circle cx="'+w*.84+'" cy="'+h*.2+'" r="'+Math.min(w,h)*.28+'" fill="'+a+'" opacity=".08"/><rect x="'+w*.06+'" y="'+h*.08+'" width="'+w*.88+'" height="'+h*.84+'" rx="36" fill="none" stroke="'+a+'" opacity=".24"/><rect x="'+w*.08+'" y="'+h*.12+'" width="76" height="76" rx="20" fill="url(#g)"/><text x="'+w*.118+'" y="'+(h*.12+54)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="43" font-weight="900" fill="#061a12">F</text><text x="'+w*.08+'" y="'+h*.48+'" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="banner"?72:76)+'" font-weight="850" fill="#f4f8f5">'+t+'</text><text x="'+w*.08+'" y="'+h*.59+'" font-family="Inter,Arial,sans-serif" font-size="'+(kind==="banner"?30:35)+'" fill="#9fb8ad">'+sub+'</text><rect x="'+w*.08+'" y="'+h*.72+'" width="410" height="58" rx="29" fill="url(#g)"/><text x="'+(w*.08+205)+'" y="'+(h*.72+39)+'" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="22" font-weight="800" fill="#061a12">READY TO USE</text><text x="'+w*.08+'" y="'+h*.9+'" font-family="Inter,Arial,sans-serif" font-size="18" letter-spacing="3" fill="#668178">FORGE · FREE CREATIVE ENGINE</text></svg>';
+}
+function saveForgeAsset(name,type,description,svg){
+  state.contentAssets=state.contentAssets||[];
+  state.contentAssets.unshift({name,type,description,svg,createdAt:new Date().toISOString()});
+  persistProfile();
+}
+function generateStarterKit(){
+  const b=state.brandStudio||{},p=state.selectedProduct||{},brand=b.chosenName||state.business?.name||"Your Brand",product=b.chosenProductName||p.name||"Your Product",accent=b.primaryColor||"#69dda0";
+  saveForgeAsset(brand+" · Logo","Brand Identity","Primary brand mark generated locally by Forge",forgeSvg(brand,product,"logo",accent));
+  saveForgeAsset(brand+" · Launch Banner","Social / Website","Launch banner generated locally by Forge",forgeSvg("Meet "+product,"Now launching with "+brand,"banner",accent));
+  saveForgeAsset(brand+" · Product Post","Social Creative","Product announcement graphic generated locally by Forge",forgeSvg(product,"Discover the new "+brand+" collection","post",accent));
+  state.contentRequests=state.contentRequests||[];state.contentRequests.unshift({request:"Generate starter content kit",createdAt:new Date().toISOString(),status:"generated"});
+  persistProfile();render();toast("Starter kit generated locally — no paid image API required.");
+}
+function downloadForgeAsset(i){
+  const a=(state.contentAssets||[])[i];if(!a)return;const blob=new Blob([a.svg],{type:"image/svg+xml"}),url=URL.createObjectURL(blob),x=document.createElement("a");
+  x.href=url;x.download=(a.name||"forge-asset").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+".svg";document.body.appendChild(x);x.click();x.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("SVG downloaded — editable and sharp at any size.");
+}
+function useForgeAsset(i){const a=(state.contentAssets||[])[i];if(!a)return;state.contentRequests=state.contentRequests||[];state.contentRequests.unshift({request:"Use asset: "+a.name,createdAt:new Date().toISOString(),status:"approved"});persistProfile();toast(a.name+" approved for your creative workflow.");}
 function store(){
   const p=state.selectedProduct;
   const brand=state.brandStudio||{};

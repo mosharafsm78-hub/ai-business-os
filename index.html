@@ -442,7 +442,30 @@ body[data-page="analytics"]{--accent:#b78cff;--accent-soft:rgba(183,140,255,.10)
 .forge-context{color:var(--soft);font-size:11px;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:760px){.forge-context{display:none}}
 </style></style>
-</head>
+<style id="forge-light-theme">
+:root{--bg:#ffffff;--panel:#ffffff;--panel2:#f7faf8;--line:#dfe7e2;--text:#111816;--muted:#66736d;--mint:#d7f8e5;--mint2:#49c986;--amber:#9a6b00;--red:#c73737;--blue:#1769aa}
+html,body{background:#fff!important;color:#111816!important}
+body{background-image:none!important}
+#app,.app,.shell,.workspace,.main,.content,.page{background:#fff!important;color:#111816!important}
+header,.topbar,.nav,.sidebar,.drawer,.modal,.panel,.card,.tile,.hero,.section,.billing-summary,.billing-explain,.billing-footer,.explain-card{background:#fff!important;color:#111816!important;border-color:#dfe7e2!important;box-shadow:0 4px 20px rgba(17,24,22,.045)}
+small,.small,.sub,.muted,.hint,.help,.description,.billing-line span,.billing-product-line span,.explain-card p{color:#66736d!important}
+h1,h2,h3,h4,h5,h6,p,span,div,label,strong,b{color:inherit}
+a{color:#187a4b}
+input,textarea,select{background:#fff!important;color:#111816!important;border-color:#cfdad4!important}
+input::placeholder,textarea::placeholder{color:#89958f!important}
+button,.btn{color:#17201c!important;border-color:#cbd8d1!important;background:#fff!important}
+button.primary,.btn.primary,.primary{background:#b9f3d0!important;color:#07140e!important;border-color:#9be8bb!important}
+button:hover,.btn:hover{border-color:#74dca2!important}
+.nav-item,.side-item,.category-item{color:#52615a!important;background:#fff!important;border-color:transparent!important}
+.nav-item.active,.side-item.active,.category-item.active{background:#ecfaf2!important;color:#126b40!important;border-color:#69dda0!important}
+.eyebrow,.label,.kicker{color:#16804e!important}
+.data-tag.verified{background:#e7f8ee!important;color:#176d43!important}
+.data-tag.planning{background:#fff5dc!important;color:#805900!important}
+.billing-note{background:#f7faf8!important;border-color:#dfe7e2!important}
+.billing-total strong{color:#111816!important}
+.badge,.pill{background:#edf7f1!important;color:#176d43!important;border-color:#d7ebe0!important}
+hr{border-color:#dfe7e2!important}
+</style></head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
 /* FORGE STARTUP — mobile-safe, no reload loop */

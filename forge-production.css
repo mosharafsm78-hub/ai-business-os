@@ -254,3 +254,103 @@ a{color:inherit}
   #app .onboarding-card{padding:28px 22px!important}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* FORGE PRODUCTION LIGHT SYSTEM
+   Forge is a business SaaS website, not a dark-theme product. Large content
+   surfaces stay light and consistent across Product Lab, Business Plan,
+   checkout/billing and decision pages. Dark navy is reserved for small
+   brand/control accents only. */
+:root{
+  --fp-bg:#f6f7f9;
+  --fp-surface:#ffffff;
+  --fp-surface-2:#f8fafc;
+  --fp-ink:#101828;
+  --fp-muted:#667085;
+  --fp-line:#e4e7ec;
+  --fp-line-strong:#d0d5dd;
+  --fp-navy:#111827;
+  --fp-blue:#315efb;
+  --fp-blue-dark:#2447c8;
+  --fp-blue-soft:#eef2ff;
+  --fp-green:#067647;
+  --fp-green-soft:#ecfdf3;
+}
+
+/* No full-width dark content panels in production. */
+#app .decision-header,
+#app .plan-cover,
+#app .plan-command,
+#app .payment-card,
+#app .checkout-card,
+#app .billing-card,
+#app .ready-card,
+#app .launch-card,
+#app .dark-card{
+  background:#fff!important;
+  background-image:none!important;
+  color:var(--fp-ink)!important;
+  border:1px solid var(--fp-line)!important;
+  box-shadow:0 12px 34px rgba(16,24,40,.07)!important;
+}
+
+/* Business Plan cover / command surfaces */
+#app .plan-cover h1,
+#app .plan-cover-title,
+#app .plan-command h2,
+#app .plan-command p,
+#app .decision-header h1,
+#app .decision-header p{
+  color:var(--fp-ink)!important;
+}
+#app .plan-cover-meta span{
+  background:#f2f4f7!important;
+  color:#475467!important;
+  border-color:var(--fp-line)!important;
+}
+
+/* Decision page metrics remain white, never dark-on-dark. */
+#app .decision-stats div{border-left-color:var(--fp-line)!important}
+#app .decision-stats span{color:var(--fp-muted)!important}
+#app .decision-stats strong{color:var(--fp-ink)!important}
+
+/* Checkout/billing hierarchy */
+#app .payment-card *,
+#app .checkout-card *,
+#app .billing-card *,
+#app .ready-card *,
+#app .launch-card *{
+  color:var(--fp-ink);
+}
+#app .payment-card p,
+#app .checkout-card p,
+#app .billing-card p,
+#app .ready-card p,
+#app .launch-card p{
+  color:var(--fp-muted);
+}
+
+/* Keep the small floating navigation controls intentionally compact. */
+#app .corner-tab{
+  background:#111827!important;
+  color:#fff!important;
+}
+#forgeChatLauncher{
+  background:#111827!important;
+  color:#fff!important;
+}
+
+/* Mobile: avoid giant dark visual blocks and keep content readable. */
+@media(max-width:720px){
+  #app .decision-header,
+  #app .plan-cover,
+  #app .plan-command,
+  #app .payment-card,
+  #app .checkout-card,
+  #app .billing-card,
+  #app .ready-card,
+  #app .launch-card{
+    border-radius:16px!important;
+    box-shadow:0 8px 24px rgba(16,24,40,.06)!important;
+  }
+}

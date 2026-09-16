@@ -37,7 +37,7 @@ if(saved?.business?.name && GENERATED_BUSINESS_NAMES.has(saved.business.name)){
   if(saved.profile) saved.profile.businessName=String(saved.profile.businessName||"").trim();
   try{localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));}catch(e){}
 }
-const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},contentRequests:saved?.contentRequests||[],contentAssets:saved?.contentAssets||[],contentAutomation:saved?.contentAutomation||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
+const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},contentRequests:saved?.contentRequests||[],contentAssets:saved?.contentAssets||[],contentAutomation:saved?.contentAutomation||{},chat:[["ai","I’m your AI co-founder. I’ll use your saved profile to guide recommendations and decisions."]]};
 function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[],contentAutomation:state.contentAutomation||{},billing:state.billing||{},billingInvoice:state.billingInvoice||null}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
@@ -46,29 +46,27 @@ const BDT=n=>"৳"+Number(n||0).toLocaleString("en-BD");
 const pct=n=>Math.round(Number(n)||0)+"%";
 function nav(){return navItems.map(x=>"<button class='nav "+(state.page===x[0]?"active":"")+"' onclick=\"go('"+x[0]+"')\"><span class='ico'>"+x[1]+"</span>"+x[2]+"</button>").join("")}
 function forgePageGuide(){
- const b=state.business||{},p=state.profile||{};
  const titles={
-  home:["Lean launch mode","Comparing paths against your capital, time, and risk limits."],
-  advisor:["Ask Forge what the numbers say.","Use your current profile and business context to pressure-test decisions."],
-  ideas:["Find a business you can actually start.","Compare practical paths against the money, time, experience, and risk you can commit."],
-  products:["Research products before you buy.","Check supplier options, landed economics, and demand before committing stock."],
-  plan:["Turn the opportunity into a plan.","Connect the chosen path to pricing, marketing, milestones, and operating assumptions."],
-  orders:["Track what's selling.","Keep order flow, revenue, and fulfillment decisions visible in one place."],
-  brand:["Build a brand customers can recognize.","Shape the identity, positioning, and customer-facing system around the business."],
-  store:["Prepare the storefront for launch.","Turn the chosen business direction into a launch-ready store and operating setup."],
-  content:["Build a repeatable content system.","Organize product-led content so the business can publish consistently."],
-  marketing:["Put marketing decisions behind the numbers.","Plan campaigns around the offer, audience, economics, and measurable next actions."],
-  billing:["Know where the money is going.","Keep spend, budget, invoices, and launch economics visible."],
-  support:["Give customers fast, consistent answers.","Use Forge's business context to structure reliable customer support."],
-  analytics:["Track what's selling and what needs a decision.","Read the business signals that should change what you do next."]
+  home:["Overview","See what needs your attention."],
+  advisor:["AI Advisor","Ask Forge about a decision."],
+  ideas:["Business Finder","Explore business opportunities."],
+  products:["Product Lab","Research and compare products."],
+  plan:["Business Plan","Turn selected products into a launch plan."],
+  orders:["Orders","Track orders and fulfillment."],
+  brand:["Brand Studio","Build your brand identity."],
+  store:["Store Launch","Prepare your store for launch."],
+  content:["Content Library","Create and organize content."],
+  marketing:["AI Marketing","Plan campaigns and track spend."],
+  billing:["Billing & Budget","Review costs and budget."],
+  support:["AI Customer Support","Manage customer support."],
+  analytics:["Analytics & Decisions","See performance and decide what to do next."]
  };
- if(state.page==="advisor")return ""; const t=titles[state.page]||titles.home;
+ const t=titles[state.page]||titles.home;
  return "<div class='forge-page-header'><div><h1>"+t[0]+"</h1><p>"+t[1]+"</p></div><button class='btn secondary' onclick='openWizard()'>Change inputs</button></div>";
 }
-
 function shell(c){
  let b=state.business;
- return "<header class='top'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='topright'><span class='pill online'><span id='forgeStatusText'>AI is online</span></span><button class='pill' onclick='openWizard()'>New business</button><div class='avatar'>M</div></div></header><button class='corner-tab' onclick='toggleCorner()'>Categories</button><aside id='cornerPanel' class='corner-panel'><div class='row' style='justify-content:space-between'><div><div class='eyebrow'>Forge workspace</div><h3>Categories & tools</h3><div class='small'>Tap to open. Tap again to close.</div></div><button class='btn' onclick='toggleCorner()'>Close</button></div><div class='navlabel'>Business workflow</div>"+nav()+"</aside><div class='layout'><aside class='side'><div class='navlabel'>Business workspace</div>"+nav()+"<div class='navlabel' style='margin-top:18px'>Your business</div><div class='business-mini'><div class='row'><div class='bizicon'>◈</div><div><b>"+(b?esc(b.name):"No business yet")+"</b><div class='small'>"+(b?"AI plan · active":"Start your first venture")+"</div></div></div><div class='progress' style='margin-top:12px'><i style='width:'+(b?68:0)+'%'></i></div></div></aside><main class='main'>"+forgeContextBar()+forgePageGuide()+c+"</main></div>";
+ return "<header class='top'><div class='brand'><div class='mark'>F</div>FORGE <small>AI BUSINESS OS</small></div><div class='topright'><span class='pill online'><span id='forgeStatusText'>AI is online</span></span><button class='pill' onclick='openWizard()'>New business</button><div class='avatar'>M</div></div></header><button class='corner-tab' onclick='toggleCorner()'>Categories</button><aside id='cornerPanel' class='corner-panel'><div class='row' style='justify-content:space-between'><div><div class='eyebrow'>Forge workspace</div><h3>Workspace</h3><div class='small'>Navigate Forge</div></div><button class='btn' onclick='toggleCorner()'>Close</button></div><div class='navlabel'>Workspace</div>"+nav()+"</aside><div class='layout'><aside class='side'><div class='navlabel'>Workspace</div>"+nav()+"<div class='navlabel' style='margin-top:18px'>Your business</div><div class='business-mini'><div class='row'><div class='bizicon'>◈</div><div><b>"+(b?esc(b.name):"No business yet")+"</b><div class='small'>"+(b?"AI plan · active":"Start your first venture")+"</div></div></div><div class='progress' style='margin-top:12px'><i style='width:'+(b?68:0)+'%'></i></div></div></aside><main class='main'>"+forgeContextBar()+forgePageGuide()+c+"</main></div>";
 }
 function forgeContextBar(){
  const p=state.profile||{},b=state.business||{};

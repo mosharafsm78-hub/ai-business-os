@@ -2310,7 +2310,7 @@ fcInstall();fcAddNav();fcContextRefresh();new MutationObserver(function(){fcAddN
             return "<div class='forge-plan-tray-product'><img src='"+esc(p.image||"")+"' alt=''><div><b>"+esc(p.name||"Product")+"</b><span>"+(i===0?"Hero product":"Product "+(i+1))+"</span></div><button type='button' onclick='forgeRemovePlanProduct("+i+")' aria-label='Remove product'>×</button></div>";
           }).join("")+
         "</div>"+
-        "<div class='forge-plan-tray-actions'><button class='btn' type='button' onclick='forgeClearPlanProducts()'>Clear</button><button class='btn primary' type='button' "+(products.length<2?"disabled":"")+" onclick='go("plan")'>Build business plan →</button></div>"+
+        "<div class='forge-plan-tray-actions'><button class='btn' type='button' onclick='forgeClearPlanProducts()'>Clear</button><button class='btn primary' type='button' "+(products.length<2?"disabled":"")+" onclick=\"go('plan')\">Build business plan →</button></div>"+
       "</div>";
   }
 

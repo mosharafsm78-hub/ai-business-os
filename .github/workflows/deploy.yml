@@ -11,8 +11,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  group: "forge-production"
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -23,6 +23,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate Forge runtime
+        run: |
+          node --check app-v6.js
+          test -f index.html
+          test -f forge-production.css
+          test -f forge-runtime-watch.js
+          echo "Forge production validation passed."
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

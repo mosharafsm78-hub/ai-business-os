@@ -2298,13 +2298,25 @@ async function fetchCjKeyword(keyword,page=1){
   if(!r.ok||!j.ok) throw Error(j.error||"The connected supplier catalogue could not be reached.");
   return j;
 }
+function showCjWaitStage(box,keyword){
+  if(!box)return;
+  const started=Date.now();
+  box.innerHTML="<div class='cj-wait-stage' style='grid-column:1/-1'><div class='cj-wait-spinner' aria-hidden='true'></div><div><strong>Connecting to CJ Dropshipping…</strong><span>Forge is securely connecting to the live supplier catalogue, checking availability and preparing real product results.</span><div class='cj-wait-time' id='cjWaitTime'>Connecting · 0s</div></div></div>";
+  const timer=setInterval(function(){
+    const el=document.getElementById("cjWaitTime");
+    if(!el){clearInterval(timer);return}
+    const sec=Math.floor((Date.now()-started)/1000);
+    el.textContent=sec<4?"Connecting · "+sec+"s":sec<8?"Still checking live supplier data · "+sec+"s":"Almost there · "+sec+"s";
+  },250);
+  box.dataset.waitTimer=String(started);
+}
 async function autoCjSearch(){
   const box=document.getElementById("cjresults"),status=document.getElementById("cjstatus"),meta=document.getElementById("cjmeta"),fresh=document.getElementById("cjfresh");
   if(!box)return;
   const keyword=cjRecommendationKeyword();
   if(status)status.textContent="Matching live supplier products to your profile…";
   if(meta)meta.textContent="Finding 20 different products…";
-  box.innerHTML="<div class='cj-empty cj-loading' style='grid-column:1/-1'><b>Finding 20 "+esc(keyword)+" products…</b><br><span class='small'>Forge is checking multiple supplier result pages and removing duplicates before showing them.</span></div>";
+  showCjWaitStage(box,keyword);
   try{
     const collected=[],seen=new Set();
     const confirmed=new Set((state.sourcingQueue||[]).map(x=>String(x.id||x.name||"").trim().toLowerCase()));
@@ -2697,9 +2709,17 @@ if(!b.chosenProductName)return "brand";
 return "plan";
 }
 if(!q)return "Tell me what you are trying to decide. You can ask in normal language—even if it is not one of my preset questions. I can work from your Forge profile, product, economics, brand and launch stage.";
+if(has(/only budget|budget.*only|only.*money.*have|i have.*\d.*budget|my budget is/)){
+var stated=num();
+if(stated){
+  var reserveNow=Number(p.reserve||0);
+  var deployNow=Math.max(0,stated-reserveNow);
+  return "Got it. I’ll treat "+money(stated)+" as the business budget you are talking about. With the current reserve of "+money(reserveNow)+", the modeled deployable amount is "+money(deployNow)+". I’ll use that number when we discuss product quantity, testing spend and launch costs. I won’t invent another reserve or change your locked profile unless you explicitly update it.";
+}
+}
 if(has(/i (do not|don't|dont) need (an? )?emergency|no (emergency|reserve)|use all|all (of )?my (money|budget|capital)|invest (all|the whole)|no reserve/)){
 var invest=num()||available||budget;
-return "Understood. You are saying the money is intended for the business, not that you want Forge to hold a separate emergency reserve. Forge currently has a protected reserve of "+money(reserve)+". If you want the full "+money(budget)+" treated as deployable, change the profile input; I will then recalculate the plan from that value. I won't silently override your locked profile from chat.";
+return "Understood. You are saying the money is intended for the business, not that you want Forge to hold a separate emergency reserve. Forge currently has a protected reserve of "+money(reserve)+". If you want the full "+money(budget)+" treated as deployable, update the profile input; I will then recalculate the downstream numbers. I won't silently override your locked profile from chat.";
 }
 if(has(/^(hi|hello|hey|yo|bro|good morning|good evening)\\b/))return "Hey. I’m here. Ask me the actual business question in your own words—budget, product, supplier, pricing, quantity, brand, domain, launch, ads, orders, or whether an idea makes sense.";
 if(has(/what (do|can) you know|what.*(know|remember)|my (profile|situation|context)|tell me about my/)){

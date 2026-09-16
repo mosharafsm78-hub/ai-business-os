@@ -1171,7 +1171,7 @@ function ideas(){
        "<div><span>Model</span><b>"+x.model+"</b><small>"+(x.model==="Inventory"?"Stock-led":"Demand-led")+"</small></div>"+
      "</div>"+
      "<div class='finder-read'><span>Forge's read</span><p>"+rationale(x)+" "+(p.experience&&x.experience?("Experience fit: "+(p.experience===x.experience?"aligned":"manageable with support")+"."):"")+"</p></div>"+
-     "<div class='finder-actions'><button class='btn primary' onclick=\"selectOpportunity('"+x.name.replace(/'/g,"\\'")+"')\">Open opportunity</button><button class='btn' type='button' onclick=\"event.preventDefault();event.stopPropagation();openFitModal('"+x.name.replace(/'/g,"\\'")+"')\"">Why it fits</button></div>"+
+     "<div class='finder-actions'><button class='btn primary' onclick=\"selectOpportunity('"+x.name.replace(/'/g,"\\'")+"')\">Open opportunity</button><button class='btn' type='button' onclick=\"event.preventDefault();event.stopPropagation();openFitModal('"+x.name.replace(/'/g,"\\'")+"')\">Why it fits</button></div>"+
    "</article>";
  };
  return "<div class='finder-shell'>"+

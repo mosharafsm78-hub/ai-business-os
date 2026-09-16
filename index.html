@@ -513,6 +513,17 @@ body[data-page="home"] .decision-aside{color:var(--ink)!important}.decision-asid
 @media(max-width:1050px){body[data-page="home"] .decision-layout{grid-template-columns:1fr;gap:32px}.decision-aside{display:grid;grid-template-columns:1fr 1fr;gap:32px}.decision-aside>section{margin:0;padding-bottom:0;border-bottom:0}}
 @media(max-width:760px){body[data-page="home"] .side{display:none!important}body[data-page="home"] .main{margin-left:0!important;width:100%!important;padding:0 18px 60px!important}.decision-header{padding-top:26px!important}.decision-header h1{font-size:28px!important}.decision-stats{display:grid!important;grid-template-columns:1fr!important}.decision-stats>div{padding:11px 0!important;margin:0!important;border-right:0!important;border-bottom:1px solid var(--line)}.decision-stats>div:last-child{border-bottom:0}.path-data{grid-template-columns:1fr 1fr!important}.path-data>div:nth-child(2){border-right:0}.path-data>div:nth-child(n+3){border-top:1px solid var(--line)}.decision-aside{display:block!important}.decision-aside>section{padding-bottom:22px;margin-bottom:22px;border-bottom:1px solid var(--line)}}
 </style>
+<style id="forge-system-final">
+/* Final system enforcement: no page may opt out of the shared visual language. */
+body[data-page] .eyebrow,body[data-page] .guide-kicker,body[data-page] .label,body[data-page] .navlabel{color:var(--muted)!important;text-transform:none!important;letter-spacing:normal!important}
+body[data-page] .card,body[data-page] .panel,body[data-page] .tile,body[data-page] .metric,body[data-page] .table-wrap,body[data-page] .chat-shell{background:var(--surface)!important;border-color:var(--line)!important;border-radius:var(--radius-card)!important}
+body[data-page] .card.selected,body[data-page] .panel.selected,body[data-page] .tile.selected{background:var(--accent-soft)!important;border-color:var(--accent)!important}
+body[data-page] .btn.primary,body[data-page] .btn.accent,body[data-page] .btn.green,body[data-page] .btn.success{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+body[data-page] .btn:not(.primary):not(.accent):not(.green):not(.success){background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+body[data-page] .chat .bubble:not(.me){background:var(--ink)!important;color:#fff!important}body[data-page] .chat .bubble.me{background:var(--accent-soft)!important;color:var(--ink)!important}
+body[data-page] .progress,body[data-page] .progress-bar{background:var(--line)!important}body[data-page] .progress i,body[data-page] .progress-bar i{background:var(--accent)!important}
+body[data-page] [class*="badge"],body[data-page] [class*="chip"],body[data-page] [class*="tag"]{box-shadow:none!important}
+</style>
 </head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>

@@ -1,0 +1,348 @@
+name: Forge Chat install
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  install-forge-chat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install Forge Chat and enforce monochrome UI
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("index.html")
+          text = path.read_text(encoding="utf-8")
+
+          marker = "<!-- FORGE_CHAT_V1 -->"
+          if marker in text:
+              raise SystemExit("Forge Chat is already installed.")
+
+          patch = r'''<!-- FORGE_CHAT_V1 -->
+          <style id="forge-chat-v1">
+          /* Forge Chat — monochrome, clean, mobile-first */
+          #forgeChatLauncher{
+            position:fixed;right:22px;bottom:24px;z-index:10000;
+            display:flex;align-items:center;gap:9px;padding:13px 17px;
+            border:1px solid #000;border-radius:999px;background:#000;color:#fff;
+            font:800 13px Inter,system-ui,sans-serif;letter-spacing:-.01em;
+            box-shadow:none;cursor:pointer;
+          }
+          #forgeChatLauncher:hover{background:#fff;color:#000}
+          #forgeChatLauncher .fc-dot{width:8px;height:8px;border-radius:50%;background:#fff;border:1px solid #fff}
+          #forgeChatLauncher:hover .fc-dot{background:#000}
+          #forgeChatPanel{
+            position:fixed;right:22px;bottom:82px;z-index:9999;width:min(390px,calc(100vw - 28px));
+            max-height:min(720px,calc(100vh - 115px));display:none;flex-direction:column;
+            background:#fff;color:#000;border:1px solid #000;border-radius:20px;overflow:hidden;
+          }
+          #forgeChatPanel.open{display:flex}
+          .fc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 17px;border-bottom:1px solid #000;background:#fff}
+          .fc-brand{display:flex;align-items:center;gap:10px;font-weight:900}
+          .fc-mark{width:31px;height:31px;border-radius:9px;background:#000;color:#fff;display:grid;place-items:center;font-weight:950}
+          .fc-title{font-size:15px;line-height:1.1}
+          .fc-subtitle{font-size:10px;font-weight:500;margin-top:3px;color:#555}
+          .fc-close{width:32px;height:32px;border:1px solid #000;border-radius:9px;background:#fff;color:#000;font-weight:900;cursor:pointer}
+          .fc-close:hover{background:#000;color:#fff}
+          .fc-context{padding:10px 15px;border-bottom:1px solid #000;font-size:10px;line-height:1.45;background:#fff;color:#000}
+          .fc-context b{font-weight:900}
+          .fc-messages{flex:1;min-height:220px;max-height:470px;overflow:auto;padding:15px;display:flex;flex-direction:column;gap:10px;background:#fff}
+          .fc-msg{max-width:88%;padding:11px 12px;border:1px solid #000;border-radius:14px;font-size:12px;line-height:1.55;white-space:pre-wrap;background:#fff;color:#000}
+          .fc-msg.user{align-self:flex-end;background:#000;color:#fff}
+          .fc-msg.assistant{align-self:flex-start}
+          .fc-msg b{font-weight:900}
+          .fc-suggestions{display:flex;gap:7px;flex-wrap:wrap;padding:0 15px 11px;background:#fff}
+          .fc-suggestion{border:1px solid #000;border-radius:999px;background:#fff;color:#000;padding:8px 10px;font-size:10px;font-weight:750;cursor:pointer}
+          .fc-suggestion:hover{background:#000;color:#fff}
+          .fc-compose{display:flex;gap:8px;padding:12px;border-top:1px solid #000;background:#fff}
+          .fc-input{flex:1;min-width:0;border:1px solid #000!important;border-radius:11px!important;background:#fff!important;color:#000!important;padding:11px 12px!important;outline:0!important}
+          .fc-send{border:1px solid #000;background:#000;color:#fff;border-radius:11px;padding:0 15px;font-weight:850;cursor:pointer}
+          .fc-send:hover{background:#fff;color:#000}
+          .fc-thinking{display:inline-flex;gap:4px;align-items:center}
+          .fc-thinking i{width:5px;height:5px;border-radius:50%;background:#000;display:block;animation:fcPulse 1s infinite}
+          .fc-thinking i:nth-child(2){animation-delay:.15s}.fc-thinking i:nth-child(3){animation-delay:.3s}
+          @keyframes fcPulse{0%,100%{opacity:.25}50%{opacity:1}}
+          @media(max-width:560px){
+            #forgeChatLauncher{right:12px;bottom:78px;padding:12px 14px}
+            #forgeChatPanel{right:12px;bottom:130px;width:calc(100vw - 24px);max-height:calc(100vh - 160px);border-radius:17px}
+            .fc-messages{max-height:none}
+          }
+
+          /* Global Forge customer-facing monochrome enforcement.
+             Media keeps its own natural colors; UI chrome does not. */
+          html,body,#app{background:#fff!important;color:#000!important;background-image:none!important}
+          #app *{box-shadow:none!important;text-shadow:none!important}
+          #app .top,#app .side,#app .main,#app .card,#app .panel,#app .tile,#app .hero,#app .hero-banner,#app .section,
+          #app .step,#app .asset,#app .notice,#app .business-mini,#app .product,#app .product-card,#app .order-card,
+          #app .metric-card,#app .stat-card,#app .billing-summary,#app .billing-explain,#app .billing-footer,#app .explain-card,
+          #app .content-copy-section,#app .content-copy-card,#app .content-studio-product,#app .content-command-v3,
+          #app .content-quality>div,#app .content-studio-preview,#app .content-empty-quality,#app .content-rule,
+          #app .meta-connect-card,#app .meta-page-found,#app .meta-step,#app .plan-identity,#app .plan-document,
+          #app .plan-highlight,#app .plan-finance>div,#app .plan-risk>div,#app .plan-roadmap>div,#app .plan-two-col>div,
+          #app .plan-cover,#app .plan-cover-product,#app .plan-cover-meta span,#app .cj-card,#app .cj-detail-grid,
+          #app .cj-data>div,#app .cj-footer,#app .product-photo,#app .product-image,#app .live-product,#app .loading-card{
+            background:#fff!important;background-color:#fff!important;color:#000!important;border-color:#000!important;
+          }
+          #app h1,#app h2,#app h3,#app h4,#app h5,#app h6,#app p,#app span,#app label,#app b,#app strong,#app li,
+          #app a,#app .eyebrow,#app .label,#app .small,#app .sub,#app .muted,#app .up,#app .navlabel{color:#000!important}
+          #app .btn,#app button,#app .pill,#app .avatar,#app .nav,#app .choice,#app input,#app select,#app textarea{
+            background:#fff!important;color:#000!important;border:1px solid #000!important;
+          }
+          #app .btn.primary,#app .primary,#app button.primary,#app .nav.active{
+            background:#000!important;color:#fff!important;border-color:#000!important;
+          }
+          #app .btn:hover,#app button:hover,#app .nav:hover{background:#000!important;color:#fff!important}
+          #app .mark{background:#000!important;color:#fff!important;border-color:#000!important}
+          #app .status,#app .tag,#app .badge,#app .chip,#app .data-tag,#app .quality-pill{
+            background:#fff!important;color:#000!important;border:1px solid #000!important;
+          }
+          #app .modal{background:rgba(0,0,0,.78)!important}
+          #app .modalbox{background:#fff!important;color:#000!important;border:1px solid #000!important}
+          #app img,#app video{background:transparent!important;filter:none!important}
+          #app svg{color:#000!important}
+          </style>
+          <script>
+          (function(){
+            if(window.__forgeChatV1)return;
+            window.__forgeChatV1=true;
+
+            function fcEsc(v){
+              return String(v??"").replace(/[&<>"']/g,function(m){
+                return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m];
+              });
+            }
+
+            function fcContext(){
+              var p=window.state?.profile||{};
+              var product=window.state?.selectedProduct||{};
+              var business=window.state?.business||{};
+              var brand=window.state?.brandStudio||{};
+              var page=window.state?.page||"home";
+              var parts=[];
+              if(business.name)parts.push("Business: "+business.name);
+              if(p.budget)parts.push("Capital: "+(typeof BDT==="function"?BDT(p.budget):"BDT "+p.budget));
+              if(p.income)parts.push("Income: "+(typeof BDT==="function"?BDT(p.income):"BDT "+p.income)+"/month");
+              if(p.expenses)parts.push("Expenses: "+(typeof BDT==="function"?BDT(p.expenses):"BDT "+p.expenses)+"/month");
+              if(p.market)parts.push("Market: "+p.market);
+              if(p.category)parts.push("Category: "+p.category);
+              if(p.risk)parts.push("Risk: "+p.risk);
+              if(p.time)parts.push("Time: "+p.time+"h/week");
+              if(product.name)parts.push("Product: "+product.name);
+              if(brand.chosenName)parts.push("Brand: "+brand.chosenName);
+              parts.push("Current area: "+page);
+              return parts.join(" · ");
+            }
+
+            function fcContextForPrompt(){
+              var p=window.state?.profile||{};
+              var product=window.state?.selectedProduct||{};
+              var business=window.state?.business||{};
+              var brand=window.state?.brandStudio||{};
+              var queue=Array.isArray(window.state?.sourcingQueue)?window.state.sourcingQueue:[];
+              var e=product.economics||{};
+              return {
+                page:window.state?.page||"home",
+                business:business,
+                profile:{
+                  budget:p.budget||0,income:p.income||0,expenses:p.expenses||0,reserve:p.reserve||0,
+                  market:p.market||"",city:p.city||"",category:p.category||"",goal:p.goal||"",
+                  risk:p.risk||"",riskCapacity:p.riskCapacity||"",time:p.time||0,
+                  experience:p.experience||"",skills:p.skills||""
+                },
+                product:product.name?{
+                  name:product.name,category:product.category||"",supplierPrice:product.priceUsd||null,
+                  inventory:product.inventory||0,economics:{selling:e.selling||0,landed:e.landed||0,cac:e.cac||0,contribution:e.contribution||0}
+                }:null,
+                brand:{name:brand.chosenName||"",productName:brand.chosenProductName||"",domain:brand.selectedDomain||brand.social?.domain||""},
+                orders:queue.length
+              };
+            }
+
+            function fcAnswer(q){
+              var s=String(q||"").trim().toLowerCase();
+              var c=fcContextForPrompt(),p=c.profile,product=c.product;
+              var money=function(n){return typeof BDT==="function"?BDT(n):"BDT "+Number(n||0).toLocaleString("en-BD");};
+              var page=c.page;
+              if(!s)return "Tell me what is confusing you. I can explain your Forge profile, recommendations, product economics, Business Plan, orders, Brand Studio, Store Launch or marketing.";
+              if(/what.*next|next step|where.*start|what should i do/.test(s)){
+                if(!p.budget)return "Start by completing your Forge profile. Your capital, income, expenses, risk and available time are the inputs Forge uses for downstream decisions.";
+                if(!product)return "Your profile is ready. Next, open Business Finder and review the opportunities that fit your capital, time and risk profile. Then choose a product in Product Lab.";
+                if(!c.brand.name)return "You have a product selected. Next, review Brand Studio and choose the company name and customer-facing product name.";
+                if(!c.brand.productName)return "Your company identity is started. Next, choose the customer-facing product name in Brand Studio.";
+                return "Your core inputs are connected. Review the Business Plan, then Store Launch and AI Marketing. I can explain any number or decision before you approve it.";
+              }
+              if(/why.*recommend|recommend.*why|why this product|why.*product/.test(s)){
+                if(!product)return "No product is confirmed yet. Product Lab will match live supplier products to your locked profile.";
+                return "Forge's product matching uses your business direction, capital, risk capacity, market and available time. For the selected product, the live supplier price and stock feed into landed cost, selling price, CAC and contribution estimates. Those are planning estimates, not guarantees.";
+              }
+              if(/capital|budget|money|afford/.test(s)){
+                return "Your current deployable capital is "+money(p.budget)+". Forge treats your reserve separately and uses the budget, risk profile and unit economics when planning a starting quantity. If you want, ask: “How much should I put into the first order?”";
+              }
+              if(/risk|risky|loss/.test(s)){
+                return "Your Forge risk profile is "+(p.risk||"not set")+" with "+(p.riskCapacity||"not set")+" capacity. Forge uses that to avoid treating a high-risk model as equivalent to a lower-risk one. Ask me about a specific recommendation and I can explain the trade-off.";
+              }
+              if(/price|cost|cac|contribution|margin|break.?even|economics/.test(s)){
+                if(!product)return "Choose a product first and I can explain its economics.";
+                var e=product.economics||{};
+                return "For "+product.name+": estimated landed cost is "+money(e.landed)+", estimated selling price is "+money(e.selling)+", modeled CAC is "+money(e.cac)+", and estimated contribution is "+money(e.contribution)+" per unit. These are planning figures based on the connected supplier record.";
+              }
+              if(/business plan|plan/.test(s)){
+                return "The Business Plan turns your locked profile and confirmed product into a practical launch model: customer, positioning, unit economics, risk controls and a 30–60 day operating roadmap. If a number looks unclear, ask me about that number.";
+              }
+              if(/product lab|supplier|cj|dropship|stock/.test(s)){
+                return "Product Lab connects to the live supplier feed. While it is loading, Forge should show a clear connection/loading state rather than appearing empty. Supplier price and stock are treated as live data and are rechecked before procurement.";
+              }
+              if(/brand|name|instagram|facebook|domain/.test(s)){
+                return "Brand Studio is where the confirmed product becomes a customer-facing identity: company name, product name, social handle direction and domain. A domain should only be selected after the connected registrar confirms availability and price.";
+              }
+              if(/store|shopify|launch/.test(s)){
+                return "Store Launch uses the approved product and brand identity to prepare the storefront. The launch invoice should use live domain pricing when a registrar result is confirmed; no guessed domain price should be used.";
+              }
+              if(/marketing|ad|ads|facebook ads|content/.test(s)){
+                return "AI Marketing and Content Library are downstream from the product and brand decisions. The same approved product and identity should flow into content, campaigns and acquisition planning so you do not rebuild the same information.";
+              }
+              if(/order|quantity|procure|payment|shipping|delivery/.test(s)){
+                if(!product)return "No confirmed order is connected yet. Choose a real product in Product Lab first.";
+                var q=Array.isArray(window.state?.sourcingQueue)?window.state.sourcingQueue:[];
+                return "Orders are the operational record after product confirmation. Forge calculates minimum, suggested and planned quantities from your capital, risk, product economics and supplier constraints. Payment must be verified before procurement.";
+              }
+              if(/confus|explain|understand|help/.test(s)){
+                return "Absolutely. Tell me the exact section, number or message you are looking at. I will explain it using your current Forge context instead of giving you a generic definition.";
+              }
+              return "I can help with that. Ask me about your current Forge profile, a recommendation, product economics, quantity, Business Plan, Brand Studio, Store Launch, orders or marketing, and I will use the information already in your workspace.";
+            }
+
+            function fcAddMessage(role,html){
+              var box=document.getElementById("fcMessages");
+              if(!box)return;
+              var d=document.createElement("div");
+              d.className="fc-msg "+(role==="user"?"user":"assistant");
+              d.innerHTML=html;
+              box.appendChild(d);
+              box.scrollTop=box.scrollHeight;
+            }
+
+            function fcSend(prefill){
+              var input=document.getElementById("fcInput");
+              var q=String(prefill||input?.value||"").trim();
+              if(!q)return;
+              if(input)input.value="";
+              fcAddMessage("user",fcEsc(q));
+              var thinking=document.createElement("div");
+              thinking.className="fc-msg assistant";thinking.id="fcThinking";
+              thinking.innerHTML='<span class="fc-thinking"><i></i><i></i><i></i></span> Forge is thinking…';
+              document.getElementById("fcMessages")?.appendChild(thinking);
+              setTimeout(function(){
+                thinking.remove();
+                fcAddMessage("assistant",fcEsc(fcAnswer(q)));
+              },420);
+            }
+
+            function fcRenderContext(){
+              var el=document.getElementById("fcContext");
+              if(el)el.innerHTML="<b>Using your Forge context:</b> "+fcEsc(fcContext());
+            }
+
+            function fcToggle(){
+              var panel=document.getElementById("forgeChatPanel");
+              if(!panel)return;
+              panel.classList.toggle("open");
+              if(panel.classList.contains("open")){
+                fcRenderContext();
+                setTimeout(function(){document.getElementById("fcInput")?.focus()},80);
+              }
+            }
+
+            function fcPage(){
+              return "<div class='hero'><div><div class='eyebrow'>FORGE CHAT</div><div class='h1'>Ask Forge anything.</div><div class='sub'>A contextual assistant for your workspace. Ask questions when a recommendation, number or next step is unclear.</div></div></div>"+
+              "<div class='card' style='max-width:900px'><div id='fcPageMessages' class='fc-messages' style='max-height:none;border:1px solid #000;border-radius:14px'></div><div class='fc-suggestions' style='padding:12px 0'><button class='fc-suggestion' onclick='fcPageSend("+""What should I do next?""+")'>What should I do next?</button><button class='fc-suggestion' onclick='fcPageSend("+""Why was this recommended?""+")'>Why was this recommended?</button><button class='fc-suggestion' onclick='fcPageSend("+""Explain the economics""+")'>Explain the economics</button></div><div class='fc-compose' style='padding:12px 0 0;border-top:1px solid #000'><input id='fcPageInput' class='fc-input' placeholder='Ask Forge Chat…'><button class='fc-send' onclick='fcPageSend()'>Send</button></div></div>";
+            }
+
+            window.fcPageSend=function(prefill){
+              var input=document.getElementById("fcPageInput"),q=String(prefill||input?.value||"").trim();
+              if(!q)return;
+              if(input)input.value="";
+              var box=document.getElementById("fcPageMessages");
+              if(!box)return;
+              var u=document.createElement("div");u.className="fc-msg user";u.textContent=q;box.appendChild(u);
+              var a=document.createElement("div");a.className="fc-msg assistant";a.textContent=fcAnswer(q);box.appendChild(a);box.scrollTop=box.scrollHeight;
+            };
+
+            function fcInstallUI(){
+              if(document.getElementById("forgeChatLauncher"))return;
+              var launcher=document.createElement("button");
+              launcher.id="forgeChatLauncher";
+              launcher.type="button";
+              launcher.innerHTML='<span class="fc-dot"></span> Forge Chat';
+              launcher.onclick=fcToggle;
+              document.body.appendChild(launcher);
+
+              var panel=document.createElement("section");
+              panel.id="forgeChatPanel";
+              panel.innerHTML='<div class="fc-head"><div class="fc-brand"><div class="fc-mark">F</div><div><div class="fc-title">Forge Chat</div><div class="fc-subtitle">Context-aware business assistant</div></div></div><button class="fc-close" type="button" aria-label="Close Forge Chat">×</button></div><div id="fcContext" class="fc-context"></div><div id="fcMessages" class="fc-messages"><div class="fc-msg assistant"><b>Hi. I’m Forge Chat.</b> Ask me anything about what you see in Forge. I’ll use your current business context to explain it and suggest the next practical step.</div></div><div class="fc-suggestions"><button class="fc-suggestion" data-q="What should I do next?">What should I do next?</button><button class="fc-suggestion" data-q="Why was this recommended?">Why was this recommended?</button><button class="fc-suggestion" data-q="Explain the economics">Explain the economics</button></div><form class="fc-compose" id="fcForm"><input id="fcInput" class="fc-input" autocomplete="off" placeholder="Ask Forge Chat…"><button class="fc-send" type="submit">Send</button></form>';
+              document.body.appendChild(panel);
+              panel.querySelector(".fc-close").onclick=fcToggle;
+              panel.querySelectorAll(".fc-suggestion").forEach(function(b){b.onclick=function(){fcSend(b.dataset.q)}});
+              panel.querySelector("#fcForm").addEventListener("submit",function(e){e.preventDefault();fcSend()});
+            }
+
+            function fcPatchNavigation(){
+              if(!Array.isArray(window.navItems))return;
+              if(!window.navItems.some(function(x){return x[0]==="chat"}))window.navItems.push(["chat","◉","Forge Chat"]);
+              if(!window.__forgeChatPagesPatched && typeof window.shell==="function"){
+                window.__forgeChatPagesPatched=true;
+                var originalShell=window.shell;
+                window.shell=function(c){
+                  return originalShell(c);
+                };
+              }
+            }
+
+            function fcPatchRender(){
+              if(typeof window.render!=="function" || window.__forgeChatRenderPatched)return;
+              window.__forgeChatRenderPatched=true;
+              var originalRender=window.render;
+              window.render=function(){
+                if(window.state?.page==="chat"){
+                  window.document.getElementById("app").innerHTML=fcPage();
+                  fcPageSend("What can you help me with?");
+                  fcRenderContext();
+                  return;
+                }
+                originalRender();
+              };
+            }
+
+            fcInstallUI();
+            fcPatchNavigation();
+            fcPatchRender();
+            window.fcToggle=fcToggle;
+          })();
+          </script>'''
+          if "</html>" in text:
+              text = text.replace("</html>", patch + "\n</html>", 1)
+          else:
+              text += "\n" + patch
+
+          path.write_text(text, encoding="utf-8")
+          PY
+
+          git config user.name "Forge Bot"
+          git config user.email "forge-bot@users.noreply.github.com"
+          git add index.html
+          git rm --cached .github/workflows/forge-chat-patch.yml 2>/dev/null || true
+          rm -f .github/workflows/forge-chat-patch.yml
+          git add -A
+          git commit -m "Add Forge Chat and enforce monochrome UI"
+          git push

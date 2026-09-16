@@ -282,6 +282,134 @@ body[data-page="content"] .eyebrow{color:#f29bc0}body[data-page="content"] .nav.
 .content-asset-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}.content-asset-card{overflow:hidden;padding:0}.content-asset-card .asset-preview{height:180px;display:grid;place-items:center;background:radial-gradient(circle,#34213b,#0d1512);font-size:42px;color:#f29bc0;position:relative;overflow:hidden}.content-asset-card .asset-preview img{width:100%;height:100%;display:block}.content-asset-card .asset-live-tag{position:absolute;left:10px;top:10px;padding:5px 8px;border-radius:999px;background:rgba(5,15,11,.82);border:1px solid rgba(169,238,204,.18);font-size:8px;letter-spacing:.08em;font-weight:900;color:#baf4d3}.content-asset-card .asset-body{padding:14px}.content-asset-card h3{margin:6px 0}.content-asset-card p{font-size:11px;color:#879d93;line-height:1.5}.content-asset-actions{display:flex;gap:7px}.content-asset-actions .btn{flex:1}
 @media(max-width:900px){.content-asset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-engine-callout{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.content-asset-grid{grid-template-columns:1fr}.content-engine-callout .btn{width:100%}}
 
+
+/* PRODUCT LAB — light, premium product review modal */
+.modal.cj-product-review-modal,
+.modal:has(.cj-decision-head){
+  background:rgba(15,23,20,.48)!important;
+  backdrop-filter:blur(7px)!important;
+  -webkit-backdrop-filter:blur(7px)!important;
+}
+.modal:has(.cj-decision-head) .modalbox{
+  width:min(1040px,calc(100vw - 48px))!important;
+  max-height:min(88vh,820px)!important;
+  overflow:auto!important;
+  padding:0!important;
+  background:#ffffff!important;
+  color:#17201c!important;
+  border:1px solid #dce5df!important;
+  border-radius:24px!important;
+  box-shadow:0 28px 90px rgba(16,35,27,.22),0 8px 30px rgba(16,35,27,.12)!important;
+}
+.modal:has(.cj-decision-head) .cj-decision-head{
+  padding:22px 28px 18px!important;
+  margin:0!important;
+  background:linear-gradient(180deg,#fbfdfc 0%,#fff 100%)!important;
+  border-bottom:1px solid #e7ece9!important;
+}
+.modal:has(.cj-decision-head) .cj-decision-head h2{
+  font-size:26px!important;
+  letter-spacing:-.02em!important;
+}
+.modal:has(.cj-decision-head) .cj-decision-head .small{
+  color:#718078!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-close{
+  width:40px!important;height:40px!important;border-radius:12px!important;
+  border:1px solid #dfe7e2!important;background:#fff!important;color:#17201c!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.04)!important;
+}
+.modal:has(.cj-decision-head) .cj-detail-grid{
+  grid-template-columns:minmax(320px,44%) 1fr!important;
+  gap:30px!important;
+  padding:26px 28px 0!important;
+}
+.modal:has(.cj-decision-head) .cj-detail-media{
+  min-height:430px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid #e5ebe7!important;
+  border-radius:20px!important;
+  background:linear-gradient(145deg,#f7faf8,#f1f5f2)!important;
+  overflow:hidden!important;
+}
+.modal:has(.cj-decision-head) .cj-detail-media>span{
+  left:16px!important;top:16px!important;
+  background:#1f6b51!important;color:#fff!important;
+  box-shadow:0 5px 16px rgba(31,107,81,.18)!important;
+}
+.modal:has(.cj-decision-head) .cj-detail-img{
+  width:100%!important;height:100%!important;max-height:430px!important;
+  min-height:430px!important;object-fit:contain!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  padding:18px!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-category{
+  background:#eaf7f0!important;color:#176044!important;border:1px solid #cce9da!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-product-name{
+  font-size:25px!important;line-height:1.22!important;color:#17201c!important;
+}
+.modal:has(.cj-decision-head) .cj-detail-price{
+  color:#176044!important;font-size:36px!important;letter-spacing:-.03em!important;
+}
+.modal:has(.cj-decision-head) .cj-detail-bdt{
+  color:#75827c!important;font-size:12px!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-data{
+  gap:10px!important;border-top:0!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-data>div{
+  min-height:72px!important;
+  padding:13px 14px!important;
+  background:#f8faf9!important;
+  border:1px solid #e1e9e4!important;
+  border-radius:12px!important;
+  color:#68756e!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-data>div b{
+  margin-top:6px!important;color:#17201c!important;font-size:15px!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-data .cj-contribution{
+  background:#e9f7ef!important;border-color:#c8e8d6!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-data .cj-contribution b{
+  color:#176044!important;
+}
+.modal:has(.cj-decision-head) .cj-decision-note{
+  margin:24px 28px 0!important;
+  padding:16px 18px!important;
+  background:#fff8e8!important;
+  border:1px solid #f0dfb5!important;
+  border-left:4px solid #e2a83b!important;
+  border-radius:14px!important;
+}
+.modal:has(.cj-decision-head) .cj-decision-note b{color:#7b5514!important;font-size:13px!important}
+.modal:has(.cj-decision-head) .cj-decision-note span{color:#6e6758!important}
+.modal:has(.cj-decision-head) .cj-modal-actions{
+  margin:24px 28px 28px!important;
+  padding-top:18px!important;
+  border-top:1px solid #e7ece9!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-actions .btn.primary{
+  background:#176044!important;color:#fff!important;border-color:#176044!important;
+  box-shadow:0 7px 18px rgba(23,96,68,.18)!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-actions .btn:not(.primary){
+  background:#fff!important;color:#17201c!important;border:1px solid #d6dfda!important;
+}
+.modal:has(.cj-decision-head) .cj-modal-actions .btn{
+  min-height:44px!important;border-radius:10px!important;padding:0 18px!important;
+}
+@media(max-width:720px){
+  .modal:has(.cj-decision-head) .modalbox{width:calc(100vw - 24px)!important;border-radius:18px!important}
+  .modal:has(.cj-decision-head) .cj-detail-grid{grid-template-columns:1fr!important;padding:18px!important;gap:18px!important}
+  .modal:has(.cj-decision-head) .cj-detail-media{min-height:280px!important}
+  .modal:has(.cj-decision-head) .cj-detail-img{min-height:280px!important;height:280px!important}
+  .modal:has(.cj-decision-head) .cj-decision-head{padding:18px!important}
+  .modal:has(.cj-decision-head) .cj-decision-note,.modal:has(.cj-decision-head) .cj-modal-actions{margin-left:18px!important;margin-right:18px!important}
+}
 </style></style>
 
 <style id="forge-brand-studio">

@@ -862,6 +862,43 @@ body[data-page="ideas"] .finder-profile .btn{margin-top:14px}
  body[data-page="ideas"] .finder-metrics>div:nth-child(n+3){border-top:1px solid var(--line)}
  body[data-page="ideas"] .finder-reference{display:block}
 }
+</style><style id="forge-fit-modal">
+body[data-page="ideas"] #modal.open{background:rgba(20,24,28,.58)!important;backdrop-filter:blur(3px)}
+body[data-page="ideas"] #modalbox{width:min(900px,calc(100vw - 32px))!important;max-width:900px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+body[data-page="ideas"] .fit-modal{background:var(--paper)!important;border:1px solid var(--line)!important;border-radius:8px!important;overflow:hidden!important;color:var(--ink)!important}
+body[data-page="ideas"] .fit-modal-head{display:flex;justify-content:space-between;gap:24px;padding:28px 30px 24px;border-bottom:1px solid var(--line);background:var(--surface)}
+body[data-page="ideas"] .fit-eyebrow{display:block;color:var(--accent)!important;font-size:12px;font-weight:700;margin-bottom:7px}
+body[data-page="ideas"] .fit-modal-head h2{margin:0;font-family:"Inter Tight",Inter,sans-serif;font-size:28px;line-height:1.05;font-weight:750;letter-spacing:-.04em}
+body[data-page="ideas"] .fit-modal-head p{max-width:650px;margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+body[data-page="ideas"] .fit-close{width:36px;height:36px;flex:0 0 36px;border:1px solid var(--line);border-radius:6px;background:var(--surface);font-size:22px;line-height:1;color:var(--ink);cursor:pointer}
+body[data-page="ideas"] .fit-score-row{display:flex;align-items:center;gap:10px;padding:18px 30px;background:var(--accent-soft);border-bottom:1px solid var(--line)}
+body[data-page="ideas"] .fit-score-row>div:first-child{margin-right:auto}
+body[data-page="ideas"] .fit-score-row>div:first-child span{display:block;color:var(--muted);font-size:11px}
+body[data-page="ideas"] .fit-score-row strong{display:block;color:var(--accent);font-size:30px;line-height:1;font-weight:760}
+body[data-page="ideas"] .fit-tag{padding:7px 10px;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--ink);font-size:11px;font-weight:650}
+body[data-page="ideas"] .fit-body{display:grid;grid-template-columns:minmax(0,1fr) 260px}
+body[data-page="ideas"] .fit-main{padding:26px 30px}
+body[data-page="ideas"] .fit-main h3{margin:0 0 8px;font-family:"Inter Tight",Inter,sans-serif;font-size:19px;font-weight:700}
+body[data-page="ideas"] .fit-main>p{margin:0 0 22px;font-size:14px;line-height:1.6}
+body[data-page="ideas"] .fit-checks{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+body[data-page="ideas"] .fit-checks>div{padding:15px 18px 15px 0;border-bottom:1px solid var(--line)}
+body[data-page="ideas"] .fit-checks>div:nth-child(odd){padding-right:20px;border-right:1px solid var(--line)}
+body[data-page="ideas"] .fit-checks>div:nth-child(even){padding-left:20px}
+body[data-page="ideas"] .fit-checks b{display:block;font-size:12px;margin-bottom:4px}
+body[data-page="ideas"] .fit-checks span{display:block;color:var(--muted);font-size:11px;line-height:1.5}
+body[data-page="ideas"] .fit-good{border-left:3px solid var(--accent);padding-left:12px!important}
+body[data-page="ideas"] .fit-pressure{border-left:3px solid var(--ink);padding-left:12px!important}
+body[data-page="ideas"] .fit-side{padding:26px 24px;background:var(--surface);border-left:1px solid var(--line)}
+body[data-page="ideas"] .fit-side>div{padding:0 0 17px;margin-bottom:17px;border-bottom:1px solid var(--line)}
+body[data-page="ideas"] .fit-side>div:last-child{border-bottom:0;margin-bottom:0}
+body[data-page="ideas"] .fit-side span{display:block;color:var(--muted);font-size:11px}
+body[data-page="ideas"] .fit-side b{display:block;margin-top:5px;font-size:13px}
+body[data-page="ideas"] .fit-side small{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+body[data-page="ideas"] .fit-side p{margin:6px 0 0;font-size:12px;line-height:1.5}
+body[data-page="ideas"] .fit-modal-foot{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 30px;border-top:1px solid var(--line);background:var(--surface)}
+body[data-page="ideas"] .fit-modal-foot b{display:block;font-size:12px}
+body[data-page="ideas"] .fit-modal-foot span{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+@media(max-width:700px){body[data-page="ideas"] .fit-body{grid-template-columns:1fr}body[data-page="ideas"] .fit-side{border-left:0;border-top:1px solid var(--line)}body[data-page="ideas"] .fit-checks{grid-template-columns:1fr}body[data-page="ideas"] .fit-checks>div:nth-child(odd){border-right:0}body[data-page="ideas"] .fit-checks>div:nth-child(even){padding-left:0}body[data-page="ideas"] .fit-modal-foot{align-items:flex-start;flex-direction:column}}
 </style></head>
 <body>
 <div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
@@ -952,7 +989,7 @@ function home(){
   const shortlist=(all.length?all:fallback).slice(0,3);
   const capitalText=x=>Number(x.cap||0)===0?"No inventory required":Number(x.cap||0)<=cap?"Within available capital":"Needs more capital";
   const rationale=x=>Number(x.cap||0)<=cap?"The estimated starting requirement fits the capital Forge can currently deploy.":(x.model==="Service"||x.model==="Commission")?"Can be tested without purchasing inventory first.":x.model==="Pre-order"?"Demand can be tested before committing to a larger stock purchase.":"Forge is keeping this path visible because the estimated launch requires more capital than the current launch envelope.";
-  const rows=shortlist.map((x,i)=>"<article class='decision-path "+(i===0?"is-primary":"")+"'><div class='path-main'><div class='path-heading'><div><span class='path-dot "+(i===0?"active":"")+"'></span><h3>"+esc(x.name)+"</h3></div><div class='path-match "+(i===0?"dominant":"")+"'><strong>"+Math.round(Number(x.fit||0))+"%</strong><span>match</span></div></div><p class='path-thesis'>"+esc(x.thesis||"A business path Forge can evaluate against your current constraints.")+"</p><div class='path-data'><div><span>Starting capital</span><b>"+capitalText(x)+"</b></div><div><span>Time</span><b>"+Number(x.time||0)+"h / week</b></div><div><span>Risk</span><b>"+esc(x.risk||"Not set")+"</b></div><div><span>Model</span><b>"+esc(x.model||"Business")+"</b></div></div><div class='forge-read'><b>Forge's read</b><p>"+esc(rationale(x))+" "+(x.experience?"Experience fit: "+esc(p.experience===x.experience?"aligned":"manageable with support")+".":"")+"</p></div><div class='path-actions'><button class='btn primary' onclick=\"selectOpportunity('"+String(x.name).replace(/'/g,"\\'")+"')\">Open opportunity</button><button class='btn' onclick=\"fcSend('Why was "+String(x.name).replace(/'/g,"\\'")+" recommended?')\">Why it fits</button></div></div></article>").join("");
+  const rows=shortlist.map((x,i)=>"<article class='decision-path "+(i===0?"is-primary":"")+"'><div class='path-main'><div class='path-heading'><div><span class='path-dot "+(i===0?"active":"")+"'></span><h3>"+esc(x.name)+"</h3></div><div class='path-match "+(i===0?"dominant":"")+"'><strong>"+Math.round(Number(x.fit||0))+"%</strong><span>match</span></div></div><p class='path-thesis'>"+esc(x.thesis||"A business path Forge can evaluate against your current constraints.")+"</p><div class='path-data'><div><span>Starting capital</span><b>"+capitalText(x)+"</b></div><div><span>Time</span><b>"+Number(x.time||0)+"h / week</b></div><div><span>Risk</span><b>"+esc(x.risk||"Not set")+"</b></div><div><span>Model</span><b>"+esc(x.model||"Business")+"</b></div></div><div class='forge-read'><b>Forge's read</b><p>"+esc(rationale(x))+" "+(x.experience?"Experience fit: "+esc(p.experience===x.experience?"aligned":"manageable with support")+".":"")+"</p></div><div class='path-actions'><button class='btn primary' onclick=\"selectOpportunity('"+String(x.name).replace(/'/g,"\\'")+"')\">Open opportunity</button><button class='btn' onclick=\"openFitModal('"+x.name.replace(/'/g,"\\'")+"')\">Why it fits</button>></div></div></article>").join("");
   return "<div class='decision-dashboard'><header class='decision-header'><div><h1>Lean launch mode</h1><p>Comparing paths against your capital, time, and risk limits.</p></div><div class='decision-stats'><div><span>Available capital</span><strong>"+BDT(cap)+"</strong></div><div><span>Time available</span><strong>"+Number(p.time||0)+"h / week</strong></div><div><span>Risk profile</span><strong>"+esc(p.risk||"Not set")+"</strong></div></div></header><div class='decision-layout'><main><section class='paths-section'><div class='section-title'><div><h2>Paths worth evaluating</h2><p>Ranked against the inputs you gave Forge. The first path is the strongest current profile match.</p></div></div><div class='decision-paths'>"+rows+"</div></section></main><aside class='decision-aside'><section><h3>How Forge decides</h3><p>Each path is checked against four practical constraints before it reaches your shortlist.</p><div class='decision-factor'><b>Capital</b><span>Can the first test happen within the money you can actually deploy?</span></div><div class='decision-factor'><b>Time</b><span>Does the weekly workload fit the time you said you can give?</span></div><div class='decision-factor'><b>Experience</b><span>Does the model match your current experience, or can Forge support the gap?</span></div><div class='decision-factor'><b>Risk</b><span>Is the exposure consistent with the risk level you selected?</span></div></section><section class='active-profile'><h3>Active profile</h3><p>"+esc(p.category||"Open to anything")+" · "+esc(p.market||"Primary market not set")+"</p><div><span>Goal</span><b>"+esc(p.goal||"Not set")+"</b></div><div><span>Experience</span><b>"+esc(p.experience||"Not set")+"</b></div><button class='btn' onclick='openWizard()'>Change inputs</button></section></aside></div></div>";
 }
 function ensureForgeModalHost(){
@@ -1157,6 +1194,39 @@ function ideas(){
        "<section class='finder-profile'><span class='finder-mini'>Active profile</span><h3>"+(p.category||"Open to anything")+"</h3><p>"+(p.market||"Primary market not set")+" · "+(p.goal||"Goal not set")+"</p><button class='btn' onclick='openWizard()'>Change inputs</button></section>"+
      "</aside>"+
    "</div></div>";
+}
+function openFitModal(name){
+ const x=opportunities().find(o=>o.name===name); if(!x)return;
+ const p=state.profile||{},cap=Math.max(0,Number(p.budget||0)-Number(p.reserve||0));
+ const moneyFit=x.cap<=cap,timeFit=Number(p.time||0)>=Number(x.time||0);
+ const expFit=!x.experience||!p.experience||p.experience===x.experience;
+ const scenario=(p.category&&p.category!=="Open to anything"?p.category:"your chosen category")+" in "+(p.market||"your target market");
+ let why=x.model==="Commission"
+ ? "You can start by selling an existing offer instead of tying up launch capital in stock. For a "+scenario+" profile, the first experiment is about finding demand and learning the sales process."
+ :x.model==="Service"
+ ? "This path turns time and an existing skill into revenue before you take on inventory risk. That matters when Forge has "+Number(p.time||0)+" hours a week to work with."
+ :x.model==="Pre-order"
+ ? "You can validate the product with a real customer order before committing to a larger purchase. Your capital is committed only after demand becomes visible."
+ : "This is an inventory-led path. It can fit your profile, but the launch requires more discipline around stock, cash flow and sell-through.";
+ const capitalLine=moneyFit?"The estimated starting requirement of "+BDT(x.cap)+" is within the "+BDT(cap)+" Forge considers deployable.":"The estimated requirement is "+BDT(x.cap)+", above the "+BDT(cap)+" currently deployable. Capital is the main constraint Forge is flagging.";
+ const timeLine=timeFit?"The expected workload of "+Number(x.time||0)+" hours a week fits your "+Number(p.time||0)+"-hour availability.":"The expected workload of "+Number(x.time||0)+" hours a week is above your "+Number(p.time||0)+"-hour availability, so execution is the pressure point.";
+ const expLine=x.experience&&p.experience?(expFit?"Your "+p.experience+" experience is aligned with this model.":"Your experience differs from the model's usual starting point, so Forge assumes support may be needed."):"Forge has limited experience data, so this is not a major part of the fit.";
+ const riskLine=x.risk==="Low"?"Forge rates this model low risk, keeping the first test relatively contained.":"Forge rates this model "+String(x.risk||"unknown").toLowerCase()+" risk, so the size and timing of the first commitment matter.";
+ const next=x.test||"Run the smallest credible test, measure the response, then decide whether to commit more capital.";
+ const modal=ensureForgeModalHost();
+ document.getElementById("modalbox").innerHTML="<div class='fit-modal'>"+
+ "<div class='fit-modal-head'><div><span class='fit-eyebrow'>Why this fits your scenario</span><h2>"+esc(x.name)+"</h2><p>"+esc(x.thesis||"A practical business path evaluated against your current profile.")+"</p></div><button class='fit-close' onclick='closeModal()' aria-label='Close'>×</button></div>"+
+ "<div class='fit-score-row'><div><span>Forge fit</span><strong>"+Math.round(Number(x.fit||0))+"%</strong></div><span class='fit-tag'>"+esc(x.model)+" model</span><span class='fit-tag'>"+esc(x.risk||"Risk not set")+" risk</span></div>"+
+ "<div class='fit-body'><section class='fit-main'><h3>Why Forge sees a fit</h3><p>"+esc(why)+"</p><div class='fit-checks'>"+
+ "<div class='"+(moneyFit?"fit-good":"fit-pressure")+"'><b>Capital</b><span>"+esc(capitalLine)+"</span></div>"+
+ "<div class='"+(timeFit?"fit-good":"fit-pressure")+"'><b>Time</b><span>"+esc(timeLine)+"</span></div>"+
+ "<div class='"+(expFit?"fit-good":"fit-pressure")+"'><b>Experience</b><span>"+esc(expLine)+"</span></div>"+
+ "<div class='fit-good'><b>Risk</b><span>"+esc(riskLine)+"</span></div></div></section>"+
+ "<aside class='fit-side'><div><span>Your scenario</span><b>"+esc(p.category||"Open to anything")+"</b><small>"+esc(p.market||"Market not set")+" · "+esc(p.goal||"Goal not set")+"</small></div>"+
+ "<div><span>Available to deploy</span><b>"+BDT(cap)+"</b><small>"+Number(p.time||0)+"h / week · "+esc(p.risk||"Risk not set")+"</small></div>"+
+ "<div><span>First test</span><p>"+esc(next)+"</p></div></aside></div>"+
+ "<div class='fit-modal-foot'><div><b>Forge's practical recommendation</b><span>Start with the smallest test that can produce real customer evidence.</span></div><button class='btn primary' onclick=\"closeModal();selectOpportunity('"+String(x.name).replace(/'/g,"\\'")+"')\">Open opportunity</button></div></div>";
+ modal.classList.add("open"); setTimeout(function(){document.querySelector(".fit-close")?.focus()},30);
 }
 function applyFilters(){toast("Your profile is locked. Finder filters are intentionally disabled so recommendations cannot be gamed.")}
 function selectOpportunity(n){state.selectedOpportunityName=n;state.selectedProduct=opportunities().find(x=>x.name===n)||opportunities()[0];state.page="products";persistProfile();render();toast(n+" added to your personalized plan")}

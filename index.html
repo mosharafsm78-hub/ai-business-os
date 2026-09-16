@@ -375,7 +375,33 @@ body[data-page="analytics"]{--accent:#b78cff;--accent-soft:rgba(183,140,255,.10)
 </style></style>
 </head>
 <body>
-<div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><div id="toast" class="toast"></div><div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
+<div id="app"><div class="onboarding"><div class="onboarding-card"><div class="brand"><div class="mark">F</div>FORGE <small>AI BUSINESS OS</small></div><div class="eyebrow" style="margin-top:32px">FORGE IS LOADING</div><div class="h1">Preparing your workspace.</div><p class="sub">Your Forge workspace is starting. If this screen remains visible, refresh once — your saved business data is stored locally in this browser.</p><div class="notice"><b>Workspace protection is active.</b><div class="small">Forge will not replace your saved profile or business data while the interface recovers.</div></div></div></div></div><script>
+/* FORGE BOOT GUARD — prevents the static recovery screen from getting stuck on mobile/browser cache */
+(function(){
+  try{
+    window.__forgeRendered=false;
+    window.addEventListener("error",function(e){
+      window.__forgeBootError=(e&&e.message)||"Forge startup error";
+    });
+    const key="forge_boot_retry_v1";
+    setTimeout(function(){
+      if(window.__forgeRendered)return;
+      if(!sessionStorage.getItem(key)){
+        sessionStorage.setItem(key,"1");
+        const u=new URL(location.href);
+        u.searchParams.set("forge_boot",Date.now().toString());
+        location.replace(u.toString());
+        return;
+      }
+      const app=document.getElementById("app");
+      if(app && app.querySelector(".onboarding")){
+        app.innerHTML="<div class='onboarding'><div class='onboarding-card'><div class='brand'><div class='mark'>F</div>FORGE</div><div class='eyebrow' style='margin-top:32px'>WORKSPACE RECOVERY</div><div class='h1'>Forge did not finish starting.</div><p class='sub'>Your saved business data has not been deleted. The browser stopped the workspace before the dashboard could load.</p><div class='notice'><b>Saved data is protected.</b><div class='small'>Tap retry to start Forge again without changing your business profile.</div></div><div class='actions' style='margin-top:18px'><button class='btn primary' onclick='sessionStorage.removeItem("forge_boot_retry_v1");location.reload()'>Retry Forge →</button></div></div></div>";
+      }
+    },2500);
+  }catch(e){}
+})();
+</script>
+<div id="toast" class="toast"></div><div id="modal" class="modal"><div class="modalbox" id="modalbox"></div></div>
 
 <script>
 const STORAGE_KEY="forge_profile_v3";
@@ -383,7 +409,7 @@ const DEFAULT_PROFILE={budget:0,age:0,income:0,expenses:0,reserve:0,market:"Bang
 let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
 const savedQueue=Array.isArray(saved?.sourcingQueue)?saved.sourcingQueue:[];
 const state={page:saved?.locked?"home":"onboarding",business:saved?.business||null,profile:saved?.profile||DEFAULT_PROFILE,profileLocked:!!saved?.locked,selectedProduct:savedQueue.length?(saved?.selectedProduct||savedQueue[0]):null,selectedOpportunityName:saved?.selectedOpportunityName||null,planStatus:savedQueue.length?(saved?.planStatus||null):null,planRequestedAt:savedQueue.length?(saved?.planRequestedAt||null):null,planEtaMinutes:savedQueue.length?(Number(saved?.planEtaMinutes||0)):0,planEtaSeconds:savedQueue.length?(Number(saved?.planEtaSeconds||0)):0,sourcingQueue:savedQueue,brandStudio:saved?.brandStudio||{},storeLaunch:saved?.storeLaunch||{},contentRequests:saved?.contentRequests||[],contentAssets:saved?.contentAssets||[],contentAutomation:saved?.contentAutomation||{},chat:[["ai","I am your AI co-founder. Your locked profile is the foundation for every recommendation. I will not change it when ranking businesses or products."]]};
-function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[]}))}
+function persistProfile(){localStorage.setItem(STORAGE_KEY,JSON.stringify({locked:true,profile:state.profile,business:state.business,selectedProduct:state.selectedProduct,selectedOpportunityName:state.selectedOpportunityName,planStatus:state.planStatus,planRequestedAt:state.planRequestedAt,planEtaMinutes:state.planEtaMinutes,planEtaSeconds:state.planEtaSeconds,sourcingQueue:state.sourcingQueue,brandStudio:state.brandStudio||{},storeLaunch:state.storeLaunch||{},contentRequests:state.contentRequests||[],contentAssets:state.contentAssets||[],contentAutomation:state.contentAutomation||[]}))}
 function clearProfileForDemo(){localStorage.removeItem(STORAGE_KEY);location.reload()}
 
 const navItems=[["home","⌂","Overview"],["advisor","✦","AI Advisor"],["ideas","◈","Business Finder"],["products","□","Product Lab"],["plan","▤","Business Plan"],["orders","↗","Orders"],["brand","✺","Brand Studio"],["store","▱","Store Launch"],["content","✦","Content Library"],["marketing","◎","AI Marketing"],["support","◌","AI Customer Support"],["analytics","⌁","Analytics & Decisions"]];
@@ -1730,6 +1756,8 @@ function bindMobileInteractions(){
   }
 }
 function render(){
+  window.__forgeRendered=true;
+  try{sessionStorage.removeItem("forge_boot_retry_v1")}catch(e){}
   document.body.dataset.page=state.page||"home";
   let pages={home,advisor,ideas,products,plan,orders,brand:brandStudioPage,store,content:contentLibrary,marketing,support,analytics};
   if(!state.profileLocked){document.getElementById("app").innerHTML=onboardingLanding();bindMobileInteractions();return}
